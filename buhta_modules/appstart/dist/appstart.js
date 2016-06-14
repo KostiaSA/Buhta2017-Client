@@ -25,7 +25,7 @@ var Buhta;
                 var queryId = 'q' + Math.random().toString(36).slice(2);
                 socket.emit("executeSQL", { queryId: queryId, sql: "sql1" });
                 //let squelPostgres = squel.useFlavour('mssql');
-                //console.log(
+                //console.log(???
                 //    squelPostgres.insert({ autoQuoteFieldNames: true })
                 //        .into('table')
                 //        .set('field', 5)

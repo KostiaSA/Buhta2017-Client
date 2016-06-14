@@ -32,7 +32,7 @@ namespace Buhta {
                 socket.emit("executeSQL", {queryId, sql: "sql1"});
                 //let squelPostgres = squel.useFlavour('mssql');
 
-                //console.log(
+                //console.log(???
                 //    squelPostgres.insert({ autoQuoteFieldNames: true })
                 //        .into('table')
                 //        .set('field', 5)
