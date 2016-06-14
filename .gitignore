@@ -1,0 +1,7 @@
+.idea
+node_modules
+bower_components
+bin
+vendor_modules/josh-laravel
+typings
+
