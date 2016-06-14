@@ -1,0 +1,33 @@
+.designer-app-left-pane-tabs > .nav > li > a {
+    padding: 3px 3px;
+}
+
+.designer-app-left-pane-tabs .ui-layout-pane {
+    background: #FFF;
+    border: 1px solid #BBB;
+    padding: 5px;
+    overflow: auto;
+}
+
+.designer-app-left-pane-tabs .ui-layout-content {
+    padding:	1px;
+    position:	relative; /* contain floated or positioned elements */
+    overflow:	auto; /* add scrolling to content-div */
+}
+
+.designer-app-center-pane-tabs > .nav > li > a {
+    padding: 3px 3px;
+}
+
+.designer-app-center-pane-tabs .ui-layout-pane {
+    background: #FFF;
+    border: 1px solid #BBB;
+    padding: 5px;
+    overflow: auto;
+}
+
+.designer-app-center-pane-tabs .ui-layout-content {
+    padding:	1px;
+    position:	relative; /* contain floated or positioned elements */
+    overflow:	auto; /* add scrolling to content-div */
+}

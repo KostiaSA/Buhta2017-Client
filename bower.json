@@ -1,0 +1,23 @@
+{
+  "name": "buhta2017",
+  "description": "",
+  "main": "index.js",
+  "authors": [
+    "KostiaSA <savchenkov@buhta.ru>"
+  ],
+  "license": "ISC",
+  "homepage": "",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "jquery.fancytree": "fancytree#^2.18.0",
+    "lodash": "^4.13.1",
+    "react": "^15.1.0",
+    "bootstrap": "^3.3.6"
+  }
+}

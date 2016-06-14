@@ -1,0 +1,18 @@
+{
+  "compilerOptions": {
+    "noImplicitAny": false,
+    "noEmitOnError": true,
+    "removeComments": false,
+    "sourceMap": true,
+    "target": "es5",
+    "outFile": "dist/core.js",
+    "declaration": true,
+    "module": "none",
+    "jsx": "react"
+    //    "reactNamespace": "__React"
+  },
+  "exclude": [
+    "node_modules",
+    "dist"
+  ]
+}

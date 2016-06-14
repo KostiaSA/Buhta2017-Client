@@ -1,0 +1,13 @@
+{
+  "globalDependencies": {
+    "bluebird": "registry:dt/bluebird#2.0.0+20160319051630",
+    "jquery": "registry:dt/jquery#1.10.0+20160417213236",
+    "jquery.fancytree": "registry:dt/jquery.fancytree#0.0.0+20160317120654",
+    "knex": "registry:dt/knex#0.0.0+20160526133810",
+    "lodash": "registry:dt/lodash#3.10.0+20160330154726",
+    "react": "registry:dt/react#0.14.0+20160602151522",
+    "react-dom": "registry:dt/react-dom#0.14.0+20160412154040",
+    "signalr": "registry:dt/signalr#2.2.0+20160509082439",
+    "socket.io-client": "registry:dt/socket.io-client#1.4.4+20160317120654"
+  }
+}
