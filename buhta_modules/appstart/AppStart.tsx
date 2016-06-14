@@ -10,7 +10,7 @@ namespace Buhta {
 
         $(document).ready(() => {
 
-            //        var socket = io.connect({ host: "localhost", port: "3010" });
+            //  sok?      var socket = io.connect({ host: "localhost", port: "3010" });
 
 
             console.log('cooned');

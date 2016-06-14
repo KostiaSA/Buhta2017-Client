@@ -12,7 +12,7 @@ var Buhta;
 (function (Buhta) {
     socket.once('connect', function () {
         $(document).ready(function () {
-            //        var socket = io.connect({ host: "localhost", port: "3010" });
+            //  sok?      var socket = io.connect({ host: "localhost", port: "3010" });
             console.log('cooned');
             $(".squel").click(function () {
                 var ms = Knex({
