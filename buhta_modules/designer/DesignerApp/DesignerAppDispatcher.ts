@@ -5,9 +5,8 @@
 
 namespace  Buhta {
 
-    export let DesignerAppStore = new DesignerAppStoreStatic();
 
-    export class DesignerAppStoreStatic extends EventEmitter {
+    export class DesignerAppDispatcher extends EventEmitter {
 
         event = {
 
@@ -45,33 +44,38 @@ namespace  Buhta {
 
         action = {
             openComponent: (comp: ComponentInfo) => {
-                this.event.activeComponentChange.emit(comp);
-                this.event.openedComponentsChange.emit();
-                //  this.emit(this.events.openedComponentsChange);
+
+                let comps = this.openedComponents.filter((c) => c.moduleName === comp.moduleName && c.className === comp.className);
+                if (comps.length === 0) {
+                    this.openedComponents.push(comp);
+                    this.event.openedComponentsChange.emit();
+                }
+                else
+                    comp = comps[0];
+
+                this.action.setActiveComponent(comp);
+            },
+
+            setActiveComponent: (comp: ComponentInfo) => {
+                let comps = this.openedComponents.filter((c) => c.moduleName === comp.moduleName && c.className === comp.className);
+                if (comps.length > 0) {
+                    this.event.activeComponentChange.emit(comp);
+                    this.activeComponent = comp;
+                }
             }
 
-        }
+        };
 
         openedComponents: ComponentInfo[] = [];
+        activeComponent: ComponentInfo;
 
-//        emit(event: string, ...args: any[]): boolean;
-
-
-        bindOpenedComponentsChange(callback: () => void) {
-            //on(openedComponentsChangeEvent, callback);
-        }
-
-        unbindOpenedComponentsChange() {
-
-        }
     }
 
 
-    DesignerAppStore.event.openedComponentsChange.bind(() => {
+    // DesignerAppStore.event.openedComponentsChange.bind(() => {
+    //
+    // });
 
-    });
+    export let designerAppDispatcher = new DesignerAppDispatcher();
 
-//DesignerAppStore.openComponent.doAction();
-
-//  DesignerAppStore.on()
 }

@@ -76,8 +76,7 @@ declare namespace Buhta {
  * Created by Kostia on 15.06.2016.
  */
 declare namespace Buhta {
-    let DesignerAppStore: DesignerAppStoreStatic;
-    class DesignerAppStoreStatic extends EventEmitter {
+    class DesignerAppDispatcher extends EventEmitter {
         event: {
             openedComponentsChange: {
                 bind: (callback: () => void) => void;
@@ -92,11 +91,12 @@ declare namespace Buhta {
         };
         action: {
             openComponent: (comp: ComponentInfo) => void;
+            setActiveComponent: (comp: ComponentInfo) => void;
         };
         openedComponents: ComponentInfo[];
-        bindOpenedComponentsChange(callback: () => void): void;
-        unbindOpenedComponentsChange(): void;
+        activeComponent: ComponentInfo;
     }
+    let designerAppDispatcher: DesignerAppDispatcher;
 }
 declare namespace Buhta {
     interface DesignerProps extends BaseComponentProps {

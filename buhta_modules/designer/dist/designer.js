@@ -184,10 +184,9 @@ var Buhta;
  */
 var Buhta;
 (function (Buhta) {
-    Buhta.DesignerAppStore = new DesignerAppStoreStatic();
-    var DesignerAppStoreStatic = (function (_super) {
-        __extends(DesignerAppStoreStatic, _super);
-        function DesignerAppStoreStatic() {
+    var DesignerAppDispatcher = (function (_super) {
+        __extends(DesignerAppDispatcher, _super);
+        function DesignerAppDispatcher() {
             var _this = this;
             _super.apply(this, arguments);
             this.event = {
@@ -216,24 +215,32 @@ var Buhta;
             };
             this.action = {
                 openComponent: function (comp) {
-                    _this.event.activeComponentChange.emit(comp);
-                    _this.event.openedComponentsChange.emit();
-                    //  this.emit(this.events.openedComponentsChange);
+                    var comps = _this.openedComponents.filter(function (c) { return c.moduleName === comp.moduleName && c.className === comp.className; });
+                    if (comps.length === 0) {
+                        _this.openedComponents.push(comp);
+                        _this.event.openedComponentsChange.emit();
+                    }
+                    else
+                        comp = comps[0];
+                    _this.action.setActiveComponent(comp);
+                },
+                setActiveComponent: function (comp) {
+                    var comps = _this.openedComponents.filter(function (c) { return c.moduleName === comp.moduleName && c.className === comp.className; });
+                    if (comps.length > 0) {
+                        _this.event.activeComponentChange.emit(comp);
+                        _this.activeComponent = comp;
+                    }
                 }
             };
             this.openedComponents = [];
         }
-        //        emit(event: string, ...args: any[]): boolean;
-        DesignerAppStoreStatic.prototype.bindOpenedComponentsChange = function (callback) {
-            //on(openedComponentsChangeEvent, callback);
-        };
-        DesignerAppStoreStatic.prototype.unbindOpenedComponentsChange = function () {
-        };
-        return DesignerAppStoreStatic;
+        return DesignerAppDispatcher;
     }(EventEmitter));
-    Buhta.DesignerAppStoreStatic = DesignerAppStoreStatic;
-    Buhta.DesignerAppStore.event.openedComponentsChange.bind(function () {
-    });
+    Buhta.DesignerAppDispatcher = DesignerAppDispatcher;
+    // DesignerAppStore.event.openedComponentsChange.bind(() => {
+    //
+    // });
+    Buhta.designerAppDispatcher = new DesignerAppDispatcher();
 })(Buhta || (Buhta = {}));
 var Buhta;
 (function (Buhta) {
