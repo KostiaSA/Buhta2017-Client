@@ -265,9 +265,12 @@ var Buhta;
         function Tabs(props, context) {
             _super.call(this, props, context);
         }
+        Tabs.prototype.willMount = function () {
+            _super.prototype.willMount.call(this);
+            this.createStateTabList();
+        };
         Tabs.prototype.didMount = function () {
             _super.prototype.didMount.call(this);
-            this.createStateTabList();
         };
         Tabs.prototype.willReceiveProps = function (nextProps) {
             var _this = this;
@@ -295,9 +298,9 @@ var Buhta;
             this.state.tabs.concat(this.props.tabs);
         };
         Tabs.prototype.render = function () {
-            if (!this.state.tabs) {
-                this.createStateTabList();
-            }
+            // if (!this.state.tabs) {
+            //     this.createStateTabList();
+            // }
             return (React.createElement("div", {className: this.renderClassName()}, React.createElement("ul", {className: "nav nav-tabs"}, this.state.tabs.map((function (child, index) {
                 return (React.createElement("li", {ref: child.id, key: index, className: child.active ? "active" : null}, React.createElement("a", {href: "#" + child.id, "data-toggle": "tab"}, child.title)));
             }))), React.createElement("div", {className: "tab-content"}, this.props.children)));

@@ -164,10 +164,10 @@ declare namespace Buhta {
     }
     class DesignerProjectTabs extends BaseComponent<DesignerProjectTabsProps, DesignerProjectTabsState> {
         constructor(props: DesignerProjectTabsProps, context: any);
+        protected willMount(): void;
         protected didMount(): void;
         protected willUnmount(): void;
-        createTabs(): void;
-        rowDblClick(row: ComponentInfo): boolean;
+        private createTabs();
         render(): JSX.Element;
     }
 }

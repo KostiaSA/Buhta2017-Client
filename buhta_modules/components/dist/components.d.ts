@@ -112,6 +112,7 @@ declare namespace Buhta {
     }
     class Tabs extends BaseComponent<TabsProps, TabsState> {
         constructor(props: TabsProps, context: any);
+        protected willMount(): void;
         protected didMount(): void;
         protected willReceiveProps(nextProps: TabsProps): void;
         createStateTabList(): void;

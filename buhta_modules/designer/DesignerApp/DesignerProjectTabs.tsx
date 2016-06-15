@@ -15,12 +15,17 @@
             super(props, context);
             //this.state = {};
         }
+        
+        protected willMount() {
+            super.willMount();
+            this.createTabs();
+        }
 
         protected didMount() {
             super.didMount();
 
             designerAppDispatcher.event.openedComponentsChange.bind(() => {
-                alert("comp-add");
+                //alert("comp-add");
 
                 // добавляем новые
                 designerAppDispatcher.openedComponents.forEach((comp) => {
@@ -50,7 +55,7 @@
             super.willUnmount();
         };
 
-        createTabs() {
+        private createTabs() {
             this.state.tabs = [];
             this.props.comps.forEach((comp: ComponentInfo) => {
                 let tab: TabProps = {
@@ -61,16 +66,13 @@
             });
         }
 
-        rowDblClick(row: ComponentInfo): boolean {
-            alert("dbl " + row.name);
-            return false;
-        };
+        // rowDblClick(row: ComponentInfo): boolean {
+        //     alert("dbl " + row.name);
+        //     return false;
+        // };
 
 
         render() {
-            if (!this.state.tabs) {
-                this.createTabs();
-            }
 
             return (
                 <Tabs tabs={this.state.tabs}>

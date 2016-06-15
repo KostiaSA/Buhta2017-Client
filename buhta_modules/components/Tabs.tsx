@@ -16,9 +16,14 @@ namespace Buhta {
             super(props, context);
         }
 
+
+        protected willMount() {
+            super.willMount();
+            this.createStateTabList();
+        }
+
         protected didMount() {
             super.didMount();
-            this.createStateTabList();
         }
 
         protected willReceiveProps(nextProps: TabsProps) {
@@ -55,9 +60,9 @@ namespace Buhta {
 
 
         render() {
-            if (!this.state.tabs) {
-                this.createStateTabList();
-            }
+            // if (!this.state.tabs) {
+            //     this.createStateTabList();
+            // }
 
             return (
                 <div className={this.renderClassName()}>

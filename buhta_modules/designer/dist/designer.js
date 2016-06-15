@@ -571,11 +571,15 @@ var Buhta;
             _super.call(this, props, context);
             //this.state = {};
         }
+        DesignerProjectTabs.prototype.willMount = function () {
+            _super.prototype.willMount.call(this);
+            this.createTabs();
+        };
         DesignerProjectTabs.prototype.didMount = function () {
             var _this = this;
             _super.prototype.didMount.call(this);
             Buhta.designerAppDispatcher.event.openedComponentsChange.bind(function () {
-                alert("comp-add");
+                //alert("comp-add");
                 // добавляем новые
                 Buhta.designerAppDispatcher.openedComponents.forEach(function (comp) {
                     if (_this.state.tabs.filter(function (t) { return t.id === comp.moduleName + "." + comp.className; }).length === 0) {
@@ -610,15 +614,11 @@ var Buhta;
                 _this.state.tabs.push(tab);
             });
         };
-        DesignerProjectTabs.prototype.rowDblClick = function (row) {
-            alert("dbl " + row.name);
-            return false;
-        };
-        ;
+        // rowDblClick(row: ComponentInfo): boolean {
+        //     alert("dbl " + row.name);
+        //     return false;
+        // };
         DesignerProjectTabs.prototype.render = function () {
-            if (!this.state.tabs) {
-                this.createTabs();
-            }
             return (React.createElement(Buhta.Tabs, {tabs: this.state.tabs}));
         };
         return DesignerProjectTabs;
