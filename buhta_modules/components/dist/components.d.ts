@@ -122,6 +122,7 @@ declare namespace Buhta {
         title: string;
         id: string;
         active?: boolean;
+        renderContent?: () => JSX.Element;
     }
     interface TabState extends BaseComponentState {
         active: boolean;

@@ -30,17 +30,25 @@ namespace Buhta {
             super.willReceiveProps(nextProps);
 
             // добавляем новые
-            nextProps.tabs.forEach((nextTab) => {
-                if (this.state.tabs.filter((stateTab) => stateTab.id === nextTab.id).length === 0) {
-                    this.state.tabs.push(nextTab);
-                    this.refersh();
-                }
-            });
+            if (nextProps.tabs) {
+                nextProps.tabs.forEach((nextTab) => {
+                    if (this.state.tabs.filter((stateTab) => stateTab.id === nextTab.id).length === 0) {
+                        this.state.tabs.push(nextTab);
+                        this.refersh();
+                    }
+                });
+            }
 
             // удаляем удаленные
-            this.state.tabs = this.state.tabs.filter((stateTab) => {
-                return nextProps.tabs.filter((nextTab) => stateTab.id === nextTab.id).length > 0;
-            });
+            if (nextProps.tabs) {
+                if (this.state.tabs) {
+                    this.state.tabs = this.state.tabs.filter((stateTab) => {
+                        return nextProps.tabs.filter((nextTab) => stateTab.id === nextTab.id).length > 0;
+                    });
+                }
+            }
+            else
+                this.state.tabs = [];
 
 
         }
@@ -82,6 +90,13 @@ namespace Buhta {
 
                     <div className="tab-content">
                         { this.props.children }
+
+                        { this.state.tabs.filter((tab) => _.isFunction(tab.renderContent)).map(((child, index) => {
+
+                            return child.renderContent();
+
+                        }))}
+
                     </div>
 
                 </div>
@@ -94,6 +109,7 @@ namespace Buhta {
         title: string;
         id: string;
         active?: boolean;
+        renderContent?: () => JSX.Element;
     }
 
     export interface TabState extends BaseComponentState {

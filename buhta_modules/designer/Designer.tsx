@@ -2,10 +2,7 @@
 
     import componentRegistry = Buhta.componentRegistry;
     export interface DesignerProps extends BaseComponentProps {
-        // message?: string;
-        // compiler: string;
-        // framework: string;
-        // onClickHandler?: __React.ReactEventHandler;
+        designedComponent: ComponentInfo;
     }
 
     export interface DesignerState extends BaseComponentState {
@@ -43,25 +40,31 @@
             this.state.needSave = false;
         }
 
+        willMount() {
+            super.willMount();
+            this.state.designedComponent = this.props.designedComponent.createInstance();
+
+        }
+
         didMount() {
             super.didMount();
-            if (this.state.designedComponent) {
-                this.state.designedComponent.propertyEditors.forEach((editor) => {
-                    WatchJS.watch(editor.designedObject, editor.propertyName, () => {
-                        console.log("watch(" + editor.propertyName + ")");
-                        this.state.needSave = true;
-                        this.refersh();
-                    });
-                });
-            }
+            // if (this.state.designedComponent) {
+            //     this.state.designedComponent.propertyEditors.forEach((editor) => {
+            //         WatchJS.watch(editor.designedObject, editor.propertyName, () => {
+            //             console.log("watch(" + editor.propertyName + ")");
+            //             this.state.needSave = true;
+            //             this.refersh();
+            //         });
+            //     });
+            // }
 
         }
 
         willUnmount() {
-            this.state.designedComponent.propertyEditors.forEach((editor) => {
-                WatchJS.unwatch(editor.designedObject, editor.propertyName);
-            });
-            super.willUnmount();
+            // this.state.designedComponent.propertyEditors.forEach((editor) => {
+            //     WatchJS.unwatch(editor.designedObject, editor.propertyName);
+            // });
+            // super.willUnmount();
         }
 
         getPagesList(): Array<string> {

@@ -276,16 +276,24 @@ var Buhta;
             var _this = this;
             _super.prototype.willReceiveProps.call(this, nextProps);
             // добавляем новые
-            nextProps.tabs.forEach(function (nextTab) {
-                if (_this.state.tabs.filter(function (stateTab) { return stateTab.id === nextTab.id; }).length === 0) {
-                    _this.state.tabs.push(nextTab);
-                    _this.refersh();
-                }
-            });
+            if (nextProps.tabs) {
+                nextProps.tabs.forEach(function (nextTab) {
+                    if (_this.state.tabs.filter(function (stateTab) { return stateTab.id === nextTab.id; }).length === 0) {
+                        _this.state.tabs.push(nextTab);
+                        _this.refersh();
+                    }
+                });
+            }
             // удаляем удаленные
-            this.state.tabs = this.state.tabs.filter(function (stateTab) {
-                return nextProps.tabs.filter(function (nextTab) { return stateTab.id === nextTab.id; }).length > 0;
-            });
+            if (nextProps.tabs) {
+                if (this.state.tabs) {
+                    this.state.tabs = this.state.tabs.filter(function (stateTab) {
+                        return nextProps.tabs.filter(function (nextTab) { return stateTab.id === nextTab.id; }).length > 0;
+                    });
+                }
+            }
+            else
+                this.state.tabs = [];
         };
         Tabs.prototype.createStateTabList = function () {
             this.state.tabs = React.Children.map(this.props.children, (function (child, index) {
@@ -303,7 +311,9 @@ var Buhta;
             // }
             return (React.createElement("div", {className: this.renderClassName()}, React.createElement("ul", {className: "nav nav-tabs"}, this.state.tabs.map((function (child, index) {
                 return (React.createElement("li", {ref: child.id, key: index, className: child.active ? "active" : null}, React.createElement("a", {href: "#" + child.id, "data-toggle": "tab"}, child.title)));
-            }))), React.createElement("div", {className: "tab-content"}, this.props.children)));
+            }))), React.createElement("div", {className: "tab-content"}, this.props.children, this.state.tabs.filter(function (tab) { return _.isFunction(tab.renderContent); }).map((function (child, index) {
+                return child.renderContent();
+            })))));
         };
         return Tabs;
     }(Buhta.BaseComponent));

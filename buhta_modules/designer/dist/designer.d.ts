@@ -100,6 +100,7 @@ declare namespace Buhta {
 }
 declare namespace Buhta {
     interface DesignerProps extends BaseComponentProps {
+        designedComponent: ComponentInfo;
     }
     interface DesignerState extends BaseComponentState {
         designedComponent: DesignedComponent;
@@ -107,6 +108,7 @@ declare namespace Buhta {
     }
     class Designer extends BaseComponent<DesignerProps, DesignerState> {
         constructor(props: DesignerProps, context: any);
+        willMount(): void;
         didMount(): void;
         willUnmount(): void;
         getPagesList(): Array<string>;

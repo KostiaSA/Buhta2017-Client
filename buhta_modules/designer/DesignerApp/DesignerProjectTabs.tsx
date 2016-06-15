@@ -15,7 +15,7 @@
             super(props, context);
             //this.state = {};
         }
-        
+
         protected willMount() {
             super.willMount();
             this.createTabs();
@@ -32,9 +32,22 @@
 
                     if (this.state.tabs.filter((t) => t.id === comp.moduleName + "." + comp.className).length === 0) {
                         let tab: TabProps = {
-                            title: comp.name,
-                            id: comp.moduleName + "." + comp.className
-                        };
+                                title: comp.name,
+                                id: comp.moduleName + "-" + comp.className,
+                                renderContent: () => {
+                                    return (
+                                        <div
+                                            className="tab-pane"
+                                            id={comp.moduleName + "-" + comp.className}
+                                            key={comp.moduleName + "-" + comp.className}
+                                        >
+                                            <Designer designedComponent={comp}>
+                                            </Designer>
+                                        </div>
+                                    );
+                                }
+                            }
+                            ;
                         this.state.tabs.push(tab);
                     }
 

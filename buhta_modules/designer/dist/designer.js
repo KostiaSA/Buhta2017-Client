@@ -283,24 +283,27 @@ var Buhta;
             // this.state.designedComponent = x;
             this.state.needSave = false;
         }
+        Designer.prototype.willMount = function () {
+            _super.prototype.willMount.call(this);
+            this.state.designedComponent = this.props.designedComponent.createInstance();
+        };
         Designer.prototype.didMount = function () {
-            var _this = this;
             _super.prototype.didMount.call(this);
-            if (this.state.designedComponent) {
-                this.state.designedComponent.propertyEditors.forEach(function (editor) {
-                    WatchJS.watch(editor.designedObject, editor.propertyName, function () {
-                        console.log("watch(" + editor.propertyName + ")");
-                        _this.state.needSave = true;
-                        _this.refersh();
-                    });
-                });
-            }
+            // if (this.state.designedComponent) {
+            //     this.state.designedComponent.propertyEditors.forEach((editor) => {
+            //         WatchJS.watch(editor.designedObject, editor.propertyName, () => {
+            //             console.log("watch(" + editor.propertyName + ")");
+            //             this.state.needSave = true;
+            //             this.refersh();
+            //         });
+            //     });
+            // }
         };
         Designer.prototype.willUnmount = function () {
-            this.state.designedComponent.propertyEditors.forEach(function (editor) {
-                WatchJS.unwatch(editor.designedObject, editor.propertyName);
-            });
-            _super.prototype.willUnmount.call(this);
+            // this.state.designedComponent.propertyEditors.forEach((editor) => {
+            //     WatchJS.unwatch(editor.designedObject, editor.propertyName);
+            // });
+            // super.willUnmount();
         };
         Designer.prototype.getPagesList = function () {
             if (this.state.designedComponent)
@@ -434,7 +437,7 @@ var Buhta;
             //     this.setState({});
             //
             // });
-            return (React.createElement("div", {className: "container"}, React.createElement("h1", null, "Бухта 7.0"), React.createElement("button", {className: "test-table"}, "Test table"), React.createElement(Buhta.Input, {type: Buhta.InputType.Text, bindObj: this.state, style: { width: 450 }, bindProp: "text1"}), React.createElement("div", null, this.state["жопа"]), React.createElement("input", {type: "text", className: "223", style: { maxWidth: 400 }, value: this.state.text2, onChange: this.handleChange2.bind(this)}), React.createElement(Buhta.Designer, null)));
+            return (React.createElement("div", {className: "container"}, React.createElement("h1", null, "Бухта 7.0"), React.createElement("button", {className: "test-table"}, "Test table"), React.createElement(Buhta.Input, {type: Buhta.InputType.Text, bindObj: this.state, style: { width: 450 }, bindProp: "text1"}), React.createElement("div", null, this.state["жопа"]), React.createElement("input", {type: "text", className: "223", style: { maxWidth: 400 }, value: this.state.text2, onChange: this.handleChange2.bind(this)})));
         };
         return DesignerStartPage;
     }(React.Component));
@@ -585,7 +588,10 @@ var Buhta;
                     if (_this.state.tabs.filter(function (t) { return t.id === comp.moduleName + "." + comp.className; }).length === 0) {
                         var tab = {
                             title: comp.name,
-                            id: comp.moduleName + "." + comp.className
+                            id: comp.moduleName + "-" + comp.className,
+                            renderContent: function () {
+                                return (React.createElement("div", {className: "tab-pane", id: comp.moduleName + "-" + comp.className, key: comp.moduleName + "-" + comp.className}, React.createElement(Buhta.Designer, {designedComponent: comp})));
+                            }
                         };
                         _this.state.tabs.push(tab);
                     }

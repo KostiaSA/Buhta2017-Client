@@ -83,8 +83,6 @@
                         value={this.state.text2}
                         onChange={ this.handleChange2.bind(this) }>
                     </input>
-                    <Designer>
-                    </Designer>
                 </div>
             );
         }
