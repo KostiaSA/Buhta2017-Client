@@ -97,9 +97,24 @@ declare namespace Buhta {
     interface DesignerAppProps extends BaseComponentProps {
     }
     interface DesignerAppState extends BaseComponentState {
+        projectTabs: DesignerProjectTabsProps;
     }
     class DesignerApp extends BaseComponent<DesignerAppProps, DesignerAppState> {
-        constructor(props: AppProps, context: any);
+        constructor(props: DesignerAppProps, context: any);
+        render(): JSX.Element;
+    }
+}
+declare namespace Buhta {
+    interface DesignerProjectTabsProps extends BaseComponentProps {
+        comps: ComponentInfo[];
+    }
+    interface DesignerProjectTabsState extends BaseComponentState {
+        tabs: TabProps[];
+    }
+    class DesignerProjectTabs extends BaseComponent<DesignerProjectTabsProps, DesignerProjectTabsState> {
+        constructor(props: DesignerProjectTabsProps, context: any);
+        createTabs(): void;
+        rowDblClick(row: ComponentInfo): boolean;
         render(): JSX.Element;
     }
 }
@@ -109,9 +124,10 @@ declare namespace Buhta {
     interface DesignerProjectTreeState extends BaseComponentState {
     }
     class DesignerProjectTree extends BaseComponent<DesignerProjectTreeProps, DesignerProjectTreeState> {
-        constructor(props: AppProps, context: any);
-        projectDataSource: TreeGreedDataSource<ComponentInfo>;
+        constructor(props: DesignerProjectTreeProps, context: any);
+        projectDataSource: TreeGridDataSource<ComponentInfo>;
         createProjectDataSource(): void;
+        rowDblClick(row: ComponentInfo): boolean;
         render(): JSX.Element;
     }
 }

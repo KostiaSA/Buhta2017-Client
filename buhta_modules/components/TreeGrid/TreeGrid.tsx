@@ -30,11 +30,14 @@
         }
     }
 
-    export type TreeGreedDataSource<TRowData> = GridTreeNodeData<TRowData>[];
+    export type TreeGridDataSource<TRowData> = GridTreeNodeData<TRowData>[];
+
+    export type TreeGridRowEvent<TRowData> = (row: TRowData) => boolean;
 
     export interface TreeGridProps<TRowData> extends BaseComponentProps {
-        dataSource: TreeGreedDataSource<TRowData>;
+        dataSource: TreeGridDataSource<TRowData>;
         isNeedConvertFlatDataToTree?: boolean;
+        onRowDblClick?: TreeGridRowEvent<TRowData>;
     }
 
     export interface TreeGridState<TRowData> extends BaseComponentState {
@@ -59,6 +62,11 @@
             let config: Fancytree.FancytreeOptions = {
                 source: this.props.dataSource
             };
+
+            if (this.props.onRowDblClick)
+                config.dblclick = (event: JQueryEventObject, data: Fancytree.EventData): boolean => {
+                    return this.props.onRowDblClick((data.node.data as any).rowData as TRowData);
+                }
 
             if (this.props.isNeedConvertFlatDataToTree)
                 config.source = this.convertFlatDataToTree(config.source);

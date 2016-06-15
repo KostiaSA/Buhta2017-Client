@@ -101,6 +101,7 @@ declare namespace Buhta {
 }
 declare namespace Buhta {
     interface TabsProps extends BaseComponentProps {
+        tabs?: TabProps[];
     }
     interface TabsState extends BaseComponentState {
         tabs: TabProps[];
@@ -145,10 +146,12 @@ declare namespace Buhta {
         parent: number | string;
         rowData: TRowData;
     }
-    type TreeGreedDataSource<TRowData> = GridTreeNodeData<TRowData>[];
+    type TreeGridDataSource<TRowData> = GridTreeNodeData<TRowData>[];
+    type TreeGridRowEvent<TRowData> = (row: TRowData) => boolean;
     interface TreeGridProps<TRowData> extends BaseComponentProps {
-        dataSource: TreeGreedDataSource<TRowData>;
+        dataSource: TreeGridDataSource<TRowData>;
         isNeedConvertFlatDataToTree?: boolean;
+        onRowDblClick?: TreeGridRowEvent<TRowData>;
     }
     interface TreeGridState<TRowData> extends BaseComponentState {
         columns: Array<TreeGridColumnProps>;

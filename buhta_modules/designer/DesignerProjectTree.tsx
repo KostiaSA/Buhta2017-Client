@@ -1,7 +1,6 @@
 ﻿namespace Buhta {
 
     export interface DesignerProjectTreeProps extends BaseComponentProps {
-        //name: string;
     }
 
     export interface DesignerProjectTreeState extends BaseComponentState {
@@ -11,14 +10,14 @@
 
     export class DesignerProjectTree extends BaseComponent<DesignerProjectTreeProps, DesignerProjectTreeState> {
 
-        constructor(props: AppProps, context) {
+        constructor(props: DesignerProjectTreeProps, context) {
             super(props, context);
             //this.state = {};
         }
 
         //this.addClassName();
 
-        projectDataSource: TreeGreedDataSource<ComponentInfo>; // Buhta.componentRegistry
+        projectDataSource: TreeGridDataSource<ComponentInfo>; // Buhta.componentRegistry
 
         createProjectDataSource() {
             this.projectDataSource = [];
@@ -28,10 +27,16 @@
                 row.title = compName;
                 row.id = comp.moduleName + "." + comp.className;
                 row.parent = comp.parent;
+                row.rowData = comp;
 
                 this.projectDataSource.push(row);
             });
         }
+
+        rowDblClick(row: ComponentInfo): boolean {
+            alert("dbl " + row.name);
+            return false;
+        };
 
 
         render() {
@@ -44,7 +49,11 @@
 
 
             return (
-                <ProjectTreeGrid dataSource={this.projectDataSource} isNeedConvertFlatDataToTree={true}>
+                <ProjectTreeGrid
+                    dataSource={this.projectDataSource}
+                    isNeedConvertFlatDataToTree={true}
+                    onRowDblClick={this.rowDblClick.bind(this)}
+                >
                     <TreeGridColumn caption="элемент"></TreeGridColumn>
                 </ProjectTreeGrid>
             );

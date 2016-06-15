@@ -2,10 +2,7 @@
 
 namespace Buhta {
     export interface TabsProps extends BaseComponentProps {
-        //message?: string;
-        //compiler: string;
-        //framework: string;
-        //onClick?: React.ReactEventHandler;
+        tabs?: TabProps[];
     }
 
     export interface TabsState extends BaseComponentState {
@@ -25,6 +22,10 @@ namespace Buhta {
                     console.error("only children of type 'Tab' allowed in 'Tabs'");
                 return (child as any).props as TabProps;
             }));
+
+            if (!this.state.tabs)
+                this.state.tabs = [];
+            this.state.tabs.concat(this.props.tabs);
 
         }
 

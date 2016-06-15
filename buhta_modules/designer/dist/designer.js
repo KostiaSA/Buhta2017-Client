@@ -320,11 +320,48 @@ var Buhta;
         }
         //this.addClassName();
         DesignerApp.prototype.render = function () {
-            return (React.createElement(Buhta.LayoutPanel, {renderToBody: true, className: this.renderClassName()}, React.createElement(Buhta.LayoutPane, {region: "north"}, React.createElement("div", null, "верх")), React.createElement(Buhta.LayoutPane, {region: "center"}, React.createElement(Buhta.Tabs, {className: "designer-app-center-pane-tabs"}, React.createElement(Buhta.Tab, {title: "проект", id: "покт", active: true}, React.createElement(Buhta.Designer, null)), React.createElement(Buhta.Tab, {title: "поиск", id: "поск"}, "ннн"))), React.createElement(Buhta.LayoutPane, {region: "west"}, React.createElement(Buhta.Tabs, {className: "designer-app-left-pane-tabs"}, React.createElement(Buhta.Tab, {title: "проект", id: "поект2", active: true}, React.createElement(Buhta.DesignerProjectTree, null)), React.createElement(Buhta.Tab, {title: "поиск", id: "поиск3"}, "ннн3"))), React.createElement(Buhta.LayoutPane, {region: "south"}, React.createElement("div", null, "низ"))));
+            if (!this.state.projectTabs)
+                this.state.projectTabs = { comps: [] };
+            return (React.createElement(Buhta.LayoutPanel, {renderToBody: true, className: this.renderClassName()}, React.createElement(Buhta.LayoutPane, {region: "north"}, React.createElement("div", null, "верх")), React.createElement(Buhta.LayoutPane, {region: "center"}, React.createElement(Buhta.DesignerProjectTabs, React.__spread({}, this.state.projectTabs))), React.createElement(Buhta.LayoutPane, {region: "west"}, React.createElement(Buhta.Tabs, {className: "designer-app-left-pane-tabs"}, React.createElement(Buhta.Tab, {title: "проект", id: "поект2", active: true}, React.createElement(Buhta.DesignerProjectTree, null)), React.createElement(Buhta.Tab, {title: "поиск", id: "поиск3"}, "ннн3"))), React.createElement(Buhta.LayoutPane, {region: "south"}, React.createElement("div", null, "низ"))));
         };
         return DesignerApp;
     }(Buhta.BaseComponent));
     Buhta.DesignerApp = DesignerApp;
+})(Buhta || (Buhta = {}));
+var Buhta;
+(function (Buhta) {
+    var DesignerProjectTabs = (function (_super) {
+        __extends(DesignerProjectTabs, _super);
+        function DesignerProjectTabs(props, context) {
+            _super.call(this, props, context);
+            //this.state = {};
+        }
+        //this.addClassName();
+        DesignerProjectTabs.prototype.createTabs = function () {
+            var _this = this;
+            this.state.tabs = [];
+            this.props.comps.forEach(function (comp) {
+                var tab = {
+                    title: comp.name,
+                    id: comp.moduleName + "." + comp.className
+                };
+                _this.state.tabs.push(tab);
+            });
+        };
+        DesignerProjectTabs.prototype.rowDblClick = function (row) {
+            alert("dbl " + row.name);
+            return false;
+        };
+        ;
+        DesignerProjectTabs.prototype.render = function () {
+            if (!this.state.tabs) {
+                this.createTabs();
+            }
+            return (React.createElement(Buhta.Tabs, {tabs: this.state.tabs}));
+        };
+        return DesignerProjectTabs;
+    }(Buhta.BaseComponent));
+    Buhta.DesignerProjectTabs = DesignerProjectTabs;
 })(Buhta || (Buhta = {}));
 var Buhta;
 (function (Buhta) {
@@ -343,9 +380,15 @@ var Buhta;
                 row.title = compName;
                 row.id = comp.moduleName + "." + comp.className;
                 row.parent = comp.parent;
+                row.rowData = comp;
                 _this.projectDataSource.push(row);
             });
         };
+        DesignerProjectTree.prototype.rowDblClick = function (row) {
+            alert("dbl " + row.name);
+            return false;
+        };
+        ;
         DesignerProjectTree.prototype.render = function () {
             if (!this.projectDataSource) {
                 this.createProjectDataSource();
@@ -357,7 +400,7 @@ var Buhta;
                 }
                 return ProjectTreeGrid;
             }(Buhta.TreeGrid));
-            return (React.createElement(ProjectTreeGrid, {dataSource: this.projectDataSource, isNeedConvertFlatDataToTree: true}, React.createElement(Buhta.TreeGridColumn, {caption: "элемент"})));
+            return (React.createElement(ProjectTreeGrid, {dataSource: this.projectDataSource, isNeedConvertFlatDataToTree: true, onRowDblClick: this.rowDblClick.bind(this)}, React.createElement(Buhta.TreeGridColumn, {caption: "элемент"})));
         };
         return DesignerProjectTree;
     }(Buhta.BaseComponent));

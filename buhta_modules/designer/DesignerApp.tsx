@@ -1,16 +1,15 @@
 ﻿namespace Buhta {
 
     export interface DesignerAppProps extends BaseComponentProps {
-        //name: string;
     }
 
     export interface DesignerAppState extends BaseComponentState {
-        //x3: number;
+        projectTabs: DesignerProjectTabsProps;
     }
 
     export class DesignerApp extends BaseComponent<DesignerAppProps, DesignerAppState> {
 
-        constructor(props: AppProps, context) {
+        constructor(props: DesignerAppProps, context) {
             super(props, context);
             //this.state = {};
         }
@@ -18,6 +17,9 @@
         //this.addClassName();
 
         render() {
+            if (!this.state.projectTabs)
+                this.state.projectTabs = {comps: []};
+
 
             return (
                 <LayoutPanel renderToBody={true} className={this.renderClassName()}>
@@ -25,12 +27,7 @@
                         <div>верх</div>
                     </LayoutPane>
                     <LayoutPane region="center">
-                        <Tabs className="designer-app-center-pane-tabs">
-                            <Tab title="проект" id="покт" active={true}>
-                                <Designer/>
-                            </Tab>
-                            <Tab title="поиск" id="поск">ннн</Tab>
-                        </Tabs>
+                        <DesignerProjectTabs {...this.state.projectTabs} />
                     </LayoutPane>
                     <LayoutPane region="west">
                         <Tabs className="designer-app-left-pane-tabs">

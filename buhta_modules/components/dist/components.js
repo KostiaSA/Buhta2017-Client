@@ -262,6 +262,9 @@ var Buhta;
                     console.error("only children of type 'Tab' allowed in 'Tabs'");
                 return child.props;
             }));
+            if (!this.state.tabs)
+                this.state.tabs = [];
+            this.state.tabs.concat(this.props.tabs);
         };
         Tabs.prototype.render = function () {
             if (!this.state.tabs) {
@@ -324,6 +327,10 @@ var Buhta;
                 var config = {
                     source: _this.props.dataSource
                 };
+                if (_this.props.onRowDblClick)
+                    config.dblclick = function (event, data) {
+                        return _this.props.onRowDblClick(data.node.data.rowData);
+                    };
                 if (_this.props.isNeedConvertFlatDataToTree)
                     config.source = _this.convertFlatDataToTree(config.source);
                 _this.fancyTree = $(_this.tableElement).fancytree(config);

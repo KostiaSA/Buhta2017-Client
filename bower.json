@@ -18,6 +18,7 @@
     "jquery.fancytree": "fancytree#^2.18.0",
     "lodash": "^4.13.1",
     "react": "^15.1.0",
-    "bootstrap": "^3.3.6"
+    "bootstrap": "^3.3.6",
+    "flux": "^2.1.1"
   }
 }
