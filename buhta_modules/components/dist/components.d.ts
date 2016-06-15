@@ -14,9 +14,13 @@ declare namespace Buhta {
     class BaseComponent<P extends BaseComponentProps, S extends BaseComponentState> extends React.Component<P, S> {
         constructor(props: P, context: any);
         protected didMount(): void;
-        protected componentDidMount: () => void;
+        private componentDidMount;
+        protected willMount(): void;
+        private componentWillMount;
         protected willUnmount(): void;
-        protected componentWillUnmount: () => void;
+        private componentWillReceiveProps;
+        protected willReceiveProps(nextProps: P): void;
+        private componentWillUnmount;
         protected refersh(): void;
         addClassName(classNames: string): void;
         toggleClassName(boolValue: boolean, trueClassNames: string, falseClassNames?: string): void;
@@ -79,7 +83,7 @@ declare namespace Buhta {
     class LayoutPanel extends BaseComponent<LayoutPanelProps, LayoutPanelState> {
         constructor(props: LayoutPanelProps, context: any);
         rootElement: any;
-        protected componentDidMount: () => void;
+        protected didMount(): void;
         render(): JSX.Element;
     }
     enum PaneRegion {
@@ -108,6 +112,8 @@ declare namespace Buhta {
     }
     class Tabs extends BaseComponent<TabsProps, TabsState> {
         constructor(props: TabsProps, context: any);
+        protected didMount(): void;
+        protected willReceiveProps(nextProps: TabsProps): void;
         createStateTabList(): void;
         render(): JSX.Element;
     }
@@ -159,7 +165,7 @@ declare namespace Buhta {
     class TreeGrid<TRowData> extends BaseComponent<TreeGridProps<TRowData>, TreeGridState<TRowData>> {
         constructor(props: TreeGridProps<TRowData>, context: any);
         fancyTree: Fancytree.Fancytree;
-        protected componentDidMount: () => void;
+        protected didMount(): void;
         convertFlatDataToTree(childList: any): any;
         createStateColumnList(): void;
         tableElement: Element;

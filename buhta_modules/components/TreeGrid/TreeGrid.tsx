@@ -56,7 +56,7 @@
 
         fancyTree: Fancytree.Fancytree;
 
-        protected componentDidMount = () => {
+        protected didMount() {
             super.didMount();
 
             let config: Fancytree.FancytreeOptions = {

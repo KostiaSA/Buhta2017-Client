@@ -131,33 +131,6 @@ declare namespace Buhta {
     }
 }
 declare namespace Buhta {
-    interface DesignerProjectTabsProps extends BaseComponentProps {
-        comps: ComponentInfo[];
-    }
-    interface DesignerProjectTabsState extends BaseComponentState {
-        tabs: TabProps[];
-    }
-    class DesignerProjectTabs extends BaseComponent<DesignerProjectTabsProps, DesignerProjectTabsState> {
-        constructor(props: DesignerProjectTabsProps, context: any);
-        createTabs(): void;
-        rowDblClick(row: ComponentInfo): boolean;
-        render(): JSX.Element;
-    }
-}
-declare namespace Buhta {
-    interface DesignerProjectTreeProps extends BaseComponentProps {
-    }
-    interface DesignerProjectTreeState extends BaseComponentState {
-    }
-    class DesignerProjectTree extends BaseComponent<DesignerProjectTreeProps, DesignerProjectTreeState> {
-        constructor(props: DesignerProjectTreeProps, context: any);
-        projectDataSource: TreeGridDataSource<ComponentInfo>;
-        createProjectDataSource(): void;
-        rowDblClick(row: ComponentInfo): boolean;
-        render(): JSX.Element;
-    }
-}
-declare namespace Buhta {
     interface DesignerStartPageProps {
     }
     interface DesignerStartPageState {
@@ -180,6 +153,35 @@ declare namespace Buhta {
         addPropertyRaw(assignName: string, propName: string, propType: string, rawInitValue: string): void;
         addRaw(rawInitValue: string): void;
         getCode(): string;
+    }
+}
+declare namespace Buhta {
+    interface DesignerProjectTabsProps extends BaseComponentProps {
+        comps: ComponentInfo[];
+    }
+    interface DesignerProjectTabsState extends BaseComponentState {
+        tabs: TabProps[];
+    }
+    class DesignerProjectTabs extends BaseComponent<DesignerProjectTabsProps, DesignerProjectTabsState> {
+        constructor(props: DesignerProjectTabsProps, context: any);
+        protected didMount(): void;
+        protected willUnmount(): void;
+        createTabs(): void;
+        rowDblClick(row: ComponentInfo): boolean;
+        render(): JSX.Element;
+    }
+}
+declare namespace Buhta {
+    interface DesignerProjectTreeProps extends BaseComponentProps {
+    }
+    interface DesignerProjectTreeState extends BaseComponentState {
+    }
+    class DesignerProjectTree extends BaseComponent<DesignerProjectTreeProps, DesignerProjectTreeState> {
+        constructor(props: DesignerProjectTreeProps, context: any);
+        projectDataSource: TreeGridDataSource<ComponentInfo>;
+        createProjectDataSource(): void;
+        rowDblClick(row: ComponentInfo): boolean;
+        render(): JSX.Element;
     }
 }
 declare namespace Buhta {

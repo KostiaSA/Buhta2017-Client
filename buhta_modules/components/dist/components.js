@@ -20,6 +20,12 @@ var Buhta;
             this.componentDidMount = function () {
                 _this.didMount();
             };
+            this.componentWillMount = function () {
+                _this.willMount();
+            };
+            this.componentWillReceiveProps = function (nextProps) {
+                _this.willReceiveProps(nextProps);
+            };
             this.componentWillUnmount = function () {
                 _this.willUnmount();
             };
@@ -28,7 +34,11 @@ var Buhta;
         }
         BaseComponent.prototype.didMount = function () {
         };
+        BaseComponent.prototype.willMount = function () {
+        };
         BaseComponent.prototype.willUnmount = function () {
+        };
+        BaseComponent.prototype.willReceiveProps = function (nextProps) {
         };
         BaseComponent.prototype.refersh = function () {
             this.setState(this.state);
@@ -164,55 +174,54 @@ var Buhta;
     var LayoutPanel = (function (_super) {
         __extends(LayoutPanel, _super);
         function LayoutPanel(props, context) {
-            var _this = this;
             _super.call(this, props, context);
-            this.componentDidMount = function () {
-                _super.prototype.didMount.call(_this);
-                $("body").first().replaceWith($(_this.rootElement));
-                //            let myLayout = ($(this.rootElement) as any).layout({applyDefaultStyles: true});
-                var myLayout = $(_this.rootElement).layout({});
-                //  $("div").first().replaceWith('<body>' + $(this.rootElement).html() +'</body>')
-                // let myLayout = ($(this.rootElement) as any).layout({
-                //
-                //     //	reference only - these options are NOT required because 'true' is the default
-                //     closable: true	// pane can open & close
-                //     , resizable: true	// when open, pane can be resized
-                //     , slidable: true	// when closed, pane can 'slide' open over other panes - closes on mouse-out
-                //     , livePaneResizing: true
-                //
-                //     //	some resizing/toggling settings
-                //     , north__slidable: false	// OVERRIDE the pane-default of 'slidable=true'
-                //     , north__togglerLength_closed: '100%'	// toggle-button is full-width of resizer-bar
-                //     , north__spacing_closed: 20		// big resizer-bar when open (zero height)
-                //     , south__resizable: false	// OVERRIDE the pane-default of 'resizable=true'
-                //     , south__spacing_open: 0		// no resizer-bar when open (zero height)
-                //     , south__spacing_closed: 20		// big resizer-bar when open (zero height)
-                //
-                //     //	some pane-size settings
-                //     , west__minSize: 100
-                //     , east__size: 300
-                //     , east__minSize: 200
-                //     , east__maxSize: .5 // 50% of layout width
-                //     , center__minWidth: 100
-                //
-                //     //	some pane animation settings
-                //     , west__animatePaneSizing: false
-                //     , west__fxSpeed_size: "fast"	// 'fast' animation when resizing west-pane
-                //     , west__fxSpeed_open: 1000	// 1-second animation when opening west-pane
-                //     , west__fxSettings_open: {easing: "easeOutBounce"} // 'bounce' effect when opening
-                //     , west__fxName_close: "none"	// NO animation when closing west-pane
-                //
-                //     //	enable showOverflow on west-pane so CSS popups will overlap north pane
-                //     , west__showOverflowOnHover: true
-                //
-                //     //	enable state management
-                //     , stateManagement__enabled: true // automatic cookie load & save enabled by default
-                //
-                //     , showDebugMessages: true // log and/or display messages from debugging & testing code
-                // });
-            };
             //this.state.disabled = false;
         }
+        LayoutPanel.prototype.didMount = function () {
+            _super.prototype.didMount.call(this);
+            $("body").first().replaceWith($(this.rootElement));
+            //            let myLayout = ($(this.rootElement) as any).layout({applyDefaultStyles: true});
+            var myLayout = $(this.rootElement).layout({});
+            //  $("div").first().replaceWith('<body>' + $(this.rootElement).html() +'</body>')
+            // let myLayout = ($(this.rootElement) as any).layout({
+            //
+            //     //	reference only - these options are NOT required because 'true' is the default
+            //     closable: true	// pane can open & close
+            //     , resizable: true	// when open, pane can be resized
+            //     , slidable: true	// when closed, pane can 'slide' open over other panes - closes on mouse-out
+            //     , livePaneResizing: true
+            //
+            //     //	some resizing/toggling settings
+            //     , north__slidable: false	// OVERRIDE the pane-default of 'slidable=true'
+            //     , north__togglerLength_closed: '100%'	// toggle-button is full-width of resizer-bar
+            //     , north__spacing_closed: 20		// big resizer-bar when open (zero height)
+            //     , south__resizable: false	// OVERRIDE the pane-default of 'resizable=true'
+            //     , south__spacing_open: 0		// no resizer-bar when open (zero height)
+            //     , south__spacing_closed: 20		// big resizer-bar when open (zero height)
+            //
+            //     //	some pane-size settings
+            //     , west__minSize: 100
+            //     , east__size: 300
+            //     , east__minSize: 200
+            //     , east__maxSize: .5 // 50% of layout width
+            //     , center__minWidth: 100
+            //
+            //     //	some pane animation settings
+            //     , west__animatePaneSizing: false
+            //     , west__fxSpeed_size: "fast"	// 'fast' animation when resizing west-pane
+            //     , west__fxSpeed_open: 1000	// 1-second animation when opening west-pane
+            //     , west__fxSettings_open: {easing: "easeOutBounce"} // 'bounce' effect when opening
+            //     , west__fxName_close: "none"	// NO animation when closing west-pane
+            //
+            //     //	enable showOverflow on west-pane so CSS popups will overlap north pane
+            //     , west__showOverflowOnHover: true
+            //
+            //     //	enable state management
+            //     , stateManagement__enabled: true // automatic cookie load & save enabled by default
+            //
+            //     , showDebugMessages: true // log and/or display messages from debugging & testing code
+            // });
+        };
         LayoutPanel.prototype.render = function () {
             //this.addClassName("xeeexx");
             //this.toggleClassName(this.props.disabled, "disabled");
@@ -256,6 +265,25 @@ var Buhta;
         function Tabs(props, context) {
             _super.call(this, props, context);
         }
+        Tabs.prototype.didMount = function () {
+            _super.prototype.didMount.call(this);
+            this.createStateTabList();
+        };
+        Tabs.prototype.willReceiveProps = function (nextProps) {
+            var _this = this;
+            _super.prototype.willReceiveProps.call(this, nextProps);
+            // добавляем новые
+            nextProps.tabs.forEach(function (nextTab) {
+                if (_this.state.tabs.filter(function (stateTab) { return stateTab.id === nextTab.id; }).length === 0) {
+                    _this.state.tabs.push(nextTab);
+                    _this.refersh();
+                }
+            });
+            // удаляем удаленные
+            this.state.tabs = this.state.tabs.filter(function (stateTab) {
+                return nextProps.tabs.filter(function (nextTab) { return stateTab.id === nextTab.id; }).length > 0;
+            });
+        };
         Tabs.prototype.createStateTabList = function () {
             this.state.tabs = React.Children.map(this.props.children, (function (child, index) {
                 if (Buhta.Util.getReactElementClassName(child) !== "Tab")
@@ -320,23 +348,24 @@ var Buhta;
     var TreeGrid = (function (_super) {
         __extends(TreeGrid, _super);
         function TreeGrid(props, context) {
-            var _this = this;
             _super.call(this, props, context);
-            this.componentDidMount = function () {
-                _super.prototype.didMount.call(_this);
-                var config = {
-                    source: _this.props.dataSource
-                };
-                if (_this.props.onRowDblClick)
-                    config.dblclick = function (event, data) {
-                        return _this.props.onRowDblClick(data.node.data.rowData);
-                    };
-                if (_this.props.isNeedConvertFlatDataToTree)
-                    config.source = _this.convertFlatDataToTree(config.source);
-                _this.fancyTree = $(_this.tableElement).fancytree(config);
-            };
             //this.state.disabled = false;
         }
+        TreeGrid.prototype.didMount = function () {
+            var _this = this;
+            _super.prototype.didMount.call(this);
+            var config = {
+                source: this.props.dataSource
+            };
+            if (this.props.onRowDblClick)
+                config.dblclick = function (event, data) {
+                    return _this.props.onRowDblClick(data.node.data.rowData);
+                };
+            if (this.props.isNeedConvertFlatDataToTree)
+                config.source = this.convertFlatDataToTree(config.source);
+            this.fancyTree = $(this.tableElement).fancytree(config);
+        };
+        ;
         TreeGrid.prototype.convertFlatDataToTree = function (childList) {
             var parent, nodeMap = {};
             $.each(childList, function (i, c) {

@@ -1,5 +1,6 @@
 ﻿namespace Buhta {
 
+    import designerAppDispatcher = Buhta.designerAppDispatcher;
     export interface DesignerProjectTreeProps extends BaseComponentProps {
     }
 
@@ -35,6 +36,7 @@
 
         rowDblClick(row: ComponentInfo): boolean {
             alert("dbl " + row.name);
+            designerAppDispatcher.action.openComponent(row);
             return false;
         };
 

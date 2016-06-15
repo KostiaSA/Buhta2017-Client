@@ -393,84 +393,6 @@ var Buhta;
 })(Buhta || (Buhta = {}));
 var Buhta;
 (function (Buhta) {
-    var DesignerProjectTabs = (function (_super) {
-        __extends(DesignerProjectTabs, _super);
-        function DesignerProjectTabs(props, context) {
-            _super.call(this, props, context);
-            //this.state = {};
-        }
-        //this.addClassName();
-        DesignerProjectTabs.prototype.createTabs = function () {
-            var _this = this;
-            this.state.tabs = [];
-            this.props.comps.forEach(function (comp) {
-                var tab = {
-                    title: comp.name,
-                    id: comp.moduleName + "." + comp.className
-                };
-                _this.state.tabs.push(tab);
-            });
-        };
-        DesignerProjectTabs.prototype.rowDblClick = function (row) {
-            alert("dbl " + row.name);
-            return false;
-        };
-        ;
-        DesignerProjectTabs.prototype.render = function () {
-            if (!this.state.tabs) {
-                this.createTabs();
-            }
-            return (React.createElement(Buhta.Tabs, {tabs: this.state.tabs}));
-        };
-        return DesignerProjectTabs;
-    }(Buhta.BaseComponent));
-    Buhta.DesignerProjectTabs = DesignerProjectTabs;
-})(Buhta || (Buhta = {}));
-var Buhta;
-(function (Buhta) {
-    var DesignerProjectTree = (function (_super) {
-        __extends(DesignerProjectTree, _super);
-        function DesignerProjectTree(props, context) {
-            _super.call(this, props, context);
-            //this.state = {};
-        }
-        DesignerProjectTree.prototype.createProjectDataSource = function () {
-            var _this = this;
-            this.projectDataSource = [];
-            _.values(Buhta.componentRegistry).forEach(function (comp) {
-                var compName = comp.name + "  (" + comp.className + ")";
-                var row = new Buhta.GridTreeNodeData();
-                row.title = compName;
-                row.id = comp.moduleName + "." + comp.className;
-                row.parent = comp.parent;
-                row.rowData = comp;
-                _this.projectDataSource.push(row);
-            });
-        };
-        DesignerProjectTree.prototype.rowDblClick = function (row) {
-            alert("dbl " + row.name);
-            return false;
-        };
-        ;
-        DesignerProjectTree.prototype.render = function () {
-            if (!this.projectDataSource) {
-                this.createProjectDataSource();
-            }
-            var ProjectTreeGrid = (function (_super) {
-                __extends(ProjectTreeGrid, _super);
-                function ProjectTreeGrid() {
-                    _super.apply(this, arguments);
-                }
-                return ProjectTreeGrid;
-            }(Buhta.TreeGrid));
-            return (React.createElement(ProjectTreeGrid, {dataSource: this.projectDataSource, isNeedConvertFlatDataToTree: true, onRowDblClick: this.rowDblClick.bind(this)}, React.createElement(Buhta.TreeGridColumn, {caption: "элемент"})));
-        };
-        return DesignerProjectTree;
-    }(Buhta.BaseComponent));
-    Buhta.DesignerProjectTree = DesignerProjectTree;
-})(Buhta || (Buhta = {}));
-var Buhta;
-(function (Buhta) {
     var DesignerStartPage = (function (_super) {
         __extends(DesignerStartPage, _super);
         function DesignerStartPage(props, context) {
@@ -640,6 +562,113 @@ var Buhta;
         return TsCode;
     }());
     Buhta.TsCode = TsCode;
+})(Buhta || (Buhta = {}));
+var Buhta;
+(function (Buhta) {
+    var DesignerProjectTabs = (function (_super) {
+        __extends(DesignerProjectTabs, _super);
+        function DesignerProjectTabs(props, context) {
+            _super.call(this, props, context);
+            //this.state = {};
+        }
+        DesignerProjectTabs.prototype.didMount = function () {
+            var _this = this;
+            _super.prototype.didMount.call(this);
+            Buhta.designerAppDispatcher.event.openedComponentsChange.bind(function () {
+                alert("comp-add");
+                // добавляем новые
+                Buhta.designerAppDispatcher.openedComponents.forEach(function (comp) {
+                    if (_this.state.tabs.filter(function (t) { return t.id === comp.moduleName + "." + comp.className; }).length === 0) {
+                        var tab = {
+                            title: comp.name,
+                            id: comp.moduleName + "." + comp.className
+                        };
+                        _this.state.tabs.push(tab);
+                    }
+                    _this.refersh();
+                });
+                // удаляем удаленные
+                _this.state.tabs = _this.state.tabs.filter(function (stateTab) {
+                    return Buhta.designerAppDispatcher.openedComponents.filter(function (comp) { return stateTab.id === comp.moduleName + "." + comp.className; }).length > 0;
+                });
+            });
+        };
+        ;
+        DesignerProjectTabs.prototype.willUnmount = function () {
+            Buhta.designerAppDispatcher.event.openedComponentsChange.unbind();
+            _super.prototype.willUnmount.call(this);
+        };
+        ;
+        DesignerProjectTabs.prototype.createTabs = function () {
+            var _this = this;
+            this.state.tabs = [];
+            this.props.comps.forEach(function (comp) {
+                var tab = {
+                    title: comp.name,
+                    id: comp.moduleName + "." + comp.className
+                };
+                _this.state.tabs.push(tab);
+            });
+        };
+        DesignerProjectTabs.prototype.rowDblClick = function (row) {
+            alert("dbl " + row.name);
+            return false;
+        };
+        ;
+        DesignerProjectTabs.prototype.render = function () {
+            if (!this.state.tabs) {
+                this.createTabs();
+            }
+            return (React.createElement(Buhta.Tabs, {tabs: this.state.tabs}));
+        };
+        return DesignerProjectTabs;
+    }(Buhta.BaseComponent));
+    Buhta.DesignerProjectTabs = DesignerProjectTabs;
+})(Buhta || (Buhta = {}));
+var Buhta;
+(function (Buhta) {
+    var designerAppDispatcher = Buhta.designerAppDispatcher;
+    var DesignerProjectTree = (function (_super) {
+        __extends(DesignerProjectTree, _super);
+        function DesignerProjectTree(props, context) {
+            _super.call(this, props, context);
+            //this.state = {};
+        }
+        DesignerProjectTree.prototype.createProjectDataSource = function () {
+            var _this = this;
+            this.projectDataSource = [];
+            _.values(Buhta.componentRegistry).forEach(function (comp) {
+                var compName = comp.name + "  (" + comp.className + ")";
+                var row = new Buhta.GridTreeNodeData();
+                row.title = compName;
+                row.id = comp.moduleName + "." + comp.className;
+                row.parent = comp.parent;
+                row.rowData = comp;
+                _this.projectDataSource.push(row);
+            });
+        };
+        DesignerProjectTree.prototype.rowDblClick = function (row) {
+            alert("dbl " + row.name);
+            designerAppDispatcher.action.openComponent(row);
+            return false;
+        };
+        ;
+        DesignerProjectTree.prototype.render = function () {
+            if (!this.projectDataSource) {
+                this.createProjectDataSource();
+            }
+            var ProjectTreeGrid = (function (_super) {
+                __extends(ProjectTreeGrid, _super);
+                function ProjectTreeGrid() {
+                    _super.apply(this, arguments);
+                }
+                return ProjectTreeGrid;
+            }(Buhta.TreeGrid));
+            return (React.createElement(ProjectTreeGrid, {dataSource: this.projectDataSource, isNeedConvertFlatDataToTree: true, onRowDblClick: this.rowDblClick.bind(this)}, React.createElement(Buhta.TreeGridColumn, {caption: "элемент"})));
+        };
+        return DesignerProjectTree;
+    }(Buhta.BaseComponent));
+    Buhta.DesignerProjectTree = DesignerProjectTree;
 })(Buhta || (Buhta = {}));
 var Buhta;
 (function (Buhta) {

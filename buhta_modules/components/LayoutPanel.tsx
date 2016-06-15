@@ -23,7 +23,7 @@ namespace Buhta {
 
         rootElement: any;
 
-        protected componentDidMount = () => {
+        protected didMount() {
             super.didMount();
 
             $("body").first().replaceWith($(this.rootElement));
@@ -95,7 +95,7 @@ namespace Buhta {
                         ref={(e) => this.rootElement = e}
                         className={this.renderClassName() }
                     >
-                    {this.props.children}
+                        {this.props.children}
                     </div>
                 );
         }

@@ -16,6 +16,30 @@ namespace Buhta {
             super(props, context);
         }
 
+        protected didMount() {
+            super.didMount();
+            this.createStateTabList();
+        }
+
+        protected willReceiveProps(nextProps: TabsProps) {
+            super.willReceiveProps(nextProps);
+
+            // добавляем новые
+            nextProps.tabs.forEach((nextTab) => {
+                if (this.state.tabs.filter((stateTab) => stateTab.id === nextTab.id).length === 0) {
+                    this.state.tabs.push(nextTab);
+                    this.refersh();
+                }
+            });
+
+            // удаляем удаленные
+            this.state.tabs = this.state.tabs.filter((stateTab) => {
+                return nextProps.tabs.filter((nextTab) => stateTab.id === nextTab.id).length > 0;
+            });
+
+
+        }
+
         createStateTabList() {
             this.state.tabs = React.Children.map(this.props.children, ((child, index) => {
                 if (Util.getReactElementClassName(child) !== "Tab")

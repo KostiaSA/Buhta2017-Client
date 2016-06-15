@@ -29,14 +29,28 @@ namespace Buhta {
         protected didMount() {
         }
 
-        protected componentDidMount = () => {
+        private componentDidMount = () => {
             this.didMount();
+        };
+
+        protected willMount() {
+        }
+
+        private componentWillMount = () => {
+            this.willMount();
         };
 
         protected willUnmount() {
         }
 
-        protected componentWillUnmount = () => {
+        private componentWillReceiveProps = (nextProps: P) => {
+            this.willReceiveProps(nextProps);
+        };
+
+        protected willReceiveProps(nextProps: P) {
+        }
+
+        private componentWillUnmount = () => {
             this.willUnmount();
         };
 
