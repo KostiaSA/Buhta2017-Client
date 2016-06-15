@@ -5,3 +5,5 @@ bin
 vendor_modules/josh-laravel
 typings
 
+!typings/globals/eventemitter3/index.d.ts
+
