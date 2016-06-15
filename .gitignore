@@ -3,7 +3,6 @@ node_modules
 bower_components
 bin
 vendor_modules/josh-laravel
-typings
+#typings
 
-!typings/globals/eventemitter3/index.d.ts
-
+#/typings/globals/eventemitter3/index.d.ts
