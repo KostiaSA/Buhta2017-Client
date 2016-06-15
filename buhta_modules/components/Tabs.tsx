@@ -6,7 +6,7 @@ namespace Buhta {
     }
 
     export interface TabsState extends BaseComponentState {
-        tabs: TabProps[];
+        // tabs: TabProps[];
 
     }
 
@@ -28,41 +28,41 @@ namespace Buhta {
 
         protected willReceiveProps(nextProps: TabsProps) {
             super.willReceiveProps(nextProps);
-
-            // добавляем новые
-            if (nextProps.tabs) {
-                nextProps.tabs.forEach((nextTab) => {
-                    if (this.state.tabs.filter((stateTab) => stateTab.id === nextTab.id).length === 0) {
-                        this.state.tabs.push(nextTab);
-                        this.refersh();
-                    }
-                });
-            }
-
-            // удаляем удаленные
-            if (nextProps.tabs) {
-                if (this.state.tabs) {
-                    this.state.tabs = this.state.tabs.filter((stateTab) => {
-                        return nextProps.tabs.filter((nextTab) => stateTab.id === nextTab.id).length > 0;
-                    });
-                }
-            }
-            else
-                this.state.tabs = [];
-
+            //
+            // // добавляем новые
+            // if (nextProps.tabs) {
+            //     nextProps.tabs.forEach((nextTab) => {
+            //         if (this.state.tabs.filter((stateTab) => stateTab.id === nextTab.id).length === 0) {
+            //             this.state.tabs.push(nextTab);
+            //             this.refersh();
+            //         }
+            //     });
+            // }
+            //
+            // // удаляем удаленные
+            // if (nextProps.tabs) {
+            //     if (this.state.tabs) {
+            //         this.state.tabs = this.state.tabs.filter((stateTab) => {
+            //             return (nextProps.tabs.filter((nextTab) => stateTab.id === nextTab.id).length > 0);
+            //         });
+            //     }
+            // }
+            // else
+            //     this.state.tabs = [];
+            //
 
         }
 
         createStateTabList() {
-            this.state.tabs = React.Children.map(this.props.children, ((child, index) => {
-                if (Util.getReactElementClassName(child) !== "Tab")
-                    console.error("only children of type 'Tab' allowed in 'Tabs'");
-                return (child as any).props as TabProps;
-            }));
-
-            if (!this.state.tabs)
-                this.state.tabs = [];
-            this.state.tabs.concat(this.props.tabs);
+            // this.state.tabs = React.Children.map(this.props.children, ((child, index) => {
+            //     if (Util.getReactElementClassName(child) !== "Tab")
+            //         console.error("only children of type 'Tab' allowed in 'Tabs'");
+            //     return (child as any).props as TabProps;
+            // }));
+            //
+            // if (!this.state.tabs)
+            //     this.state.tabs = [];
+            // this.state.tabs.concat(this.props.tabs);
 
         }
 
@@ -72,10 +72,25 @@ namespace Buhta {
             //     this.createStateTabList();
             // }
 
+            let dynamicTabs: TabProps[] = [];
+            if (this.props.tabs)
+                dynamicTabs = this.props.tabs;
+
             return (
                 <div className={this.renderClassName()}>
                     <ul className="nav nav-tabs">
-                        { this.state.tabs.map(((child, index) => {
+                        { React.Children.map(this.props.children, (_child, index) => {
+                            let child = (_child as any).props as TabProps;
+                            return (
+                                <li ref={child.id} key={index} className={child.active ? "active" : null}>
+                                    <a href={"#" + child.id } data-toggle="tab">
+                                        { child.title }
+                                    </a>
+                                </li>);
+
+                        })}
+
+                        { dynamicTabs.map(((child, index) => {
 
                             return (
                                 <li ref={child.id} key={index} className={child.active ? "active" : null}>
@@ -91,7 +106,7 @@ namespace Buhta {
                     <div className="tab-content">
                         { this.props.children }
 
-                        { this.state.tabs.filter((tab) => _.isFunction(tab.renderContent)).map(((child, index) => {
+                        { dynamicTabs.filter((tab) => _.isFunction(tab.renderContent)).map(((child, index) => {
 
                             return child.renderContent();
 

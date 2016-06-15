@@ -108,7 +108,6 @@ declare namespace Buhta {
         tabs?: TabProps[];
     }
     interface TabsState extends BaseComponentState {
-        tabs: TabProps[];
     }
     class Tabs extends BaseComponent<TabsProps, TabsState> {
         constructor(props: TabsProps, context: any);

@@ -31,6 +31,7 @@ namespace Buhta {
         description: string;
         references: Array<string>;
         createInstance: () => DesignedComponent;
+        editedInstance?: DesignedComponent;
     }
 
 }

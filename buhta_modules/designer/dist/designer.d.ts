@@ -38,6 +38,7 @@ declare namespace Buhta {
         description: string;
         references: Array<string>;
         createInstance: () => DesignedComponent;
+        editedInstance?: DesignedComponent;
     }
 }
 declare namespace Buhta {
@@ -100,10 +101,9 @@ declare namespace Buhta {
 }
 declare namespace Buhta {
     interface DesignerProps extends BaseComponentProps {
-        designedComponent: ComponentInfo;
+        designedComponent: DesignedComponent;
     }
     interface DesignerState extends BaseComponentState {
-        designedComponent: DesignedComponent;
         needSave: boolean;
     }
     class Designer extends BaseComponent<DesignerProps, DesignerState> {

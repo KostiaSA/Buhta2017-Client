@@ -273,45 +273,54 @@ var Buhta;
             _super.prototype.didMount.call(this);
         };
         Tabs.prototype.willReceiveProps = function (nextProps) {
-            var _this = this;
             _super.prototype.willReceiveProps.call(this, nextProps);
-            // добавляем новые
-            if (nextProps.tabs) {
-                nextProps.tabs.forEach(function (nextTab) {
-                    if (_this.state.tabs.filter(function (stateTab) { return stateTab.id === nextTab.id; }).length === 0) {
-                        _this.state.tabs.push(nextTab);
-                        _this.refersh();
-                    }
-                });
-            }
-            // удаляем удаленные
-            if (nextProps.tabs) {
-                if (this.state.tabs) {
-                    this.state.tabs = this.state.tabs.filter(function (stateTab) {
-                        return nextProps.tabs.filter(function (nextTab) { return stateTab.id === nextTab.id; }).length > 0;
-                    });
-                }
-            }
-            else
-                this.state.tabs = [];
+            //
+            // // добавляем новые
+            // if (nextProps.tabs) {
+            //     nextProps.tabs.forEach((nextTab) => {
+            //         if (this.state.tabs.filter((stateTab) => stateTab.id === nextTab.id).length === 0) {
+            //             this.state.tabs.push(nextTab);
+            //             this.refersh();
+            //         }
+            //     });
+            // }
+            //
+            // // удаляем удаленные
+            // if (nextProps.tabs) {
+            //     if (this.state.tabs) {
+            //         this.state.tabs = this.state.tabs.filter((stateTab) => {
+            //             return (nextProps.tabs.filter((nextTab) => stateTab.id === nextTab.id).length > 0);
+            //         });
+            //     }
+            // }
+            // else
+            //     this.state.tabs = [];
+            //
         };
         Tabs.prototype.createStateTabList = function () {
-            this.state.tabs = React.Children.map(this.props.children, (function (child, index) {
-                if (Buhta.Util.getReactElementClassName(child) !== "Tab")
-                    console.error("only children of type 'Tab' allowed in 'Tabs'");
-                return child.props;
-            }));
-            if (!this.state.tabs)
-                this.state.tabs = [];
-            this.state.tabs.concat(this.props.tabs);
+            // this.state.tabs = React.Children.map(this.props.children, ((child, index) => {
+            //     if (Util.getReactElementClassName(child) !== "Tab")
+            //         console.error("only children of type 'Tab' allowed in 'Tabs'");
+            //     return (child as any).props as TabProps;
+            // }));
+            //
+            // if (!this.state.tabs)
+            //     this.state.tabs = [];
+            // this.state.tabs.concat(this.props.tabs);
         };
         Tabs.prototype.render = function () {
             // if (!this.state.tabs) {
             //     this.createStateTabList();
             // }
-            return (React.createElement("div", {className: this.renderClassName()}, React.createElement("ul", {className: "nav nav-tabs"}, this.state.tabs.map((function (child, index) {
+            var dynamicTabs = [];
+            if (this.props.tabs)
+                dynamicTabs = this.props.tabs;
+            return (React.createElement("div", {className: this.renderClassName()}, React.createElement("ul", {className: "nav nav-tabs"}, React.Children.map(this.props.children, function (_child, index) {
+                var child = _child.props;
                 return (React.createElement("li", {ref: child.id, key: index, className: child.active ? "active" : null}, React.createElement("a", {href: "#" + child.id, "data-toggle": "tab"}, child.title)));
-            }))), React.createElement("div", {className: "tab-content"}, this.props.children, this.state.tabs.filter(function (tab) { return _.isFunction(tab.renderContent); }).map((function (child, index) {
+            }), dynamicTabs.map((function (child, index) {
+                return (React.createElement("li", {ref: child.id, key: index, className: child.active ? "active" : null}, React.createElement("a", {href: "#" + child.id, "data-toggle": "tab"}, child.title)));
+            }))), React.createElement("div", {className: "tab-content"}, this.props.children, dynamicTabs.filter(function (tab) { return _.isFunction(tab.renderContent); }).map((function (child, index) {
                 return child.renderContent();
             })))));
         };

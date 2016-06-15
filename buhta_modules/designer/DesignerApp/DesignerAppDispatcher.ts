@@ -47,6 +47,8 @@ namespace  Buhta {
 
                 let comps = this.openedComponents.filter((c) => c.moduleName === comp.moduleName && c.className === comp.className);
                 if (comps.length === 0) {
+                    if (!comp.editedInstance)
+                        comp.editedInstance = comp.createInstance();
                     this.openedComponents.push(comp);
                     this.event.openedComponentsChange.emit();
                 }

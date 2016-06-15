@@ -217,6 +217,8 @@ var Buhta;
                 openComponent: function (comp) {
                     var comps = _this.openedComponents.filter(function (c) { return c.moduleName === comp.moduleName && c.className === comp.className; });
                     if (comps.length === 0) {
+                        if (!comp.editedInstance)
+                            comp.editedInstance = comp.createInstance();
                         _this.openedComponents.push(comp);
                         _this.event.openedComponentsChange.emit();
                     }
@@ -250,7 +252,7 @@ var Buhta;
             var _this = this;
             _super.call(this, props, context);
             this.saveButtonClick = function () {
-                _this.state.designedComponent.saveToServer()
+                _this.props.designedComponent.saveToServer()
                     .done(function () {
                     _this.state.needSave = false;
                     _this.refersh();
@@ -285,37 +287,40 @@ var Buhta;
         }
         Designer.prototype.willMount = function () {
             _super.prototype.willMount.call(this);
-            this.state.designedComponent = this.props.designedComponent.createInstance();
+            if (this.props.designedComponent)
+                this.props.designedComponent.registerPropertyEditors();
+            //this.state.designedComponent = this.props.designedComponent.createInstance();
         };
         Designer.prototype.didMount = function () {
+            var _this = this;
             _super.prototype.didMount.call(this);
-            // if (this.state.designedComponent) {
-            //     this.state.designedComponent.propertyEditors.forEach((editor) => {
-            //         WatchJS.watch(editor.designedObject, editor.propertyName, () => {
-            //             console.log("watch(" + editor.propertyName + ")");
-            //             this.state.needSave = true;
-            //             this.refersh();
-            //         });
-            //     });
-            // }
+            if (this.props.designedComponent) {
+                this.props.designedComponent.propertyEditors.forEach(function (editor) {
+                    WatchJS.watch(editor.designedObject, editor.propertyName, function () {
+                        console.log("watch(" + editor.propertyName + ")");
+                        _this.state.needSave = true;
+                        // this.refersh();
+                    });
+                });
+            }
         };
         Designer.prototype.willUnmount = function () {
-            // this.state.designedComponent.propertyEditors.forEach((editor) => {
-            //     WatchJS.unwatch(editor.designedObject, editor.propertyName);
-            // });
-            // super.willUnmount();
+            this.props.designedComponent.propertyEditors.forEach(function (editor) {
+                WatchJS.unwatch(editor.designedObject, editor.propertyName);
+            });
+            _super.prototype.willUnmount.call(this);
         };
         Designer.prototype.getPagesList = function () {
-            if (this.state.designedComponent)
-                return _.uniq(this.state.designedComponent.propertyEditors.map(function (editor) {
+            if (this.props.designedComponent)
+                return _.uniq(this.props.designedComponent.propertyEditors.map(function (editor) {
                     return editor.propertyPage;
                 }));
             else
                 return [];
         };
         Designer.prototype.getGroupsList = function (page) {
-            if (this.state.designedComponent)
-                return _.uniq(this.state.designedComponent.propertyEditors
+            if (this.props.designedComponent)
+                return _.uniq(this.props.designedComponent.propertyEditors
                     .filter(function (editor) { return editor.propertyPage === page; })
                     .map(function (editor) {
                     return editor.propertyGroup;
@@ -325,11 +330,11 @@ var Buhta;
         };
         Designer.prototype.getEditorsList = function (page, group) {
             console.log("return editor 1 " + page + group);
-            if (this.state.designedComponent)
-                return (this.state.designedComponent.propertyEditors
+            if (this.props.designedComponent)
+                return (this.props.designedComponent.propertyEditors
                     .filter(function (editor) { return editor.propertyGroup === group && editor.propertyPage === page; })
                     .map(function (editor) {
-                    console.log("return editor");
+                    console.log("return editor " + editor.propertyName);
                     return editor;
                 }));
             else
@@ -366,9 +371,9 @@ var Buhta;
         };
         Designer.prototype.render = function () {
             var compName = "";
-            if (this.state.designedComponent) {
-                this.state.designedComponent.registerPropertyEditors();
-                compName = this.state.designedComponent.constructor.toString().match(/\w+/g)[1];
+            if (this.props.designedComponent) {
+                //this.props.designedComponent.registerPropertyEditors();
+                compName = this.props.designedComponent.constructor.toString().match(/\w+/g)[1];
             }
             return (React.createElement("div", {className: "container body-content edit-page"}, React.createElement("div", {className: "pull-right"}, React.createElement(Buhta.Button, null, "Синхронизация с SQL?"), React.createElement(Buhta.Button, {disabled: !this.state.needSave, onClick: this.saveButtonClick}, "Сохранить")), React.createElement("h3", null, React.createElement("img", {src: ""}), React.createElement("span", null, compName), React.createElement("small", null, "(таблица)")), React.createElement(Buhta.Tabs, null, this.renderTabs())));
         };
@@ -590,7 +595,7 @@ var Buhta;
                             title: comp.name,
                             id: comp.moduleName + "-" + comp.className,
                             renderContent: function () {
-                                return (React.createElement("div", {className: "tab-pane", id: comp.moduleName + "-" + comp.className, key: comp.moduleName + "-" + comp.className}, React.createElement(Buhta.Designer, {designedComponent: comp})));
+                                return (React.createElement("div", {className: "tab-pane", id: comp.moduleName + "-" + comp.className, key: comp.moduleName + "-" + comp.className}, React.createElement(Buhta.Designer, {designedComponent: comp.editedInstance})));
                             }
                         };
                         _this.state.tabs.push(tab);

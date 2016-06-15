@@ -2,11 +2,11 @@
 
     import componentRegistry = Buhta.componentRegistry;
     export interface DesignerProps extends BaseComponentProps {
-        designedComponent: ComponentInfo;
+        designedComponent: DesignedComponent;
+        //designedComponent: ComponentInfo;
     }
 
     export interface DesignerState extends BaseComponentState {
-        designedComponent: DesignedComponent;
         needSave: boolean;
     }
 
@@ -42,36 +42,39 @@
 
         willMount() {
             super.willMount();
-            this.state.designedComponent = this.props.designedComponent.createInstance();
+            if (this.props.designedComponent)
+                this.props.designedComponent.registerPropertyEditors();
+            //this.state.designedComponent = this.props.designedComponent.createInstance();
 
         }
 
         didMount() {
             super.didMount();
-            // if (this.state.designedComponent) {
-            //     this.state.designedComponent.propertyEditors.forEach((editor) => {
-            //         WatchJS.watch(editor.designedObject, editor.propertyName, () => {
-            //             console.log("watch(" + editor.propertyName + ")");
-            //             this.state.needSave = true;
-            //             this.refersh();
-            //         });
-            //     });
-            // }
+
+            if (this.props.designedComponent) {
+                this.props.designedComponent.propertyEditors.forEach((editor) => {
+                    WatchJS.watch(editor.designedObject, editor.propertyName, () => {
+                        console.log("watch(" + editor.propertyName + ")");
+                        this.state.needSave = true;
+                        // this.refersh();
+                    });
+                });
+            }
 
         }
 
         willUnmount() {
-            // this.state.designedComponent.propertyEditors.forEach((editor) => {
-            //     WatchJS.unwatch(editor.designedObject, editor.propertyName);
-            // });
-            // super.willUnmount();
+            this.props.designedComponent.propertyEditors.forEach((editor) => {
+                WatchJS.unwatch(editor.designedObject, editor.propertyName);
+            });
+            super.willUnmount();
         }
 
         getPagesList(): Array<string> {
 
-            if (this.state.designedComponent)
+            if (this.props.designedComponent)
                 return _.uniq(
-                    this.state.designedComponent.propertyEditors.map((editor) => {
+                    this.props.designedComponent.propertyEditors.map((editor) => {
                         return editor.propertyPage;
                     }));
             else
@@ -80,9 +83,9 @@
 
         getGroupsList(page: string): Array<string> {
 
-            if (this.state.designedComponent)
+            if (this.props.designedComponent)
                 return _.uniq(
-                    this.state.designedComponent.propertyEditors
+                    this.props.designedComponent.propertyEditors
                         .filter((editor) => editor.propertyPage === page)
                         .map((editor) => {
                             return editor.propertyGroup;
@@ -94,12 +97,12 @@
         getEditorsList(page, group: string): Array<BasePropertyEditor> {
             console.log("return editor 1 " + page + group);
 
-            if (this.state.designedComponent)
+            if (this.props.designedComponent)
                 return (
-                    this.state.designedComponent.propertyEditors
+                    this.props.designedComponent.propertyEditors
                         .filter((editor) => editor.propertyGroup === group && editor.propertyPage === page)
                         .map((editor) => {
-                            console.log("return editor");
+                            console.log("return editor " + editor.propertyName);
                             return editor;
                         }));
             else
@@ -164,7 +167,7 @@
         }
 
         saveButtonClick = () => {
-            this.state.designedComponent.saveToServer()
+            this.props.designedComponent.saveToServer()
                 .done(() => {
                     this.state.needSave = false;
                     this.refersh();
@@ -178,9 +181,9 @@
         render(): JSX.Element {
 
             let compName = "";
-            if (this.state.designedComponent) {
-                this.state.designedComponent.registerPropertyEditors();
-                compName = this.state.designedComponent.constructor.toString().match(/\w+/g)[1];
+            if (this.props.designedComponent) {
+                //this.props.designedComponent.registerPropertyEditors();
+                compName = this.props.designedComponent.constructor.toString().match(/\w+/g)[1];
             }
 
 

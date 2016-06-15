@@ -41,7 +41,7 @@
                                             id={comp.moduleName + "-" + comp.className}
                                             key={comp.moduleName + "-" + comp.className}
                                         >
-                                            <Designer designedComponent={comp}>
+                                            <Designer designedComponent={comp.editedInstance}>
                                             </Designer>
                                         </div>
                                     );
