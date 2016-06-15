@@ -1,6 +1,7 @@
 {
   "globalDependencies": {
     "bluebird": "registry:dt/bluebird#2.0.0+20160319051630",
+    "eventemitter3": "registry:dt/eventemitter3#1.1.1+20151208234524",
     "flux": "registry:dt/flux#0.0.0+20160608061134",
     "jquery": "registry:dt/jquery#1.10.0+20160417213236",
     "jquery.fancytree": "registry:dt/jquery.fancytree#0.0.0+20160317120654",

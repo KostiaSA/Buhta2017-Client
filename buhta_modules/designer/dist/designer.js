@@ -179,6 +179,62 @@ var Buhta;
 /// <reference path="../../typings/index.d.ts" />
 /// <reference path="../core/dist/core.d.ts" />
 /// <reference path="../components/dist/components.d.ts" />
+/**
+ * Created by Kostia on 15.06.2016.
+ */
+var Buhta;
+(function (Buhta) {
+    Buhta.DesignerAppStore = new DesignerAppStoreStatic();
+    var DesignerAppStoreStatic = (function (_super) {
+        __extends(DesignerAppStoreStatic, _super);
+        function DesignerAppStoreStatic() {
+            var _this = this;
+            _super.apply(this, arguments);
+            this.event = {
+                openedComponentsChange: {
+                    bind: function (callback) {
+                        _this.on("openedComponentsChange", callback);
+                    },
+                    emit: function () {
+                        _this.emit("openedComponentsChange");
+                    },
+                    unbind: function () {
+                        _this.off("openedComponentsChange");
+                    }
+                },
+                activeComponentChange: {
+                    bind: function (callback) {
+                        _this.on("activeComponentChange", callback);
+                    },
+                    emit: function (activeComp) {
+                        _this.emit("activeComponentChange", activeComp);
+                    },
+                    unbind: function () {
+                        _this.off("activeComponentChange");
+                    }
+                }
+            };
+            this.action = {
+                openComponent: function (comp) {
+                    _this.event.activeComponentChange.emit(comp);
+                    _this.event.openedComponentsChange.emit();
+                    //  this.emit(this.events.openedComponentsChange);
+                }
+            };
+            this.openedComponents = [];
+        }
+        //        emit(event: string, ...args: any[]): boolean;
+        DesignerAppStoreStatic.prototype.bindOpenedComponentsChange = function (callback) {
+            //on(openedComponentsChangeEvent, callback);
+        };
+        DesignerAppStoreStatic.prototype.unbindOpenedComponentsChange = function () {
+        };
+        return DesignerAppStoreStatic;
+    }(EventEmitter));
+    Buhta.DesignerAppStoreStatic = DesignerAppStoreStatic;
+    Buhta.DesignerAppStore.event.openedComponentsChange.bind(function () {
+    });
+})(Buhta || (Buhta = {}));
 var Buhta;
 (function (Buhta) {
     var Designer = (function (_super) {
