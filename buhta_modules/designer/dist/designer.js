@@ -85,14 +85,47 @@ var Buhta;
 var Buhta;
 (function (Buhta) {
     Buhta.componentRegistry = {};
-    function registerComponent(comp) {
-        var compId = comp.moduleName + "." + comp.className;
-        if (Buhta.componentRegistry[compId])
-            console.error("component is already registered: " + compId);
+    // export function registerComponent(comp: ComponentInfo) {
+    //     let compId = comp.moduleName + "." + comp.className;
+    //     if (componentRegistry[compId])
+    //         console.error("component is already registered: " + compId);
+    //     else
+    //         componentRegistry[compId] = comp;
+    // }
+    function registerComponent(initCallback) {
+        var newComp = new ComponentInfo();
+        initCallback(newComp);
+        if (Buhta.componentRegistry[newComp.id])
+            console.error("component is already registered: " + newComp.id);
         else
-            Buhta.componentRegistry[compId] = comp;
+            Buhta.componentRegistry[newComp.id] = newComp;
     }
     Buhta.registerComponent = registerComponent;
+    // export function registerComponent(id: string, name: string, className: string, moduleName: string,
+    //                                   inheritFrom: string, description: string) {
+    //     let rc = new ComponentInfo();
+    //     rc.id = id;
+    //     rc.name = name;
+    //     rc.className = className;
+    //     rc.moduleName = moduleName;
+    //     rc.inheritFrom = inheritFrom;
+    //     rc.description = description;
+    //     componentRegistry[className] = rc;
+    // }
+    var ComponentInfo = (function () {
+        function ComponentInfo() {
+        }
+        Object.defineProperty(ComponentInfo.prototype, "id", {
+            //        private editedInstance: DesignedComponent = null;
+            get: function () {
+                return this.moduleName + "." + this.className;
+            },
+            enumerable: true,
+            configurable: true
+        });
+        return ComponentInfo;
+    }());
+    Buhta.ComponentInfo = ComponentInfo;
 })(Buhta || (Buhta = {}));
 /// <reference path="DesignedComponent.tsx" />
 var Buhta;
@@ -207,8 +240,8 @@ var Buhta;
                     bind: function (callback) {
                         _this.on("activeComponentChange", callback);
                     },
-                    emit: function (activeComp) {
-                        _this.emit("activeComponentChange", activeComp);
+                    emit: function () {
+                        _this.emit("activeComponentChange");
                     },
                     unbind: function () {
                         _this.off("activeComponentChange");
@@ -216,24 +249,17 @@ var Buhta;
                 }
             };
             this.action = {
-                openComponent: function (comp) {
-                    var comps = _this.openedComponents.filter(function (c) { return c.moduleName === comp.moduleName && c.className === comp.className; });
+                openComponent: function (compId) {
+                    var comps = _this.openedComponents.filter(function (c) { return c.$$className === compId; });
                     if (comps.length === 0) {
-                        if (!comp.editedInstance)
-                            comp.editedInstance = comp.createInstance();
-                        _this.openedComponents.push(comp);
+                        _this.openedComponents.push(Buhta.componentRegistry[compId].createInstance());
                         _this.event.openedComponentsChange.emit();
                     }
-                    else
-                        comp = comps[0];
-                    _this.action.setActiveComponent(comp);
+                    _this.action.setActiveComponent(compId);
                 },
-                setActiveComponent: function (comp) {
-                    var comps = _this.openedComponents.filter(function (c) { return c.moduleName === comp.moduleName && c.className === comp.className; });
-                    if (comps.length > 0) {
-                        _this.event.activeComponentChange.emit(comp);
-                        _this.activeComponentId = comp.moduleName + "-" + comp.className;
-                    }
+                setActiveComponent: function (compId) {
+                    _this.activeComponentId = compId;
+                    _this.event.activeComponentChange.emit();
                 }
             };
             this.openedComponents = [];
@@ -584,15 +610,13 @@ var Buhta;
             // добавляем новые
             if (!this.state.tabs)
                 this.state.tabs = [];
-            Buhta.designerAppDispatcher.openedComponents.forEach(function (comp) {
-                if (_this.state.tabs.filter(function (t) { return t.id === comp.moduleName + "." + comp.className; }).length === 0) {
-                    if (!comp.editedInstance)
-                        comp.editedInstance = comp.createInstance();
+            Buhta.designerAppDispatcher.openedComponents.forEach(function (compInstance) {
+                if (_this.state.tabs.filter(function (t) { return t.id === compInstance.$$className; }).length === 0) {
                     var tab = {
-                        title: comp.name,
-                        id: comp.moduleName + "-" + comp.className,
+                        title: compInstance.$$info.name,
+                        id: compInstance.$$className,
                         renderContent: function () {
-                            return (React.createElement(Buhta.Designer, {designedComponent: comp.editedInstance}));
+                            return (React.createElement(Buhta.Designer, {designedComponent: compInstance}));
                         }
                     };
                     _this.state.tabs.push(tab);
@@ -600,7 +624,7 @@ var Buhta;
             });
             // удаляем удаленные
             this.state.tabs = this.state.tabs.filter(function (stateTab) {
-                return Buhta.designerAppDispatcher.openedComponents.filter(function (comp) { return stateTab.id === comp.moduleName + "-" + comp.className; }).length > 0;
+                return Buhta.designerAppDispatcher.openedComponents.filter(function (compInstance) { return stateTab.id === compInstance.$$className; }).length > 0;
             });
             this.refersh();
         };
@@ -611,8 +635,8 @@ var Buhta;
                 console.log("openedComponentsChange");
                 _this.updateStateTabs();
             });
-            Buhta.designerAppDispatcher.event.activeComponentChange.bind(function (activeComp) {
-                _this.state.activeTabId = activeComp.moduleName + "." + activeComp.className;
+            Buhta.designerAppDispatcher.event.activeComponentChange.bind(function () {
+                _this.state.activeTabId = Buhta.designerAppDispatcher.activeComponentId;
                 _this.refersh();
                 console.log("activeComponentChange");
             });
@@ -645,7 +669,7 @@ var Buhta;
         // };
         DesignerProjectTabs.prototype.render = function () {
             //this.createTabs();
-            return (React.createElement(Buhta.Tabs, {tabs: this.state.tabs, activeTabId: this.state.activeTabId}));
+            return (React.createElement(Buhta.Tabs, {tabs: this.state.tabs, activeTabId: this.state.activeTabId, activeTabChanged: function (tabId) { Buhta.designerAppDispatcher.activeComponentId = tabId; Buhta.designerAppDispatcher.event.activeComponentChange.emit(); }}));
         };
         return DesignerProjectTabs;
     }(Buhta.BaseComponent));
@@ -674,8 +698,8 @@ var Buhta;
             });
         };
         DesignerProjectTree.prototype.rowDblClick = function (row) {
-            alert("dbl " + row.name);
-            designerAppDispatcher.action.openComponent(row);
+            //alert("dbl " + row.name);
+            designerAppDispatcher.action.openComponent(row.id);
             return false;
         };
         ;

@@ -29,17 +29,17 @@ declare namespace Buhta {
     var componentRegistry: {
         [className: string]: ComponentInfo;
     };
-    function registerComponent(comp: ComponentInfo): void;
-    interface ComponentInfo {
+    function registerComponent(initCallback: (comp: ComponentInfo) => void): void;
+    class ComponentInfo {
         name: string;
         className: string;
         moduleName: string;
-        parent?: string;
+        parent: string;
         inheritFrom: string;
         description: string;
         references: Array<string>;
         createInstance: () => DesignedComponent;
-        editedInstance?: DesignedComponent;
+        id: string;
     }
 }
 declare namespace Buhta {
@@ -87,16 +87,16 @@ declare namespace Buhta {
                 unbind: () => void;
             };
             activeComponentChange: {
-                bind: (callback: (activeComp: ComponentInfo) => void) => void;
-                emit: (activeComp: ComponentInfo) => void;
+                bind: (callback: () => void) => void;
+                emit: () => void;
                 unbind: () => void;
             };
         };
         action: {
-            openComponent: (comp: ComponentInfo) => void;
-            setActiveComponent: (comp: ComponentInfo) => void;
+            openComponent: (compId: string) => void;
+            setActiveComponent: (compId: string) => void;
         };
-        openedComponents: ComponentInfo[];
+        openedComponents: DesignedComponent[];
         activeComponentId: string;
     }
     let designerAppDispatcher: DesignerAppDispatcher;

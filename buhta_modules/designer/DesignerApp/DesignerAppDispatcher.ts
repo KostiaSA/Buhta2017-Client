@@ -27,12 +27,12 @@ namespace  Buhta {
             },
 
             activeComponentChange: {
-                bind: (callback: (activeComp: ComponentInfo) => void) => {
+                bind: (callback: () => void) => {
                     this.on("activeComponentChange", callback);
                 },
 
-                emit: (activeComp: ComponentInfo) => {
-                    this.emit("activeComponentChange", activeComp);
+                emit: () => {
+                    this.emit("activeComponentChange");
                 },
 
                 unbind: () => {
@@ -43,32 +43,25 @@ namespace  Buhta {
         };
 
         action = {
-            openComponent: (comp: ComponentInfo) => {
+            openComponent: (compId: string) => {
 
-                let comps = this.openedComponents.filter((c) => c.moduleName === comp.moduleName && c.className === comp.className);
+                let comps = this.openedComponents.filter((c) => c.$$className === compId);
                 if (comps.length === 0) {
-                    if (!comp.editedInstance)
-                        comp.editedInstance = comp.createInstance();
-                    this.openedComponents.push(comp);
+                    this.openedComponents.push(componentRegistry[compId].createInstance());
                     this.event.openedComponentsChange.emit();
                 }
-                else
-                    comp = comps[0];
 
-                this.action.setActiveComponent(comp);
+                this.action.setActiveComponent(compId);
             },
 
-            setActiveComponent: (comp: ComponentInfo) => {
-                let comps = this.openedComponents.filter((c) => c.moduleName === comp.moduleName && c.className === comp.className);
-                if (comps.length > 0) {
-                    this.event.activeComponentChange.emit(comp);
-                    this.activeComponentId = comp.moduleName + "-" + comp.className;
-                }
+            setActiveComponent: (compId: string) => {
+                this.activeComponentId = compId;
+                this.event.activeComponentChange.emit();
             }
 
         };
 
-        openedComponents: ComponentInfo[] = [];
+        openedComponents: DesignedComponent[] = [];
         activeComponentId: string;
 
     }

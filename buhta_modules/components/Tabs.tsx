@@ -4,6 +4,7 @@ namespace Buhta {
     export interface TabsProps extends BaseComponentProps {
         tabs?: TabProps[];
         activeTabId?: string;
+        activeTabChanged?: (tabId: string) => void;
     }
 
     export interface TabsState extends BaseComponentState {
@@ -25,6 +26,24 @@ namespace Buhta {
 
         protected didMount() {
             super.didMount();
+            // if (this.props.activeTabChanged) {
+            //     $(this.tabsElement).find("ul>li>a") .on("shown.bs.tab", function (e) {
+            //         let target = $(e.target).attr("href"); // activated tab
+            //         window.alert("target");
+            //     });
+            // }
+        }
+
+        protected didUpdate(prevProps, prevState, prevContext) {
+            super.didUpdate(prevProps, prevState, prevContext);
+            if (this.props.activeTabChanged) {
+                let callback = this.props.activeTabChanged;
+                $(this.tabsElement).find("ul>li>a").off("shown.bs.tab").on("shown.bs.tab", function (e) {
+                    let activeTabId = $(e.target).attr("data-id"); // activated tab
+                    console.log(activeTabId);
+                    callback(activeTabId);
+                });
+            }
         }
 
         protected willReceiveProps(nextProps: TabsProps) {
@@ -67,6 +86,11 @@ namespace Buhta {
 
         }
 
+        safeId(id: string): string {
+            return id.replace(".", "-");
+        }
+
+        tabsElement: Element;
 
         render() {
 
@@ -87,17 +111,16 @@ namespace Buhta {
                         activeId = child.id;
                 });
             }
-            if (activeId)
-                activeId = activeId.replace(".", "-");
 
             return (
-                <div className={this.renderClassName()}>
+                <div className={this.renderClassName()} ref={(e) => this.tabsElement = e}>
                     <ul className="nav nav-tabs">
                         { React.Children.map(this.props.children, (_child, index) => {
                             let child = (_child as any).props as TabProps;
                             return (
-                                <li ref={child.id} key={index} className={child.id === activeId ? "active" : null}>
-                                    <a href={"#" + child.id } data-toggle="tab">
+                                <li ref={this.safeId(child.id)} key={index}
+                                    className={child.id === activeId ? "active" : null}>
+                                    <a href={"#" + this.safeId(child.id) } data-toggle="tab" data-id={child.id}>
                                         { child.title }
                                     </a>
                                 </li>);
@@ -107,8 +130,9 @@ namespace Buhta {
                         { dynamicTabs.map((child, index) => {
 
                             return (
-                                <li ref={child.id} key={index} className={child.id === activeId ? "active" : null}>
-                                    <a href={"#" + child.id } data-toggle="tab">
+                                <li ref={this.safeId(child.id)} key={index}
+                                    className={child.id === activeId ? "active" : null}>
+                                    <a href={"#" + this.safeId(child.id) } data-toggle="tab" data-id={child.id}>
                                         { child.title }
                                     </a>
                                 </li>);
@@ -125,12 +149,12 @@ namespace Buhta {
                             return (
                                 <div
                                     className={child.id === activeId ? "tab-pane active" : "tab-pane"}
-                                    id={child.id}
-                                    key={child.id}
+                                    id={this.safeId(child.id)}
+                                    key={this.safeId(child.id)}
                                 >
                                     {child.renderContent()}
                                 </div>
-                            )
+                            );
 
                         }))}
 

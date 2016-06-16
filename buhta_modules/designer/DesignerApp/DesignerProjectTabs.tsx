@@ -22,17 +22,15 @@
             if (!this.state.tabs)
                 this.state.tabs = [];
 
-            designerAppDispatcher.openedComponents.forEach((comp) => {
+            designerAppDispatcher.openedComponents.forEach((compInstance) => {
 
-                if (this.state.tabs.filter((t) => t.id === comp.moduleName + "." + comp.className).length === 0) {
-                    if (!comp.editedInstance)
-                        comp.editedInstance = comp.createInstance();
+                if (this.state.tabs.filter((t) => t.id === compInstance.$$className).length === 0) {
                     let tab: TabProps = {
-                            title: comp.name,
-                            id: comp.moduleName + "-" + comp.className,
+                            title: compInstance.$$info.name,
+                            id: compInstance.$$className,
                             renderContent: () => {
                                 return (
-                                    <Designer designedComponent={comp.editedInstance}>
+                                    <Designer designedComponent={compInstance}>
                                     </Designer>
                                 );
                             }
@@ -44,7 +42,7 @@
 
             // удаляем удаленные
             this.state.tabs = this.state.tabs.filter((stateTab) => {
-                return designerAppDispatcher.openedComponents.filter((comp) => stateTab.id === comp.moduleName + "-" + comp.className).length > 0;
+                return designerAppDispatcher.openedComponents.filter((compInstance) => stateTab.id === compInstance.$$className).length > 0;
             });
             this.refersh();
 
@@ -57,8 +55,8 @@
                 this.updateStateTabs();
             });
 
-            designerAppDispatcher.event.activeComponentChange.bind((activeComp: ComponentInfo) => {
-                this.state.activeTabId = activeComp.moduleName + "." + activeComp.className;
+            designerAppDispatcher.event.activeComponentChange.bind(() => {
+                this.state.activeTabId = designerAppDispatcher.activeComponentId;
                 this.refersh();
                 console.log("activeComponentChange");
             });
@@ -100,7 +98,11 @@
             //this.createTabs();
 
             return (
-                <Tabs tabs={this.state.tabs} activeTabId={this.state.activeTabId}>
+                <Tabs
+                    tabs={this.state.tabs}
+                    activeTabId={this.state.activeTabId}
+                    activeTabChanged={(tabId) => { designerAppDispatcher.activeComponentId = tabId; designerAppDispatcher.event.activeComponentChange.emit();}}
+                >
 
                 </Tabs>
             );

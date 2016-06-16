@@ -35,15 +35,15 @@ var Buhta;
                 //);
             });
             $(".test-table").click(function () {
-                Buhta.componentRegistry["Buhta.Org"] = {
-                    className: "Org",
-                    inheritFrom: "Buhta.Table",
-                    name: "Тестовый компонент 12",
-                    moduleName: "TestModule",
-                    references: ["references.ts", "testcomp2.ts"],
-                    description: "это тестовый компонент таблицы Организация",
-                    createInstance: null
-                };
+                // componentRegistry["Buhta.Org"] = {
+                //     className: "Org",
+                //     inheritFrom: "Buhta.Table",
+                //     name: "Тестовый компонент 12",
+                //     moduleName: "TestModule",
+                //     references: ["references.ts", "testcomp2.ts"],
+                //     description: "это тестовый компонент таблицы Организация",
+                //     createInstance: null
+                // };
                 var x = new Buhta.Table();
                 x.$$className = "Buhta.Org";
                 x.addColumn(function (col) {

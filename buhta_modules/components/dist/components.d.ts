@@ -20,6 +20,8 @@ declare namespace Buhta {
         protected willUnmount(): void;
         private componentWillReceiveProps;
         protected willReceiveProps(nextProps: P): void;
+        private componentDidUpdate;
+        protected didUpdate(prevProps: P, prevState: S, prevContext: any): void;
         private componentWillUnmount;
         protected refersh(): void;
         addClassName(classNames: string): void;
@@ -107,6 +109,7 @@ declare namespace Buhta {
     interface TabsProps extends BaseComponentProps {
         tabs?: TabProps[];
         activeTabId?: string;
+        activeTabChanged?: (tabId: string) => void;
     }
     interface TabsState extends BaseComponentState {
     }
@@ -114,8 +117,11 @@ declare namespace Buhta {
         constructor(props: TabsProps, context: any);
         protected willMount(): void;
         protected didMount(): void;
+        protected didUpdate(prevProps: any, prevState: any, prevContext: any): void;
         protected willReceiveProps(nextProps: TabsProps): void;
         createStateTabList(): void;
+        safeId(id: string): string;
+        tabsElement: Element;
         render(): JSX.Element;
     }
     interface TabProps extends BaseComponentProps {

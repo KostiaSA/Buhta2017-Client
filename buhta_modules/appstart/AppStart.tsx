@@ -44,15 +44,15 @@ namespace Buhta {
 
             $(".test-table").click(() => {
 
-                componentRegistry["Buhta.Org"] = {
-                    className: "Org",
-                    inheritFrom: "Buhta.Table",
-                    name: "Тестовый компонент 12",
-                    moduleName: "TestModule",
-                    references: ["references.ts", "testcomp2.ts"],
-                    description: "это тестовый компонент таблицы Организация",
-                    createInstance: null
-                };
+                // componentRegistry["Buhta.Org"] = {
+                //     className: "Org",
+                //     inheritFrom: "Buhta.Table",
+                //     name: "Тестовый компонент 12",
+                //     moduleName: "TestModule",
+                //     references: ["references.ts", "testcomp2.ts"],
+                //     description: "это тестовый компонент таблицы Организация",
+                //     createInstance: null
+                // };
 
                 let x = new Table();
                 x.$$className = "Buhta.Org";

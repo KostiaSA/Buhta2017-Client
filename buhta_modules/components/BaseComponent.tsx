@@ -50,6 +50,14 @@ namespace Buhta {
         protected willReceiveProps(nextProps: P) {
         }
 
+
+        private componentDidUpdate = (prevProps: P, prevState: S, prevContext: any) => {
+            this.didUpdate(prevProps, prevState, prevContext);
+        };
+
+        protected didUpdate(prevProps: P, prevState: S, prevContext: any) {
+        }
+
         private componentWillUnmount = () => {
             this.willUnmount();
         };

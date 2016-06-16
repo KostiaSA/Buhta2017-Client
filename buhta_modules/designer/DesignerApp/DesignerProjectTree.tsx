@@ -35,8 +35,8 @@
         }
 
         rowDblClick(row: ComponentInfo): boolean {
-            alert("dbl " + row.name);
-            designerAppDispatcher.action.openComponent(row);
+            //alert("dbl " + row.name);
+            designerAppDispatcher.action.openComponent(row.id);
             return false;
         };
 

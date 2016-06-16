@@ -26,6 +26,9 @@ var Buhta;
             this.componentWillReceiveProps = function (nextProps) {
                 _this.willReceiveProps(nextProps);
             };
+            this.componentDidUpdate = function (prevProps, prevState, prevContext) {
+                _this.didUpdate(prevProps, prevState, prevContext);
+            };
             this.componentWillUnmount = function () {
                 _this.willUnmount();
             };
@@ -39,6 +42,8 @@ var Buhta;
         BaseComponent.prototype.willUnmount = function () {
         };
         BaseComponent.prototype.willReceiveProps = function (nextProps) {
+        };
+        BaseComponent.prototype.didUpdate = function (prevProps, prevState, prevContext) {
         };
         BaseComponent.prototype.refersh = function () {
             this.setState(this.state);
@@ -271,6 +276,23 @@ var Buhta;
         };
         Tabs.prototype.didMount = function () {
             _super.prototype.didMount.call(this);
+            // if (this.props.activeTabChanged) {
+            //     $(this.tabsElement).find("ul>li>a") .on("shown.bs.tab", function (e) {
+            //         let target = $(e.target).attr("href"); // activated tab
+            //         window.alert("target");
+            //     });
+            // }
+        };
+        Tabs.prototype.didUpdate = function (prevProps, prevState, prevContext) {
+            _super.prototype.didUpdate.call(this, prevProps, prevState, prevContext);
+            if (this.props.activeTabChanged) {
+                var callback_1 = this.props.activeTabChanged;
+                $(this.tabsElement).find("ul>li>a").off("shown.bs.tab").on("shown.bs.tab", function (e) {
+                    var activeTabId = $(e.target).attr("data-id"); // activated tab
+                    console.log(activeTabId);
+                    callback_1(activeTabId);
+                });
+            }
         };
         Tabs.prototype.willReceiveProps = function (nextProps) {
             _super.prototype.willReceiveProps.call(this, nextProps);
@@ -308,7 +330,11 @@ var Buhta;
             //     this.state.tabs = [];
             // this.state.tabs.concat(this.props.tabs);
         };
+        Tabs.prototype.safeId = function (id) {
+            return id.replace(".", "-");
+        };
         Tabs.prototype.render = function () {
+            var _this = this;
             var dynamicTabs = [];
             if (this.props.tabs)
                 dynamicTabs = this.props.tabs;
@@ -324,15 +350,13 @@ var Buhta;
                         activeId = child.id;
                 });
             }
-            if (activeId)
-                activeId = activeId.replace(".", "-");
-            return (React.createElement("div", {className: this.renderClassName()}, React.createElement("ul", {className: "nav nav-tabs"}, React.Children.map(this.props.children, function (_child, index) {
+            return (React.createElement("div", {className: this.renderClassName(), ref: function (e) { return _this.tabsElement = e; }}, React.createElement("ul", {className: "nav nav-tabs"}, React.Children.map(this.props.children, function (_child, index) {
                 var child = _child.props;
-                return (React.createElement("li", {ref: child.id, key: index, className: child.id === activeId ? "active" : null}, React.createElement("a", {href: "#" + child.id, "data-toggle": "tab"}, child.title)));
+                return (React.createElement("li", {ref: _this.safeId(child.id), key: index, className: child.id === activeId ? "active" : null}, React.createElement("a", {href: "#" + _this.safeId(child.id), "data-toggle": "tab", "data-id": child.id}, child.title)));
             }), dynamicTabs.map(function (child, index) {
-                return (React.createElement("li", {ref: child.id, key: index, className: child.id === activeId ? "active" : null}, React.createElement("a", {href: "#" + child.id, "data-toggle": "tab"}, child.title)));
+                return (React.createElement("li", {ref: _this.safeId(child.id), key: index, className: child.id === activeId ? "active" : null}, React.createElement("a", {href: "#" + _this.safeId(child.id), "data-toggle": "tab", "data-id": child.id}, child.title)));
             })), React.createElement("div", {className: "tab-content"}, this.props.children, dynamicTabs.filter(function (tab) { return _.isFunction(tab.renderContent); }).map((function (child, index) {
-                return (React.createElement("div", {className: child.id === activeId ? "tab-pane active" : "tab-pane", id: child.id, key: child.id}, child.renderContent()));
+                return (React.createElement("div", {className: child.id === activeId ? "tab-pane active" : "tab-pane", id: _this.safeId(child.id), key: _this.safeId(child.id)}, child.renderContent()));
             })))));
         };
         return Tabs;
