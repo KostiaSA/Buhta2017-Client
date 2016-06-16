@@ -1,11 +1,12 @@
 ﻿namespace Buhta {
 
     export interface DesignerProjectTabsProps extends BaseComponentProps {
-        comps: ComponentInfo[];
+        //comps: ComponentInfo[];
     }
 
     export interface DesignerProjectTabsState extends BaseComponentState {
         tabs: TabProps[];
+        activeTabId: string;
     }
 
 
@@ -16,51 +17,60 @@
             //this.state = {};
         }
 
+        private updateStateTabs() {
+            // добавляем новые
+            if (!this.state.tabs)
+                this.state.tabs = [];
+
+            designerAppDispatcher.openedComponents.forEach((comp) => {
+
+                if (this.state.tabs.filter((t) => t.id === comp.moduleName + "." + comp.className).length === 0) {
+                    if (!comp.editedInstance)
+                        comp.editedInstance = comp.createInstance();
+                    let tab: TabProps = {
+                            title: comp.name,
+                            id: comp.moduleName + "-" + comp.className,
+                            renderContent: () => {
+                                return (
+                                    <Designer designedComponent={comp.editedInstance}>
+                                    </Designer>
+                                );
+                            }
+                        }
+                        ;
+                    this.state.tabs.push(tab);
+                }
+            });
+
+            // удаляем удаленные
+            this.state.tabs = this.state.tabs.filter((stateTab) => {
+                return designerAppDispatcher.openedComponents.filter((comp) => stateTab.id === comp.moduleName + "-" + comp.className).length > 0;
+            });
+            this.refersh();
+
+        }
+
         protected willMount() {
             super.willMount();
-            this.createTabs();
+            designerAppDispatcher.event.openedComponentsChange.bind(() => {
+                console.log("openedComponentsChange");
+                this.updateStateTabs();
+            });
+
+            designerAppDispatcher.event.activeComponentChange.bind((activeComp: ComponentInfo) => {
+                this.state.activeTabId = activeComp.moduleName + "." + activeComp.className;
+                this.refersh();
+                console.log("activeComponentChange");
+            });
+
+            this.updateStateTabs();
+            //designerAppDispatcher.event.openedComponentsChange.emit();
+            //designerAppDispatcher.event.activeComponentChange.emit();
         }
+
 
         protected didMount() {
             super.didMount();
-
-            designerAppDispatcher.event.openedComponentsChange.bind(() => {
-                //alert("comp-add");
-
-                // добавляем новые
-                designerAppDispatcher.openedComponents.forEach((comp) => {
-
-                    if (this.state.tabs.filter((t) => t.id === comp.moduleName + "." + comp.className).length === 0) {
-                        let tab: TabProps = {
-                                title: comp.name,
-                                id: comp.moduleName + "-" + comp.className,
-                                renderContent: () => {
-                                    return (
-                                        <div
-                                            className="tab-pane"
-                                            id={comp.moduleName + "-" + comp.className}
-                                            key={comp.moduleName + "-" + comp.className}
-                                        >
-                                            <Designer designedComponent={comp.editedInstance}>
-                                            </Designer>
-                                        </div>
-                                    );
-                                }
-                            }
-                            ;
-                        this.state.tabs.push(tab);
-                    }
-
-
-                    this.refersh();
-                });
-
-                // удаляем удаленные
-                this.state.tabs = this.state.tabs.filter((stateTab) => {
-                    return designerAppDispatcher.openedComponents.filter((comp) => stateTab.id === comp.moduleName + "." + comp.className).length > 0;
-                });
-
-            });
         };
 
         protected willUnmount() {
@@ -68,16 +78,16 @@
             super.willUnmount();
         };
 
-        private createTabs() {
-            this.state.tabs = [];
-            this.props.comps.forEach((comp: ComponentInfo) => {
-                let tab: TabProps = {
-                    title: comp.name,
-                    id: comp.moduleName + "." + comp.className
-                };
-                this.state.tabs.push(tab);
-            });
-        }
+        // private createTabs() {
+        //     this.state.tabs = [];
+        //     this.props.comps.forEach((comp: ComponentInfo) => {
+        //         let tab: TabProps = {
+        //             title: comp.name,
+        //             id: comp.moduleName + "-" + comp.className
+        //         };
+        //         this.state.tabs.push(tab);
+        //     });
+        // }
 
         // rowDblClick(row: ComponentInfo): boolean {
         //     alert("dbl " + row.name);
@@ -87,8 +97,10 @@
 
         render() {
 
+            //this.createTabs();
+
             return (
-                <Tabs tabs={this.state.tabs}>
+                <Tabs tabs={this.state.tabs} activeTabId={this.state.activeTabId}>
 
                 </Tabs>
             );

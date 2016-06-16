@@ -106,6 +106,7 @@ declare namespace Buhta {
 declare namespace Buhta {
     interface TabsProps extends BaseComponentProps {
         tabs?: TabProps[];
+        activeTabId?: string;
     }
     interface TabsState extends BaseComponentState {
     }

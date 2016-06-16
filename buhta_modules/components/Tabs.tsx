@@ -3,6 +3,7 @@
 namespace Buhta {
     export interface TabsProps extends BaseComponentProps {
         tabs?: TabProps[];
+        activeTabId?: string;
     }
 
     export interface TabsState extends BaseComponentState {
@@ -68,13 +69,26 @@ namespace Buhta {
 
 
         render() {
-            // if (!this.state.tabs) {
-            //     this.createStateTabList();
-            // }
 
             let dynamicTabs: TabProps[] = [];
             if (this.props.tabs)
                 dynamicTabs = this.props.tabs;
+
+            let activeId = this.props.activeTabId;
+            if (!activeId) {
+                React.Children.map(this.props.children, (_child, index) => {
+                    let child = (_child as any).props as TabProps;
+                    if (child.active)
+                        activeId = child.id;
+                });
+
+                dynamicTabs.map((child, index) => {
+                    if (child.active)
+                        activeId = child.id;
+                });
+            }
+            if (activeId)
+                activeId = activeId.replace(".", "-");
 
             return (
                 <div className={this.renderClassName()}>
@@ -82,7 +96,7 @@ namespace Buhta {
                         { React.Children.map(this.props.children, (_child, index) => {
                             let child = (_child as any).props as TabProps;
                             return (
-                                <li ref={child.id} key={index} className={child.active ? "active" : null}>
+                                <li ref={child.id} key={index} className={child.id === activeId ? "active" : null}>
                                     <a href={"#" + child.id } data-toggle="tab">
                                         { child.title }
                                     </a>
@@ -90,16 +104,16 @@ namespace Buhta {
 
                         })}
 
-                        { dynamicTabs.map(((child, index) => {
+                        { dynamicTabs.map((child, index) => {
 
                             return (
-                                <li ref={child.id} key={index} className={child.active ? "active" : null}>
+                                <li ref={child.id} key={index} className={child.id === activeId ? "active" : null}>
                                     <a href={"#" + child.id } data-toggle="tab">
                                         { child.title }
                                     </a>
                                 </li>);
 
-                        }))}
+                        })}
 
                     </ul>
 
@@ -108,7 +122,15 @@ namespace Buhta {
 
                         { dynamicTabs.filter((tab) => _.isFunction(tab.renderContent)).map(((child, index) => {
 
-                            return child.renderContent();
+                            return (
+                                <div
+                                    className={child.id === activeId ? "tab-pane active" : "tab-pane"}
+                                    id={child.id}
+                                    key={child.id}
+                                >
+                                    {child.renderContent()}
+                                </div>
+                            )
 
                         }))}
 

@@ -97,7 +97,7 @@ declare namespace Buhta {
             setActiveComponent: (comp: ComponentInfo) => void;
         };
         openedComponents: ComponentInfo[];
-        activeComponent: ComponentInfo;
+        activeComponentId: string;
     }
     let designerAppDispatcher: DesignerAppDispatcher;
 }
@@ -127,7 +127,6 @@ declare namespace Buhta {
     interface DesignerAppProps extends BaseComponentProps {
     }
     interface DesignerAppState extends BaseComponentState {
-        projectTabs: DesignerProjectTabsProps;
     }
     class DesignerApp extends BaseComponent<DesignerAppProps, DesignerAppState> {
         constructor(props: DesignerAppProps, context: any);
@@ -161,17 +160,17 @@ declare namespace Buhta {
 }
 declare namespace Buhta {
     interface DesignerProjectTabsProps extends BaseComponentProps {
-        comps: ComponentInfo[];
     }
     interface DesignerProjectTabsState extends BaseComponentState {
         tabs: TabProps[];
+        activeTabId: string;
     }
     class DesignerProjectTabs extends BaseComponent<DesignerProjectTabsProps, DesignerProjectTabsState> {
         constructor(props: DesignerProjectTabsProps, context: any);
+        private updateStateTabs();
         protected willMount(): void;
         protected didMount(): void;
         protected willUnmount(): void;
-        private createTabs();
         render(): JSX.Element;
     }
 }

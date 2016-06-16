@@ -62,14 +62,14 @@ namespace  Buhta {
                 let comps = this.openedComponents.filter((c) => c.moduleName === comp.moduleName && c.className === comp.className);
                 if (comps.length > 0) {
                     this.event.activeComponentChange.emit(comp);
-                    this.activeComponent = comp;
+                    this.activeComponentId = comp.moduleName + "-" + comp.className;
                 }
             }
 
         };
 
         openedComponents: ComponentInfo[] = [];
-        activeComponent: ComponentInfo;
+        activeComponentId: string;
 
     }
 

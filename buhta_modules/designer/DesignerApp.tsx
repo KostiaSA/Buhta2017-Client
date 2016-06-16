@@ -4,7 +4,6 @@
     }
 
     export interface DesignerAppState extends BaseComponentState {
-        projectTabs: DesignerProjectTabsProps;
     }
 
     export class DesignerApp extends BaseComponent<DesignerAppProps, DesignerAppState> {
@@ -17,9 +16,6 @@
         //this.addClassName();
 
         render() {
-            if (!this.state.projectTabs)
-                this.state.projectTabs = {comps: []};
-
 
             return (
                 <LayoutPanel renderToBody={true} className={this.renderClassName()}>
@@ -27,7 +23,7 @@
                         <div>верх</div>
                     </LayoutPane>
                     <LayoutPane region="center">
-                        <DesignerProjectTabs {...this.state.projectTabs} />
+                        <DesignerProjectTabs />
                     </LayoutPane>
                     <LayoutPane region="west">
                         <Tabs className="designer-app-left-pane-tabs">
