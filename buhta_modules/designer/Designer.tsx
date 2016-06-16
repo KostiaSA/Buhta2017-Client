@@ -54,9 +54,9 @@
             if (this.props.designedComponent) {
                 this.props.designedComponent.propertyEditors.forEach((editor) => {
                     WatchJS.watch(editor.designedObject, editor.propertyName, () => {
-                        console.log("watch(" + editor.propertyName + ")");
+                        console.log("watch1(" + editor.propertyName + ")");
                         this.state.needSave = true;
-                        // this.refersh();
+                        this.refersh();
                     });
                 });
             }

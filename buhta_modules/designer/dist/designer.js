@@ -3,6 +3,7 @@ var Buhta;
     //  declare var Binder;
     var DesignedObject = (function () {
         function DesignedObject() {
+            this.$$unwatchedProps = ["propertyEditors", "$$unwatchedProps"];
             // id: string;
             // name: string;
             // className: string;
@@ -138,7 +139,8 @@ var Buhta;
     var TableColumn = (function (_super) {
         __extends(TableColumn, _super);
         function TableColumn() {
-            _super.apply(this, arguments);
+            _super.call(this);
+            this.$$unwatchedProps.push("table");
         }
         TableColumn.prototype.registerPropertyEditors = function () {
             _super.prototype.registerPropertyEditors.call(this);
@@ -297,9 +299,9 @@ var Buhta;
             if (this.props.designedComponent) {
                 this.props.designedComponent.propertyEditors.forEach(function (editor) {
                     WatchJS.watch(editor.designedObject, editor.propertyName, function () {
-                        console.log("watch(" + editor.propertyName + ")");
+                        console.log("watch1(" + editor.propertyName + ")");
                         _this.state.needSave = true;
-                        // this.refersh();
+                        _this.refersh();
                     });
                 });
             }

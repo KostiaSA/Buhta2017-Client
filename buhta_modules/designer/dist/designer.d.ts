@@ -4,6 +4,7 @@
 declare namespace Buhta {
     class DesignedObject {
         constructor();
+        $$unwatchedProps: string[];
         propertyEditors: Array<BasePropertyEditor>;
         registerPropertyEditors(): void;
         registerPropertyEditor(propertyName: string, propertyEditor: BasePropertyEditor): void;
@@ -59,6 +60,7 @@ declare namespace Buhta {
     class TableColumn extends DesignedObject {
         table: Table;
         name: string;
+        constructor();
         registerPropertyEditors(): void;
     }
 }

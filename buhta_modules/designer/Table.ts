@@ -3,9 +3,10 @@
 namespace Buhta {
 
     export class Table extends DesignedComponent {
+        
         sqlName: string;
         columns: Array<TableColumn> = [];
-
+        
         addColumn(initCallback: (newColumn: TableColumn) => void) {
             let col = new TableColumn();
             col.table = this;

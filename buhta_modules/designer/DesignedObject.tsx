@@ -1,13 +1,13 @@
-﻿
-
-namespace Buhta {
+﻿namespace Buhta {
 
 
-  //  declare var Binder;
+    //  declare var Binder;
 
     export class DesignedObject {
         constructor() {
         }
+
+        $$unwatchedProps: string[] = ["propertyEditors", "$$unwatchedProps"];
 
         // id: string;
         // name: string;
