@@ -140,10 +140,16 @@ namespace Buhta {
 
            // ReactDOM.renderComponent(null, document.body);
 
+            // ReactDOM.render(
+            //     <DesignerApp>
+            //
+            //     </DesignerApp>,
+            //     document.body
+            // );
             ReactDOM.render(
-                <DesignerApp>
+                <TestPage1>
 
-                </DesignerApp>,
+                </TestPage1>,
                 document.body
             );
         });

@@ -116,8 +116,60 @@ var Buhta;
             //     document.getElementById("content")
             // );
             // ReactDOM.renderComponent(null, document.body);
-            ReactDOM.render(React.createElement(Buhta.DesignerApp, null), document.body);
+            // ReactDOM.render(
+            //     <DesignerApp>
+            //
+            //     </DesignerApp>,
+            //     document.body
+            // );
+            ReactDOM.render(React.createElement(Buhta.TestPage1, null), document.body);
         });
     });
+})(Buhta || (Buhta = {}));
+var __extends = (this && this.__extends) || function (d, b) {
+    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
+    function __() { this.constructor = d; }
+    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+};
+var Buhta;
+(function (Buhta) {
+    var TestPage1 = (function (_super) {
+        __extends(TestPage1, _super);
+        function TestPage1(props, context) {
+            _super.call(this, props, context);
+            this.state = {};
+        }
+        //this.addClassName();
+        TestPage1.prototype.loadDataset = function () {
+            var _this = this;
+            if (!this.state.dataTable) {
+                Buhta.executeSQL("select top 5000 Номер,Название,getdate() дата from ТМЦ order by Ключ")
+                    .done(function (table) {
+                    alert(table.rows[0].getValue(1));
+                    _this.state.dataTable = table;
+                    _this.setState(_this.state);
+                    _this.forceUpdate();
+                })
+                    .fail(function (err) {
+                    alert(err.message);
+                });
+            }
+        };
+        //}
+        TestPage1.prototype.renderTable = function () {
+            this.loadDataset();
+            if (!this.state.dataTable)
+                return [React.createElement("div", null, "пусто")];
+            else
+                return this.state.dataTable.rows.map(function (row) {
+                    return React.createElement("div", null, row["Название"]);
+                });
+        };
+        TestPage1.prototype.render = function () {
+            return (React.createElement("div", null, "Привет уроды!", this.renderTable()));
+        };
+        return TestPage1;
+    }(React.Component));
+    Buhta.TestPage1 = TestPage1;
 })(Buhta || (Buhta = {}));
 //# sourceMappingURL=appstart.js.map
