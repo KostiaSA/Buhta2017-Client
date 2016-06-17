@@ -17,12 +17,12 @@ namespace Buhta {
         //this.addClassName();
         loadDataset() {
             if (!this.state.dataTable) {
-                executeSQL("select top 5000 Номер,Название,getdate() дата from ТМЦ order by Ключ")
+                executeSQL("select top 1000 Номер,Название,getdate() дата from ТМЦ order by Ключ")
                     .done((table) => {
                         alert(table.rows[0].getValue(1));
                         this.state.dataTable = table;
-                        this.setState(this.state);
-                        this.forceUpdate();
+                        //this.setState(this.state);
+                        //this.forceUpdate();
                     })
                     .fail((err) => {
                         alert(err.message);
@@ -32,17 +32,35 @@ namespace Buhta {
 
         //}
 
+        maxRows: number = 0;
+
+        partialLoad() {
+            this.maxRows += 200000;
+            console.log("load " + this.maxRows);
+            if (this.maxRows < this.state.dataTable.rows.length) {
+                setTimeout(this.partialLoad.bind(this), 10);
+            }
+            this.forceUpdate();
+        }
+
 
         renderTable() {
             this.loadDataset();
+
+            //console.log("render start");
             if (!this.state.dataTable)
                 return [<div>пусто</div>];
-            else
-                return this.state.dataTable.rows.map((row) => {
-                    return <div>{row["Название"]}</div>;
-                });
-
-
+            else {
+                let x = this.state.dataTable.rows
+                    .filter((row, index) => {
+                        return index < this.maxRows;
+                    })
+                    .map((row) => {
+                        return <div><span>{row["Номер"]}</span> <span>{row["Название"]}</span><span>{row["Номер"]}</span> <span>{row["Название"]}</span> </div>;
+                    });
+                //  console.log("render end");
+                return x;
+            }
         }
 
 
@@ -50,7 +68,8 @@ namespace Buhta {
 
             return (
                 <div>
-                    Привет уроды!
+                    Привет уроды 23!
+                    <button onClick={this.partialLoad.bind(this)}>render {this.maxRows}</button>
                     {this.renderTable()}
                 </div>
             );

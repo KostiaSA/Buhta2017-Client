@@ -714,7 +714,7 @@ var Buhta;
                 }
                 return ProjectTreeGrid;
             }(Buhta.TreeGrid));
-            return (React.createElement(ProjectTreeGrid, {dataSource: this.projectDataSource, isNeedConvertFlatDataToTree: true, onRowDblClick: this.rowDblClick.bind(this)}, React.createElement(Buhta.TreeGridColumn, {caption: "элемент"})));
+            return (React.createElement(ProjectTreeGrid, {dataSource: this.projectDataSource, isNeedConvertFlatDataToTree: true, onRowDblClick: this.rowDblClick.bind(this)}, React.createElement(Buhta.TreeGridColumn, {caption: "элемент"}), React.createElement(Buhta.TreeGridColumn, {caption: "элеме11нт"})));
         };
         return DesignerProjectTree;
     }(Buhta.BaseComponent));

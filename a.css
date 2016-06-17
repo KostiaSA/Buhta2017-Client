@@ -1,0 +1,13 @@
+﻿html {
+    height: 100%;
+}
+body {
+    font-family: 'Segoe UI', sans-serif;
+    border: 1px solid blue;
+    height: 100%;
+    position: relative;
+}
+
+.apanel{
+    border: 1px solid red;
+}

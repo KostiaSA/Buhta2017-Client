@@ -66,7 +66,7 @@
             if (this.props.onRowDblClick)
                 config.dblclick = (event: JQueryEventObject, data: Fancytree.EventData): boolean => {
                     return this.props.onRowDblClick((data.node.data as any).rowData as TRowData);
-                }
+                };
 
             if (this.props.isNeedConvertFlatDataToTree)
                 config.source = this.convertFlatDataToTree(config.source);

@@ -57,6 +57,7 @@
                     onRowDblClick={this.rowDblClick.bind(this)}
                 >
                     <TreeGridColumn caption="элемент"></TreeGridColumn>
+                    <TreeGridColumn caption="элеме11нт"></TreeGridColumn>
                 </ProjectTreeGrid>
             );
         }

@@ -138,7 +138,7 @@ namespace Buhta {
             //     document.getElementById("content")
             // );
 
-           // ReactDOM.renderComponent(null, document.body);
+            // ReactDOM.renderComponent(null, document.body);
 
             // ReactDOM.render(
             //     <DesignerApp>
@@ -147,11 +147,25 @@ namespace Buhta {
             //     document.body
             // );
             ReactDOM.render(
-                <TestPage1>
+                <div>
+                    <div id="button33"></div>
+                    <APanel top={20} left={40} isDraggable={true}>
+                          нет
+                    </APanel>
+                    <APanel top={70} left={140} height={200} isDraggable={true}>
 
-                </TestPage1>,
+                    </APanel>
+                </div>,
                 document.body
             );
+
+            $("#button33").dxButton({
+                text: 'Click me',
+                onClick: function() {
+                    console.log('Button clicked');
+                }
+            });
+
         });
     });
 }

@@ -1,4 +1,5 @@
 /// <reference path="globals/bluebird/index.d.ts" />
+/// <reference path="globals/devextreme/index.d.ts" />
 /// <reference path="globals/eventemitter3/index.d.ts" />
 /// <reference path="globals/flux/index.d.ts" />
 /// <reference path="globals/jquery.fancytree/index.d.ts" />
