@@ -71,6 +71,51 @@ declare var socket: SocketIOClient.Socket;
 declare namespace Buhta {
 }
 declare namespace Buhta {
+    interface DxComponentProps {
+        visible?: boolean;
+        style?: React.CSSProperties;
+        className?: string;
+    }
+    interface DxComponentState {
+        classes: Array<string>;
+        style: React.CSSProperties;
+        nativeElement: Element;
+    }
+    class DxComponent<P extends DxComponentProps, S extends DxComponentState> extends React.Component<P, S> {
+        constructor(props: P, context: any);
+        protected didMount(): void;
+        private componentDidMount;
+        protected willMount(): void;
+        private componentWillMount;
+        protected willUnmount(): void;
+        private componentWillReceiveProps;
+        protected willReceiveProps(nextProps: P): void;
+        private componentDidUpdate;
+        protected didUpdate(prevProps: P, prevState: S, prevContext: any): void;
+        private componentWillUnmount;
+        protected refersh(): void;
+        addClassName(classNames: string): void;
+        toggleClassName(boolValue: boolean, trueClassNames: string, falseClassNames?: string): void;
+        removeClassName(classNames: string): void;
+        renderClassName(): string;
+    }
+}
+declare namespace Buhta {
+    interface DxButtonProps extends DxComponentProps {
+        text?: string;
+        onClick?: () => void;
+    }
+    interface DxButtonState extends DxComponentState {
+    }
+    class DxButton extends DxComponent<DxButtonProps, DxButtonState> {
+        constructor(props: DxButtonProps, context: any);
+        createDxOptions(old: DxButtonProps, next: DxButtonProps): DevExpress.ui.dxButtonOptions;
+        handleOnClick(): void;
+        protected didMount(): void;
+        render(): JSX.Element;
+    }
+}
+declare namespace Buhta {
     interface TestPage1Props {
     }
     interface TestPage1State {

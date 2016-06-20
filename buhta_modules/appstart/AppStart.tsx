@@ -1,4 +1,4 @@
-﻿/// <reference path="references.ts" />
+﻿﻿/// <reference path="references.ts" />
 
 declare var ReactDOM: any;
 
@@ -175,8 +175,20 @@ namespace Buhta {
                     </XTreeGrid>
                 </div>,
                 document.body
-            )
-            ;
+            );
+
+            executeSQL("select top 500 Номер,Название,getdate() дата from ТМЦ order by Ключ")
+                .done((table) => {
+                    window["xxx"] = table.rows.map((r)=> {
+                        return {Номер: r["Номер"], Название: r["Название"], Дата: r["Дата"]};
+                    });
+
+                    alert(table.rows[0].getValue(1));
+                })
+                .fail((err) => {
+                    alert(err.message);
+                });
+
         });
     });
 }

@@ -285,8 +285,132 @@ var Buhta;
             // });
             //Text12 = <button>привет</button>;
             ReactDOM.render(React.createElement("div", null, React.createElement(Buhta.XTreeGrid, null)), document.body);
+            Buhta.executeSQL("select top 500 Номер,Название,getdate() дата from ТМЦ order by Ключ")
+                .done(function (table) {
+                window["xxx"] = table.rows.map(function (r) {
+                    return { Номер: r["Номер"], Название: r["Название"], Дата: r["Дата"] };
+                });
+                alert(table.rows[0].getValue(1));
+            })
+                .fail(function (err) {
+                alert(err.message);
+            });
         });
     });
+})(Buhta || (Buhta = {}));
+/// <reference path="references.ts" />
+/// <reference path="../../typings/index.d.ts" />
+var Buhta;
+(function (Buhta) {
+    //    export class BaseComponent<P extends BaseComponentProps, S extends BaseComponentState> extends React.Component<BaseComponentProps, BaseComponentState> {
+    var DxComponent = (function (_super) {
+        __extends(DxComponent, _super);
+        function DxComponent(props, context) {
+            var _this = this;
+            _super.call(this, props, context);
+            this.componentDidMount = function () {
+                _this.didMount();
+            };
+            this.componentWillMount = function () {
+                _this.willMount();
+            };
+            this.componentWillReceiveProps = function (nextProps) {
+                _this.willReceiveProps(nextProps);
+            };
+            this.componentDidUpdate = function (prevProps, prevState, prevContext) {
+                _this.didUpdate(prevProps, prevState, prevContext);
+            };
+            this.componentWillUnmount = function () {
+                _this.willUnmount();
+            };
+            this.props = props;
+            this["state"] = { classes: [], style: {} };
+        }
+        DxComponent.prototype.didMount = function () {
+        };
+        DxComponent.prototype.willMount = function () {
+        };
+        DxComponent.prototype.willUnmount = function () {
+        };
+        DxComponent.prototype.willReceiveProps = function (nextProps) {
+        };
+        DxComponent.prototype.didUpdate = function (prevProps, prevState, prevContext) {
+        };
+        DxComponent.prototype.refersh = function () {
+            this.setState(this.state);
+        };
+        DxComponent.prototype.addClassName = function (classNames) {
+            var _this = this;
+            if (classNames)
+                classNames.split(" ").forEach(function (name) {
+                    if (_this.state.classes.indexOf(name) === -1)
+                        _this.state.classes.push(name);
+                });
+        };
+        DxComponent.prototype.toggleClassName = function (boolValue, trueClassNames, falseClassNames) {
+            if (boolValue) {
+                this.addClassName(trueClassNames);
+                if (falseClassNames)
+                    this.removeClassName(falseClassNames);
+            }
+            else {
+                this.removeClassName(trueClassNames);
+                if (falseClassNames)
+                    this.addClassName(falseClassNames);
+            }
+        };
+        DxComponent.prototype.removeClassName = function (classNames) {
+            var _this = this;
+            if (classNames)
+                classNames.split(" ").forEach(function (name) {
+                    if (_this.state.classes.indexOf(name) !== -1)
+                        _this.state.classes.splice(_this.state.classes.indexOf(name), 1);
+                });
+        };
+        DxComponent.prototype.renderClassName = function () {
+            this.addClassName(this.props.className);
+            return this.state.classes.join(" ");
+        };
+        return DxComponent;
+    }(React.Component));
+    Buhta.DxComponent = DxComponent;
+})(Buhta || (Buhta = {}));
+//export var QQQ: String = "qqq-str";
+//alert('жопа1-123-==');
+/// <reference path="./dxcomponent.tsx" />
+var Buhta;
+(function (Buhta) {
+    var DxButton = (function (_super) {
+        __extends(DxButton, _super);
+        function DxButton(props, context) {
+            _super.call(this, props, context);
+            //            this.state = {css: {}};
+        }
+        DxButton.prototype.createDxOptions = function (old, next) {
+            var opts = {};
+            if (old.text !== next.text)
+                opts.text = next.text;
+            if (old.onClick !== next.onClick)
+                opts.onClick = this.handleOnClick();
+            return opts;
+        };
+        DxButton.prototype.handleOnClick = function () {
+            if (this.props.onClick)
+                this.props.onClick();
+            console.log("handleOnClick");
+        };
+        DxButton.prototype.didMount = function () {
+            _super.prototype.didMount.call(this);
+            var opt = this.createDxOptions({}, this.props);
+            $(this.state.nativeElement).dxButton(opt);
+        };
+        DxButton.prototype.render = function () {
+            var _this = this;
+            return (React.createElement("div", {ref: function (e) { return _this.state.nativeElement = e; }}));
+        };
+        return DxButton;
+    }(Buhta.DxComponent));
+    Buhta.DxButton = DxButton;
 })(Buhta || (Buhta = {}));
 var Buhta;
 (function (Buhta) {
