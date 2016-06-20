@@ -2,7 +2,7 @@
 
 <html lang="en">
 <head>
-    <meta charset="utf-8" />
+    <meta charset="utf-8"/>
     <title>TypeScript HTML App</title>
     <link rel="icon" href="favicon.png" type="image/x-icon">
 
@@ -13,16 +13,17 @@
     <!--<link href="bower_components/jquery.fancytree/dist/skin-win7/ui.fancytree.css" rel="stylesheet" />-->
     <!--<link href="buhta_modules/designer/dist/css/designer.css" rel="stylesheet" />-->
 
+    <link href="bower_components/bulma/css/bulma.css" rel="stylesheet"/>
     <script src="bower_components/jquery/dist/jquery.min.js"></script>
 
 
-    <script type="text/javascript" src="http://cdnjs.cloudflare.com/ajax/libs/knockout/3.4.0/knockout-min.js"></script>
-    <script type="text/javascript" src="http://ajax.aspnetcdn.com/ajax/globalize/0.1.1/globalize.min.js"></script>
-    <script type="text/javascript" src="http://cdn3.devexpress.com/jslib/15.2.10/js/dx.webappjs.js"></script>
-    <link rel="stylesheet" type="text/css" href="http://cdn3.devexpress.com/jslib/15.2.10/css/dx.common.css" />
-    <link rel="stylesheet" type="text/css" href="http://cdn3.devexpress.com/jslib/15.2.10/css/dx.light.css" />
+    <!--<script type="text/javascript" src="http://cdnjs.cloudflare.com/ajax/libs/knockout/3.4.0/knockout-min.js"></script>-->
+    <!--<script type="text/javascript" src="http://ajax.aspnetcdn.com/ajax/globalize/0.1.1/globalize.min.js"></script>-->
+    <!--<script type="text/javascript" src="http://cdn3.devexpress.com/jslib/15.2.10/js/dx.webappjs.js"></script>-->
+    <!--<link rel="stylesheet" type="text/css" href="http://cdn3.devexpress.com/jslib/15.2.10/css/dx.common.css" />-->
+    <!--<link rel="stylesheet" type="text/css" href="http://cdn3.devexpress.com/jslib/15.2.10/css/dx.light.css" />-->
 
-    <link href="a.css" rel="stylesheet" />
+    <link href="a.css" rel="stylesheet"/>
 
 
     <script src="node_modules/react/dist/react.js"></script>
@@ -57,14 +58,93 @@
     <script src="Application/TestModule/dist_webstorm/testmodule.js"></script>
 
 </head>
-<div >
-    <!--<div id="content">-->
-        <!--&lt;!&ndash;<button type="button" class="but">.but</button>&ndash;&gt;-->
-        <!--&lt;!&ndash;<div>x</div>&ndash;&gt;-->
-        <!--&lt;!&ndash;<button type="button" class="squel">SQUEL</button>&ndash;&gt;-->
-        <!--&lt;!&ndash;<button type="button" class="btn test-table">test-table</button>&ndash;&gt;-->
+<body>
+<!--<div id="content">-->
+<!--&lt;!&ndash;<button type="button" class="but">.but</button>&ndash;&gt;-->
+<!--&lt;!&ndash;<div>x</div>&ndash;&gt;-->
+<!--&lt;!&ndash;<button type="button" class="squel">SQUEL</button>&ndash;&gt;-->
+<!--&lt;!&ndash;<button type="button" class="btn test-table">test-table</button>&ndash;&gt;-->
 
-    <!--</div>-->
+<!--</div>-->
+<style>
+    .flex-table {
+    . height: 100 %;
+    . width: 100 %;
+        border: 1px solid red;
+        display: flex;
+        flex-direction: column;
+    . overflow: auto;
+    }
+
+    .flex-table-row {
+        border: 1px solid green;
+        display: flex;
+        flex-direction: row;
+    }
+
+    .flex-table-col {
+        border: 1px solid magenta;
+        display: flex;
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .flex-table-cell {
+        border: 1px solid black;
+    }
+
+
+</style>
+
+<div style="width:10px;height: 20px; overflow: scroll;border: 1px solid blue">
+    <div class="flex-table" style="width:550px;xoverflow: auto;">
+        <div class="flex-table-row" style=".width:350px">
+            <div class="flex-table-col">
+                <div class="flex-table-row">
+                    <div class="flex-table-cell" style="width:150px">
+                        row 1 cell 1 3333 fffffff 444444 66666666 8888888888 999999999
+                    </div>
+                </div>
+            </div>
+            <div class="flex-table-col">
+                <div class="flex-table-row">
+                    <div class="flex-table-cell" style="width:100px">
+                        row 1<br> cell 2
+                    </div>
+                    <div class="flex-table-cell" style="width:100px">
+                        row 2 cell 2
+                    </div>
+                    <div class="flex-table-cell" style="width:100px">
+                        row 2 cell 2
+                    </div>
+                    <div class="flex-table-cell" style="width:100px">
+                        row 2 cell 2
+                    </div>
+                </div>
+            </div>
+
+        </div>
+        <div class="flex-table-row" style=".width:350px">
+            <div class="flex-table-cell" style="width:150px">
+                row 2<br> cell 1
+            </div>
+            <div class="flex-table-cell" style="width:100px">
+                row 2 cell 2
+            </div>
+            <div class="flex-table-cell" style="width:100px">
+                row 2 cell 2
+            </div>
+            <div class="flex-table-cell" style="width:100px">
+                row 2 cell 2
+            </div>
+            <div class="flex-table-cell" style="width:100px">
+                row 2 cell 2
+            </div>
+
+        </div>
+    </div>
 
 </div>
+
+</body>
 </html>

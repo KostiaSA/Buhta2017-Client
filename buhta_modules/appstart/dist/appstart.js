@@ -265,13 +265,26 @@ var Buhta;
             //     </DesignerApp>,
             //     document.body
             // );
-            ReactDOM.render(React.createElement("div", null, React.createElement("div", {id: "button33"}), React.createElement(Buhta.APanel, {top: 20, left: 40, isDraggable: true}, "нет"), React.createElement(Buhta.APanel, {top: 70, left: 140, height: 200, isDraggable: true})), document.body);
-            $("#button33").dxButton({
-                text: 'Click me',
-                onClick: function () {
-                    console.log('Button clicked');
-                }
-            });
+            // ReactDOM.render(
+            //     <div>
+            //         <div id="button33"></div>
+            //         <APanel top={20} left={40} isDraggable={true}>
+            //               нет
+            //         </APanel>
+            //         <APanel top={70} left={140} height={200} isDraggable={true}>
+            //
+            //         </APanel>
+            //     </div>,
+            //     document.body
+            // );
+            // $("#button33").dxButton({
+            //     text: 'Click me',
+            //     onClick: function() {
+            //         console.log('Button clicked');
+            //     }
+            // });
+            //Text12 = <button>привет</button>;
+            ReactDOM.render(React.createElement("div", null, React.createElement(Buhta.XTreeGrid, null)), document.body);
         });
     });
 })(Buhta || (Buhta = {}));
@@ -333,5 +346,227 @@ var Buhta;
         return TestPage1;
     }(React.Component));
     Buhta.TestPage1 = TestPage1;
+})(Buhta || (Buhta = {}));
+/// <reference path="references.ts" />
+/// <reference path="../../typings/index.d.ts" />
+var Buhta;
+(function (Buhta) {
+    var XComponent = (function (_super) {
+        __extends(XComponent, _super);
+        function XComponent(props, context) {
+            var _this = this;
+            _super.call(this, props, context);
+            this.renderClasses = [];
+            this.renderProps = [];
+            this.componentDidMount = function () {
+                _this.didMount();
+            };
+            this.componentWillMount = function () {
+                _this.willMount();
+            };
+            this.componentWillReceiveProps = function (nextProps) {
+                _this.willReceiveProps(nextProps);
+            };
+            this.componentDidUpdate = function (prevProps, prevState, prevContext) {
+                _this.didUpdate(prevProps, prevState, prevContext);
+            };
+            this.componentWillUnmount = function () {
+                _this.willUnmount();
+            };
+            this.props = props;
+            this["state"] = {};
+        }
+        XComponent.prototype.didMount = function () {
+        };
+        XComponent.prototype.willMount = function () {
+        };
+        XComponent.prototype.willUnmount = function () {
+        };
+        XComponent.prototype.willReceiveProps = function (nextProps) {
+        };
+        XComponent.prototype.didUpdate = function (prevProps, prevState, prevContext) {
+        };
+        XComponent.prototype.addClassName = function (classNames) {
+            var _this = this;
+            if (classNames)
+                classNames.split(" ").forEach(function (name) {
+                    if (_this.renderClasses.indexOf(name) === -1)
+                        _this.renderClasses.push(name);
+                });
+        };
+        XComponent.prototype.toggleClassName = function (boolValue, trueClassNames, falseClassNames) {
+            if (boolValue) {
+                this.addClassName(trueClassNames);
+                if (falseClassNames)
+                    this.removeClassName(falseClassNames);
+            }
+            else {
+                this.removeClassName(trueClassNames);
+                if (falseClassNames)
+                    this.addClassName(falseClassNames);
+            }
+        };
+        XComponent.prototype.removeClassName = function (classNames) {
+            var _this = this;
+            if (classNames)
+                classNames.split(" ").forEach(function (name) {
+                    if (_this.renderClasses.indexOf(name) !== -1)
+                        _this.renderClasses.splice(_this.renderClasses.indexOf(name), 1);
+                });
+        };
+        XComponent.prototype.renderClassName = function () {
+            this.addClassName(this.props.className);
+            return this.renderClasses.join(" ");
+        };
+        XComponent.prototype.getRenderProps = function () {
+            this.renderProps = {};
+            this.renderProps.className = this.renderClassName();
+            var p = this.props;
+            if (p.onClick)
+                this.renderProps.onClick = p.onClick;
+            return this.renderProps;
+        };
+        return XComponent;
+    }(React.Component));
+    Buhta.XComponent = XComponent;
+})(Buhta || (Buhta = {}));
+//export var QQQ: String = "qqq-str";
+//alert('жопа1-123-==');
+/// <reference path="references.ts" />
+/// <reference path="../../typings/index.d.ts" />
+/// <reference path="xcomponent.tsx" />
+var Buhta;
+(function (Buhta) {
+    var XButton = (function (_super) {
+        __extends(XButton, _super);
+        function XButton(props, context) {
+            _super.call(this, props, context);
+        }
+        XButton.prototype.didMount = function () {
+        };
+        XButton.prototype.willMount = function () {
+        };
+        XButton.prototype.willUnmount = function () {
+        };
+        XButton.prototype.willReceiveProps = function (nextProps) {
+        };
+        XButton.prototype.didUpdate = function (prevProps, prevState, prevContext) {
+        };
+        XButton.prototype.render = function () {
+            this.addClassName("button");
+            return (React.createElement("a", React.__spread({}, this.getRenderProps()), this.props.children));
+        };
+        return XButton;
+    }(Buhta.XComponent));
+    Buhta.XButton = XButton;
+})(Buhta || (Buhta = {}));
+//export var QQQ: String = "qqq-str";
+//alert('жопа1-123-==');
+/// <reference path="references.ts" />
+/// <reference path="../../typings/index.d.ts" />
+/// <reference path="xcomponent.tsx" />
+var Buhta;
+(function (Buhta) {
+    var XTestTreeGrid = (function (_super) {
+        __extends(XTestTreeGrid, _super);
+        function XTestTreeGrid(props, context) {
+            _super.call(this, props, context);
+        }
+        XTestTreeGrid.prototype.didMount = function () {
+        };
+        XTestTreeGrid.prototype.willMount = function () {
+        };
+        XTestTreeGrid.prototype.willUnmount = function () {
+        };
+        XTestTreeGrid.prototype.willReceiveProps = function (nextProps) {
+        };
+        XTestTreeGrid.prototype.didUpdate = function (prevProps, prevState, prevContext) {
+        };
+        XTestTreeGrid.prototype.bbb = function () {
+            var ret = [];
+            for (var row = 0; row < 5; row++) {
+                var colChildren = [];
+                for (var col = 0; col < 3; col++) {
+                    colChildren.push(React.createElement("td", null, "col", col, " row", row));
+                }
+                ret.push(React.createElement("tr", null, " ", colChildren, " "));
+            }
+            return ret;
+        };
+        XTestTreeGrid.prototype.render = function () {
+            this.addClassName("button");
+            return (React.createElement("div", {className: "table-wrapper"}, React.createElement("table", null, React.createElement("thead", null, React.createElement("col", {width: "100px"}), React.createElement("tr", null, React.createElement("th", {width: "250px"}, "col1"), React.createElement("th", null, "col2"), React.createElement("th", null, "col3"))), React.createElement("tfoot", null, React.createElement("tr", {height: "50px"}, React.createElement("td", null, "footer1"), React.createElement("td", null, "footer2"), React.createElement("td", null, "footer3"))), React.createElement("tbody", null, React.createElement("tr", null, React.createElement("td", null, "first-row1"), React.createElement("td", null, "first-row2"), React.createElement("td", null, "first-row31")), this.bbb()))));
+        };
+        return XTestTreeGrid;
+    }(Buhta.XComponent));
+    Buhta.XTestTreeGrid = XTestTreeGrid;
+})(Buhta || (Buhta = {}));
+//export var QQQ: String = "qqq-str";
+//alert('жопа1-123-==');
+/// <reference path="../references.ts" />
+/// <reference path="../../../typings/index.d.ts" />
+/// <reference path="../xcomponent.tsx" />
+var Buhta;
+(function (Buhta) {
+    var XTreeGrid = (function (_super) {
+        __extends(XTreeGrid, _super);
+        function XTreeGrid(props, context) {
+            _super.call(this, props, context);
+        }
+        XTreeGrid.prototype.didMount = function () {
+        };
+        XTreeGrid.prototype.willMount = function () {
+        };
+        XTreeGrid.prototype.willUnmount = function () {
+        };
+        XTreeGrid.prototype.willReceiveProps = function (nextProps) {
+        };
+        XTreeGrid.prototype.didUpdate = function (prevProps, prevState, prevContext) {
+        };
+        XTreeGrid.prototype.render = function () {
+            this.addClassName("button");
+            return (React.createElement("div", {className: "tree-grid"}, React.createElement("div", {className: "tree-grid-header-wrapper"}, React.createElement("table", {className: "tree-grid-header"}, React.createElement("colgroup", null, React.createElement("col", {width: "60px"}), React.createElement("col", {width: "140px"}), React.createElement("col", {width: "40px"})), React.createElement("tr", null, React.createElement("td", null, "Номер"), React.createElement("td", null, "Название"), React.createElement("td", null, "Город СПБ"), React.createElement("td", null, "fake")))), React.createElement("div", {className: "tree-grid-body-wrapper"}, React.createElement("table", {className: "tree-grid-body"}, React.createElement("colgroup", null, React.createElement("col", {width: "60px"}), React.createElement("col", {width: "140px"}), React.createElement("col", {width: "40px"})), React.createElement("tr", null, React.createElement("td", null, "22222222"), React.createElement("td", null, "3333333333"), React.createElement("td", null, "44444444"), React.createElement("td", null, "fake")), React.createElement("tr", null, React.createElement("td", null, "22yrtyrt222222"), React.createElement("td", null, "33333yiywerwer33333"), React.createElement("td", null, "444yiyi44444"), React.createElement("td", null, "fake")), React.createElement("tr", null, React.createElement("td", null, "22yrtweyrt222222"), React.createElement("td", null, "33333ywerweriy33333"), React.createElement("td", null, "444yiyi44444"), React.createElement("td", null, "fake")), React.createElement("tr", null, React.createElement("td", null, "22yrtyrt222222"), React.createElement("td", null, "33333yjutyutyiy33333"), React.createElement("td", null, "44tuut4yiyi44444"), React.createElement("td", null, "fake")), React.createElement("tr", null, React.createElement("td", null, "22345664yrtyrt222222"), React.createElement("td", null, "vvn33333yiy33333"), React.createElement("td", null, "4hggh44yiyi44444"), React.createElement("td", null)))), React.createElement("div", {className: "tree-grid-footer-wrapper"}, React.createElement("table", {className: "tree-grid-footer"}, React.createElement("colgroup", null, React.createElement("col", {width: "60px"}), React.createElement("col", {width: "140px"}), React.createElement("col", {width: "40px"})), React.createElement("tr", null, React.createElement("td", null, "12"), React.createElement("td", null, "Нет"), React.createElement("td", null, "12 руб"), React.createElement("td", null, "fake"))))));
+        };
+        return XTreeGrid;
+    }(Buhta.XComponent));
+    Buhta.XTreeGrid = XTreeGrid;
+})(Buhta || (Buhta = {}));
+//export var QQQ: String = "qqq-str";
+//alert('жопа1-123-==');
+var Buhta;
+(function (Buhta) {
+    var XTreeGridColumn = (function (_super) {
+        __extends(XTreeGridColumn, _super);
+        function XTreeGridColumn(props, context) {
+            _super.call(this, props, context);
+            //this.state.disabled = false;
+        }
+        XTreeGridColumn.prototype.render = function () {
+            //this.addClassName("btn");
+            //this.toggleClassName(this.props.disabled, "disabled");
+            return (null);
+            //TreeGrid from {this.props.compiler} and {this.props.framework}!clickCount={this.state.clickCount}
+        };
+        return XTreeGridColumn;
+    }(Buhta.XComponent));
+    Buhta.XTreeGridColumn = XTreeGridColumn;
+})(Buhta || (Buhta = {}));
+var Buhta;
+(function (Buhta) {
+    var XTreeGridGroupColumn = (function (_super) {
+        __extends(XTreeGridGroupColumn, _super);
+        function XTreeGridGroupColumn(props, context) {
+            _super.call(this, props, context);
+            //this.state.disabled = false;
+        }
+        XTreeGridGroupColumn.prototype.render = function () {
+            //this.addClassName("btn");
+            //this.toggleClassName(this.props.disabled, "disabled");
+            return (null);
+            //TreeGrid from {this.props.compiler} and {this.props.framework}!clickCount={this.state.clickCount}
+        };
+        return XTreeGridGroupColumn;
+    }(Buhta.XComponent));
+    Buhta.XTreeGridGroupColumn = XTreeGridGroupColumn;
 })(Buhta || (Buhta = {}));
 //# sourceMappingURL=appstart.js.map

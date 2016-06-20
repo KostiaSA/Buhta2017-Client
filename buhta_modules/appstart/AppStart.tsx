@@ -146,26 +146,37 @@ namespace Buhta {
             //     </DesignerApp>,
             //     document.body
             // );
+            // ReactDOM.render(
+            //     <div>
+            //         <div id="button33"></div>
+            //         <APanel top={20} left={40} isDraggable={true}>
+            //               нет
+            //         </APanel>
+            //         <APanel top={70} left={140} height={200} isDraggable={true}>
+            //
+            //         </APanel>
+            //     </div>,
+            //     document.body
+            // );
+
+            // $("#button33").dxButton({
+            //     text: 'Click me',
+            //     onClick: function() {
+            //         console.log('Button clicked');
+            //     }
+            // });
+
+            //Text12 = <button>привет</button>;
+
             ReactDOM.render(
                 <div>
-                    <div id="button33"></div>
-                    <APanel top={20} left={40} isDraggable={true}>
-                          нет
-                    </APanel>
-                    <APanel top={70} left={140} height={200} isDraggable={true}>
+                    <XTreeGrid>
 
-                    </APanel>
+                    </XTreeGrid>
                 </div>,
                 document.body
-            );
-
-            $("#button33").dxButton({
-                text: 'Click me',
-                onClick: function() {
-                    console.log('Button clicked');
-                }
-            });
-
+            )
+            ;
         });
     });
 }

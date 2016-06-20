@@ -21,6 +21,7 @@
     "bootstrap": "^3.3.6",
     "flux": "^2.1.1",
     "eventemitter3": "^1.2.0",
-    "devextreme": "^15.2.10"
+    "devextreme": "^15.2.10",
+    "bulma": "^0.0.28"
   }
 }
