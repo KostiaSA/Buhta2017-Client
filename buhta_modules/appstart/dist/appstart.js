@@ -149,98 +149,111 @@ var Buhta;
     }(Buhta.AComponent));
     Buhta.APanel = APanel;
 })(Buhta || (Buhta = {}));
-/// <reference path="references.ts" />
-var socket = io.connect();
+// <reference path="references.ts" />
 var Buhta;
 (function (Buhta) {
-    socket.once('connect', function () {
+    var socket = io.connect();
+    socket.once("connect", function () {
         $(document).ready(function () {
             //  sok?      var socket = io.connect({ host: "localhost", port: "3010" });
-            console.log('cooned');
-            $(".squel").click(function () {
-                var ms = Knex({
-                    dialect: 'mssql'
-                });
-                var x = new Date();
-                // var sql = ms.select('Номер', 'Название', ms.raw('1213 as uu ')).from('ТМЦ').where("x", "<>", x).limit(5).toString();
-                //alert(sql);
-                var sql1 = ms.select('Номер', 'Название', ms.raw('1213 as uu ')).from('ТМЦ').where("x", "<>", x).limit(5);
-                var queryId = 'q' + Math.random().toString(36).slice(2);
-                socket.emit("executeSQL", { queryId: queryId, sql: "sql1" });
-                //let squelPostgres = squel.useFlavour('mssql');
-                //console.log(???
-                //    squelPostgres.insert({ autoQuoteFieldNames: true })
-                //        .into('table')
-                //        .set('field', 5)
-                //        .set('мама 5', 5)
-                //      //  .returning('*')
-                //        .toParam()
-                //);
-            });
-            $(".test-table").click(function () {
-                // componentRegistry["Buhta.Org"] = {
-                //     className: "Org",
-                //     inheritFrom: "Buhta.Table",
-                //     name: "Тестовый компонент 12",
-                //     moduleName: "TestModule",
-                //     references: ["references.ts", "testcomp2.ts"],
-                //     description: "это тестовый компонент таблицы Организация",
-                //     createInstance: null
-                // };
-                var x = new Buhta.Table();
-                x.$$className = "Buhta.Org";
-                x.addColumn(function (col) {
-                    col.name = "Номер";
-                });
-                x.addColumn(function (col) {
-                    col.name = "Название";
-                });
-                x.addColumn(function (col) {
-                    col.name = "Город";
-                });
-                x.sqlName = "Организация";
-                x.saveToServer()
-                    .done(function () {
-                    alert("ok!");
-                })
-                    .fail(function (err) {
-                    alert(err);
-                });
-            });
+            console.log("$(document).ready()");
+            // $(".squel").click(() => {
+            //
+            //     let ms = Knex({
+            //         dialect: "mssql"
+            //     });
+            //
+            //     let x = new Date();
+            //
+            //     // var sql = ms.select('Номер', 'Название', ms.raw('1213 as uu ')).from('ТМЦ').where("x", "<>", x).limit(5).toString();
+            //     //alert(sql);
+            //
+            //     var sql1 = ms.select('Номер', 'Название', ms.raw('1213 as uu ')).from('ТМЦ').where("x", "<>", x).limit(5);
+            //
+            //     var queryId = 'q' + Math.random().toString(36).slice(2);
+            //     socket.emit("executeSQL", {queryId, sql: "sql1"});
+            //     //let squelPostgres = squel.useFlavour('mssql');
+            //
+            //     //console.log(???
+            //     //    squelPostgres.insert({ autoQuoteFieldNames: true })
+            //     //        .into('table')
+            //     //        .set('field', 5)
+            //     //        .set('мама 5', 5)
+            //     //      //  .returning('*')
+            //     //        .toParam()
+            //     //);
+            // });
+            // $(".test-table").click(() => {
+            //
+            //     // componentRegistry["Buhta.Org"] = {
+            //     //     className: "Org",
+            //     //     inheritFrom: "Buhta.Table",
+            //     //     name: "Тестовый компонент 12",
+            //     //     moduleName: "TestModule",
+            //     //     references: ["references.ts", "testcomp2.ts"],
+            //     //     description: "это тестовый компонент таблицы Организация",
+            //     //     createInstance: null
+            //     // };
+            //
+            //     let x = new Table();
+            //     x.$$className = "Buhta.Org";
+            //     x.addColumn((col) => {
+            //         col.name = "Номер";
+            //     });
+            //     x.addColumn((col) => {
+            //         col.name = "Название";
+            //     });
+            //     x.addColumn((col) => {
+            //         col.name = "Город";
+            //     });
+            //     x.sqlName = "Организация";
+            //
+            //     x.saveToServer()
+            //         .done(() => {
+            //             alert("ok!");
+            //         })
+            //         .fail((err) => {
+            //             alert(err);
+            //         });
+            // });
+            //
             //let x = new SchemaTable();
             //x.name = "жопа";
             //x.sqlname = "sql-жопа";
-            $(".but").click(function () {
-                // let x = new TestComp1();
-                //
-                // x.className = "TestComp1";
-                // x.inheritFrom = "TestComp2";
-                // //x.inheritFrom = "Buhta.DesignedComponent";
-                //
-                // x.name = "Тестовый компонент 12";
-                // x.sqlName = "sql база ps-web";
-                // x.moduleName = "TestModule";
-                // x.references = ["references.ts", "testcomp2.ts"];
-                //
-                // writeTextFile(x.moduleName, x.className + ".ts", x.emitTsCode())
-                //     .done(() => {
-                //         alert("все хорошо!");
-                //     })
-                //     .fail((err) => {
-                //         alert(err);
-                //     });
-                //
-                // alert(x.emitTsCode());
-                // for (let i: number = 0; i < 10000; i++) {
-                Buhta.executeSQL("select top 10 Номер,Название,getdate() дата from ТМЦ order by Ключ")
-                    .done(function (table) {
-                    alert(table.rows[0].getValue(1));
-                })
-                    .fail(function (err) {
-                    alert(err.message);
-                });
-                //}
-            });
+            // $(".but").click(() => {
+            //
+            //     // let x = new TestComp1();
+            //     //
+            //     // x.className = "TestComp1";
+            //     // x.inheritFrom = "TestComp2";
+            //     // //x.inheritFrom = "Buhta.DesignedComponent";
+            //     //
+            //     // x.name = "Тестовый компонент 12";
+            //     // x.sqlName = "sql база ps-web";
+            //     // x.moduleName = "TestModule";
+            //     // x.references = ["references.ts", "testcomp2.ts"];
+            //     //
+            //     // writeTextFile(x.moduleName, x.className + ".ts", x.emitTsCode())
+            //     //     .done(() => {
+            //     //         alert("все хорошо!");
+            //     //     })
+            //     //     .fail((err) => {
+            //     //         alert(err);
+            //     //     });
+            //     //
+            //     // alert(x.emitTsCode());
+            //
+            //
+            //     // for (let i: number = 0; i < 10000; i++) {
+            //     executeSQL("select top 10 Номер,Название,getdate() дата from ТМЦ order by Ключ")
+            //         .done((table) => {
+            //             alert(table.rows[0].getValue(1));
+            //         })
+            //         .fail((err) => {
+            //             alert(err.message);
+            //         });
+            //     //}
+            // });
             //        $(".but").click(() => {
             //            var queryId = 'q' + Math.random().toString(36).slice(2);
             ////            socket.emit("executeSQL", { queryId: queryId, sql: "select top 10 Номер, Название, Ключ, getdate() from ТМЦ" });
@@ -284,13 +297,13 @@ var Buhta;
             //     }
             // });
             //Text12 = <button>привет</button>;
-            ReactDOM.render(React.createElement("div", null, React.createElement(Buhta.XTreeGrid, null)), document.body);
-            Buhta.executeSQL("select top 500 Номер,Название,getdate() дата from ТМЦ order by Ключ")
+            ReactDOM.render(React.createElement("div", null, React.createElement(Buhta.XTreeGrid, {visible: true, dataSource: window["xxx"]}, React.createElement(Buhta.XTreeGridColumns, null, React.createElement(Buhta.XTreeGridColumn, {caption: "Колонка1", fieldName: "Номер"}), React.createElement(Buhta.XTreeGridColumn, {caption: "Колонка2", fieldName: "Название"}), React.createElement(Buhta.XTreeGridColumn, {caption: "Колонка3", fieldName: "Дата"})))), document.body);
+            Buhta.executeSQL("select top 5000 Номер,Название,_Модель Дата from ТМЦ order by Ключ")
                 .done(function (table) {
                 window["xxx"] = table.rows.map(function (r) {
                     return { Номер: r["Номер"], Название: r["Название"], Дата: r["Дата"] };
                 });
-                alert(table.rows[0].getValue(1));
+                console.log("select top X Номер,Название,getdate() Дата from ТМЦ order by Ключ --> " + table.rows[0].getValue(1));
             })
                 .fail(function (err) {
                 alert(err.message);
@@ -550,6 +563,22 @@ var Buhta;
                 this.renderProps.onClick = p.onClick;
             return this.renderProps;
         };
+        XComponent.prototype.getChildren = function (childTypeName) {
+            var ret = [];
+            React.Children.toArray(this.props.children).forEach(function (child) {
+                if (Buhta.Util.getReactElementClassName(child) === childTypeName)
+                    ret.push(child);
+            });
+            return ret;
+        };
+        XComponent.prototype.getChildrenOfProps = function (props, childTypeName) {
+            var ret = [];
+            React.Children.toArray(props.children).forEach(function (child) {
+                if (Buhta.Util.getReactElementClassName(child) === childTypeName)
+                    ret.push(child);
+            });
+            return ret;
+        };
         return XComponent;
     }(React.Component));
     Buhta.XComponent = XComponent;
@@ -632,14 +661,55 @@ var Buhta;
 /// <reference path="../xcomponent.tsx" />
 var Buhta;
 (function (Buhta) {
+    var Column = (function () {
+        function Column() {
+        }
+        return Column;
+    }());
+    Buhta.Column = Column;
+    //export class XTreeGrid<P extends XTreeGridProps, S extends XTreeGridState> extends XComponent<P, S> {
     var XTreeGrid = (function (_super) {
         __extends(XTreeGrid, _super);
         function XTreeGrid(props, context) {
             _super.call(this, props, context);
+            this.bodyTopFakeHeigth = 1;
+            this.bodyBottomFakeHeight = 1;
+            //this.state.columns=[];
         }
+        XTreeGrid.prototype.createColumns = function () {
+            var _this = this;
+            this.state.columns = [];
+            console.log("1");
+            var columnsTag = this.getChildren("XTreeGridColumns");
+            columnsTag.forEach(function (tag) {
+                var columnTagList = _this.getChildrenOfProps(tag.props, "XTreeGridColumn");
+                columnTagList.forEach(function (propCol) {
+                    var col = new Column();
+                    col.props = propCol.props;
+                    _this.state.columns.push(col);
+                });
+            });
+        };
+        XTreeGrid.prototype.createData = function () {
+            //            if (this.props.dataSource) {
+            //                this.state.data = this.props.dataSource.map((row) => row);
+            //            }
+            this.state.data = window["xxx"];
+        };
+        XTreeGrid.prototype.filterData = function () {
+            //            if (this.props.dataSource) {
+            //                this.state.data = this.props.dataSource.map((row) => row);
+            //            }
+            this.state.data = window["xxx"].filter(function (row) { return row["Название"].indexOf("Phil") > -1; });
+        };
         XTreeGrid.prototype.didMount = function () {
         };
         XTreeGrid.prototype.willMount = function () {
+            _super.prototype.willMount.call(this);
+            this.createColumns();
+            this.createData();
+            this.state.pageStartIndex = 0;
+            this.state.pageLength = 500;
         };
         XTreeGrid.prototype.willUnmount = function () {
         };
@@ -647,9 +717,73 @@ var Buhta;
         };
         XTreeGrid.prototype.didUpdate = function (prevProps, prevState, prevContext) {
         };
+        XTreeGrid.prototype.renderRows = function () {
+            console.log("renderRows()");
+            var _a = this.state, pageStartIndex = _a.pageStartIndex, pageLength = _a.pageLength, data = _a.data;
+            var ret = [];
+            if (!data)
+                return ret;
+            for (var i = pageStartIndex; i < pageStartIndex + pageLength && i < data.length; i++) {
+                ret.push(this.renderRow(i));
+            }
+            return ret;
+        };
+        XTreeGrid.prototype.renderRow = function (rowIndex) {
+            return React.createElement("tr", {key: rowIndex}, this.renderCells(rowIndex), " ");
+        };
+        XTreeGrid.prototype.renderCells = function (rowIndex) {
+            var _this = this;
+            var ret = [];
+            this.state.columns.forEach(function (col, colIndex) {
+                ret.push(_this.renderCell(rowIndex, col, colIndex));
+            });
+            return ret;
+        };
+        XTreeGrid.prototype.renderCell = function (rowIndex, col, colIndex) {
+            var str = this.state.data[rowIndex][col.props.fieldName].toString(); //.slice(0, 10);
+            // return <td key={colIndex}>
+            //     <div style={{height:16, overflow:"hidden"}}>{str}</div>
+            // </td>;
+            return React.createElement("td", {key: colIndex}, React.createElement("div", null, str));
+        };
+        XTreeGrid.prototype.incPageStartIndex = function (rowCount) {
+            this.state.pageStartIndex += rowCount;
+        };
+        XTreeGrid.prototype.decPageStartIndex = function (rowCount) {
+            this.state.pageStartIndex -= rowCount;
+            if (this.state.pageStartIndex < 0)
+                this.state.pageStartIndex = 0;
+        };
+        XTreeGrid.prototype.handleTableWheel = function (e) {
+            // if (e.deltaY > 0)
+            //     this.incPageStartIndex(3);
+            // else if (e.deltaY < 0)
+            //     this.decPageStartIndex(3);
+            // console.log(e.deltaY);
+            // this.forceUpdate();
+        };
+        XTreeGrid.prototype.handleScroll = function (e) {
+            //             //console.log(e);
+            //             //window["eee"] = e;
+            //             console.log(this.bodyWrapperElement.scrollTop);
+            //             this.bodyTopFakeHeigth = this.bodyWrapperElement.scrollTop;
+            //             console.log("-----------");
+            //             console.log(this.bodyWrapperElement.scrollHeight);
+            //             console.log(this.bodyWrapperElement.clientHeight);
+            //             console.log(this.bodyWrapperElement.scrollTop);
+            // //            this.bodyBottomFakeHeight = this.bodyWrapperElement.scrollHeight - this.bodyWrapperElement.clientHeight - this.bodyWrapperElement.scrollTop;
+            //             this.bodyBottomFakeHeight = 1500 - this.bodyWrapperElement.clientHeight - this.bodyWrapperElement.scrollTop;
+            //             console.log("bottom- " + this.bodyBottomFakeHeight);
+            //
+            //             this.state.pageStartIndex = 500 * this.bodyWrapperElement.scrollTop / 1500;
+            //
+            //             this.forceUpdate();
+        };
         XTreeGrid.prototype.render = function () {
-            this.addClassName("button");
-            return (React.createElement("div", {className: "tree-grid"}, React.createElement("div", {className: "tree-grid-header-wrapper"}, React.createElement("table", {className: "tree-grid-header"}, React.createElement("colgroup", null, React.createElement("col", {width: "60px"}), React.createElement("col", {width: "140px"}), React.createElement("col", {width: "40px"})), React.createElement("tr", null, React.createElement("td", null, "Номер"), React.createElement("td", null, "Название"), React.createElement("td", null, "Город СПБ"), React.createElement("td", null, "fake")))), React.createElement("div", {className: "tree-grid-body-wrapper"}, React.createElement("table", {className: "tree-grid-body"}, React.createElement("colgroup", null, React.createElement("col", {width: "60px"}), React.createElement("col", {width: "140px"}), React.createElement("col", {width: "40px"})), React.createElement("tr", null, React.createElement("td", null, "22222222"), React.createElement("td", null, "3333333333"), React.createElement("td", null, "44444444"), React.createElement("td", null, "fake")), React.createElement("tr", null, React.createElement("td", null, "22yrtyrt222222"), React.createElement("td", null, "33333yiywerwer33333"), React.createElement("td", null, "444yiyi44444"), React.createElement("td", null, "fake")), React.createElement("tr", null, React.createElement("td", null, "22yrtweyrt222222"), React.createElement("td", null, "33333ywerweriy33333"), React.createElement("td", null, "444yiyi44444"), React.createElement("td", null, "fake")), React.createElement("tr", null, React.createElement("td", null, "22yrtyrt222222"), React.createElement("td", null, "33333yjutyutyiy33333"), React.createElement("td", null, "44tuut4yiyi44444"), React.createElement("td", null, "fake")), React.createElement("tr", null, React.createElement("td", null, "22345664yrtyrt222222"), React.createElement("td", null, "vvn33333yiy33333"), React.createElement("td", null, "4hggh44yiyi44444"), React.createElement("td", null)))), React.createElement("div", {className: "tree-grid-footer-wrapper"}, React.createElement("table", {className: "tree-grid-footer"}, React.createElement("colgroup", null, React.createElement("col", {width: "60px"}), React.createElement("col", {width: "140px"}), React.createElement("col", {width: "40px"})), React.createElement("tr", null, React.createElement("td", null, "12"), React.createElement("td", null, "Нет"), React.createElement("td", null, "12 руб"), React.createElement("td", null, "fake"))))));
+            var _this = this;
+            //this.addClassName("button");
+            console.log("2");
+            return (React.createElement("div", {className: "tree-grid"}, React.createElement("button", {onClick: function () { _this.createData(); _this.forceUpdate(); console.log("forceUpdate"); }}, "refresh"), React.createElement("button", {onClick: function () { _this.filterData(); _this.forceUpdate(); console.log("forceUpdate"); }}, "filter"), React.createElement("div", {className: "tree-grid-header-wrapper"}, React.createElement("table", {className: "tree-grid-header"}, React.createElement("colgroup", null, React.createElement("col", {width: "60px"}), React.createElement("col", {width: "240px"}), React.createElement("col", {width: "40px"})), React.createElement("tr", null, React.createElement("td", null, "Номер12"), React.createElement("td", null, "Название"), React.createElement("td", null, "Город СПБ"), React.createElement("td", null, "fake")))), React.createElement("div", {className: "tree-grid-body-wrapper", onWheel: this.handleTableWheel.bind(this), onScroll: this.handleScroll.bind(this), ref: function (e) { return _this.bodyWrapperElement = e; }}, React.createElement("div", {style: { height: this.bodyTopFakeHeigth }}), React.createElement("div", null, React.createElement("table", {className: "tree-grid-body"}, React.createElement("colgroup", null, React.createElement("col", {width: "60px"}), React.createElement("col", {width: "240px"}), React.createElement("col", {width: "140px"})), React.createElement("tbody", null, this.renderRows()))), React.createElement("div", {style: { height: this.bodyBottomFakeHeight }})), React.createElement("div", {className: "tree-grid-footer-wrapper"}, React.createElement("table", {className: "tree-grid-footer"}, React.createElement("colgroup", null, React.createElement("col", {width: "60px"}), React.createElement("col", {width: "140px"}), React.createElement("col", {width: "40px"})), React.createElement("tr", null, React.createElement("td", null, "12"), React.createElement("td", null, "Нет"), React.createElement("td", null, "12 руб"), React.createElement("td", null, "fake"))))));
         };
         return XTreeGrid;
     }(Buhta.XComponent));
@@ -692,5 +826,17 @@ var Buhta;
         return XTreeGridGroupColumn;
     }(Buhta.XComponent));
     Buhta.XTreeGridGroupColumn = XTreeGridGroupColumn;
+})(Buhta || (Buhta = {}));
+var Buhta;
+(function (Buhta) {
+    var XTreeGridColumns = (function (_super) {
+        __extends(XTreeGridColumns, _super);
+        function XTreeGridColumns(props, context) {
+            _super.call(this, props, context);
+            //this.state.disabled = false;
+        }
+        return XTreeGridColumns;
+    }(Buhta.XComponent));
+    Buhta.XTreeGridColumns = XTreeGridColumns;
 })(Buhta || (Buhta = {}));
 //# sourceMappingURL=appstart.js.map

@@ -116,6 +116,24 @@ namespace Buhta {
             return this.renderProps;
         }
 
+        getChildren(childTypeName: string): JSX.Element[] {
+            let ret:  JSX.Element[] = [];
+            React.Children.toArray(this.props.children).forEach((child: any) => {
+                if (Util.getReactElementClassName(child) === childTypeName)
+                    ret.push(child);
+            });
+            return ret;
+        }
+
+        getChildrenOfProps(props: any, childTypeName: string):  JSX.Element[] {
+            let ret:  JSX.Element[] = [];
+            React.Children.toArray(props.children).forEach((child: any) => {
+                if (Util.getReactElementClassName(child) === childTypeName)
+                    ret.push(child);
+            });
+            return ret;
+        }
+
         //render() {
         //    return (new)
         //    //    <button onClick={this.handleClick.bind(this) }>

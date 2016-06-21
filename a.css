@@ -1,4 +1,4 @@
-﻿html {
+html {
     height: 100%;
 }
 
@@ -9,19 +9,36 @@ body {
     position: relative;
 }
 
-.tree-grid{
-    height: 300px;
-    width: 500px;
+.tree-grid {
+    height: 600px;
+    width: 400px;
     border: 1px solid red;
+    display: flex;
+    flex-direction: column;
+    position: relative;
 }
 
-.tree-grid-body{
-    overflow-y: hidden;
+.tree-grid-header-wrapper {
+    flex: 0 0 auto;
+}
+
+.tree-grid-body-wrapper {
+    border: 3px solid maroon;
+    /* flex: 0 1 auto; */
+    /* overflow-y: hidden; */
+    /* overflow-x: visible; */
+    /* position: relative; */
     overflow-x: auto;
-    table-layout: fixed;
-    border: 1px solid green;
+    overflow-y: auto;
 }
 
-.tree-grid-body>tr>td {
-    overflow: hidden
+.tree-grid-footer-wrapper {
+    flex: 0 0 auto;
 }
+
+.tree-grid-body {
+    table-layout: fixed;
+}
+
+
+

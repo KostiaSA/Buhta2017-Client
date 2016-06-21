@@ -6,7 +6,7 @@ namespace Buhta {
     export class Util {
 
         static getReactElementClassName(element): string {
-            return element && element.type ? element.type.toString().split('(')[0].split(' ')[1] : "";
+            return element && element.type ? element.type.toString().split("(")[0].split(" ")[1] : "";
         }
 
 

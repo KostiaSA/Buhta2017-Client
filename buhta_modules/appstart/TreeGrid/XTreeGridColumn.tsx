@@ -1,9 +1,9 @@
-﻿
-namespace Buhta {
+﻿namespace Buhta {
 
 
     export interface XTreeGridColumnProps extends XComponentProps {
         caption?: string;
+        fieldName?: string;
     }
 
     export interface XTreeGridColumnState extends XComponentState {

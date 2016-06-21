@@ -66,8 +66,6 @@ declare namespace Buhta {
         render(): JSX.Element;
     }
 }
-declare var ReactDOM: any;
-declare var socket: SocketIOClient.Socket;
 declare namespace Buhta {
 }
 declare namespace Buhta {
@@ -162,6 +160,8 @@ declare namespace Buhta {
         removeClassName(classNames: string): void;
         renderClassName(): string;
         getRenderProps(): any;
+        getChildren(childTypeName: string): JSX.Element[];
+        getChildrenOfProps(props: any, childTypeName: string): JSX.Element[];
     }
 }
 declare namespace Buhta {
@@ -197,22 +197,46 @@ declare namespace Buhta {
 }
 declare namespace Buhta {
     interface XTreeGridProps extends XComponentProps, XVisibleProps, XOnClickProps {
+        dataSource?: any[];
+        rowHeight?: number;
     }
     interface XTreeGridState {
+        columns?: Column[];
+        pageStartIndex?: number;
+        pageLength?: number;
+        data?: any[];
     }
-    class XTreeGrid<P extends XTreeGridProps, S extends XTreeGridState> extends XComponent<P, S> {
-        constructor(props: P, context: any);
+    class Column {
+        props: XTreeGridColumnProps;
+    }
+    class XTreeGrid extends XComponent<XTreeGridProps, XTreeGridState> {
+        constructor(props: XTreeGridProps, context: any);
+        private createColumns();
+        private createData();
+        private filterData();
         protected didMount(): void;
         protected willMount(): void;
         protected willUnmount(): void;
-        protected willReceiveProps(nextProps: P): void;
-        protected didUpdate(prevProps: P, prevState: S, prevContext: any): void;
+        protected willReceiveProps(nextProps: XTreeGridProps): void;
+        protected didUpdate(prevProps: XTreeGridProps, prevState: XTreeGridState, prevContext: any): void;
+        private renderRows();
+        private renderRow(rowIndex);
+        private renderCells(rowIndex);
+        private renderCell(rowIndex, col, colIndex);
+        private incPageStartIndex(rowCount);
+        private decPageStartIndex(rowCount);
+        private handleTableWheel(e);
+        private handleScroll(e);
+        bodyTopFakeHeigth: number;
+        bodyWrapperElement: any;
+        bodyBottomFakeHeight: number;
         render(): JSX.Element;
     }
 }
 declare namespace Buhta {
     interface XTreeGridColumnProps extends XComponentProps {
         caption?: string;
+        fieldName?: string;
     }
     interface XTreeGridColumnState extends XComponentState {
     }
@@ -230,5 +254,14 @@ declare namespace Buhta {
     class XTreeGridGroupColumn extends XComponent<XTreeGridColumnGroupProps, XTreeGridColumnGroupState> {
         constructor(props: XTreeGridColumnGroupProps, context: any);
         render(): JSX.Element;
+    }
+}
+declare namespace Buhta {
+    interface XTreeGridColumnsProps extends XComponentProps {
+    }
+    interface XTreeGridColumnsState extends XComponentState {
+    }
+    class XTreeGridColumns extends XComponent<XTreeGridColumnsProps, XTreeGridColumnsState> {
+        constructor(props: XTreeGridColumnsProps, context: any);
     }
 }
