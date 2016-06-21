@@ -298,7 +298,7 @@ var Buhta;
             // });
             //Text12 = <button>привет</button>;
             ReactDOM.render(React.createElement("div", null, React.createElement(Buhta.XTreeGrid, {visible: true, dataSource: window["xxx"]}, React.createElement(Buhta.XTreeGridColumns, null, React.createElement(Buhta.XTreeGridColumn, {caption: "Колонка1", fieldName: "Номер"}), React.createElement(Buhta.XTreeGridColumn, {caption: "Колонка2", fieldName: "Название"}), React.createElement(Buhta.XTreeGridColumn, {caption: "Колонка3", fieldName: "Дата"})))), document.body);
-            Buhta.executeSQL("select top 5000 Номер,Название,_Модель Дата from ТМЦ order by Ключ")
+            Buhta.executeSQL("select top 500 Номер,Название,_Модель Дата from ТМЦ order by Ключ")
                 .done(function (table) {
                 window["xxx"] = table.rows.map(function (r) {
                     return { Номер: r["Номер"], Название: r["Название"], Дата: r["Дата"] };
@@ -672,8 +672,6 @@ var Buhta;
         __extends(XTreeGrid, _super);
         function XTreeGrid(props, context) {
             _super.call(this, props, context);
-            this.bodyTopFakeHeigth = 1;
-            this.bodyBottomFakeHeight = 1;
             //this.state.columns=[];
         }
         XTreeGrid.prototype.createColumns = function () {
@@ -740,7 +738,7 @@ var Buhta;
             return ret;
         };
         XTreeGrid.prototype.renderCell = function (rowIndex, col, colIndex) {
-            var str = this.state.data[rowIndex][col.props.fieldName].toString(); //.slice(0, 10);
+            var str = this.state.data[rowIndex][col.props.fieldName].toString();
             // return <td key={colIndex}>
             //     <div style={{height:16, overflow:"hidden"}}>{str}</div>
             // </td>;
@@ -763,6 +761,12 @@ var Buhta;
             // this.forceUpdate();
         };
         XTreeGrid.prototype.handleScroll = function (e) {
+            $(this.headerElement).css({ top: this.bodyWrapperElement.scrollTop });
+            var pos = this.bodyWrapperElement.scrollTop + this.bodyWrapperElement.clientHeight - $(this.footerElement).outerHeight() - 0;
+            $(this.footerElement).css({ top: pos });
+            $(this.headerFakeRow).css({ height: $(this.headerElement).outerHeight() });
+            $(this.footerFakeRow).css({ height: $(this.footerElement).outerHeight() });
+            //this.forceUpdate();
             //             //console.log(e);
             //             //window["eee"] = e;
             //             console.log(this.bodyWrapperElement.scrollTop);
@@ -783,7 +787,7 @@ var Buhta;
             var _this = this;
             //this.addClassName("button");
             console.log("2");
-            return (React.createElement("div", {className: "tree-grid"}, React.createElement("button", {onClick: function () { _this.createData(); _this.forceUpdate(); console.log("forceUpdate"); }}, "refresh"), React.createElement("button", {onClick: function () { _this.filterData(); _this.forceUpdate(); console.log("forceUpdate"); }}, "filter"), React.createElement("div", {className: "tree-grid-header-wrapper"}, React.createElement("table", {className: "tree-grid-header"}, React.createElement("colgroup", null, React.createElement("col", {width: "60px"}), React.createElement("col", {width: "240px"}), React.createElement("col", {width: "40px"})), React.createElement("tr", null, React.createElement("td", null, "Номер12"), React.createElement("td", null, "Название"), React.createElement("td", null, "Город СПБ"), React.createElement("td", null, "fake")))), React.createElement("div", {className: "tree-grid-body-wrapper", onWheel: this.handleTableWheel.bind(this), onScroll: this.handleScroll.bind(this), ref: function (e) { return _this.bodyWrapperElement = e; }}, React.createElement("div", {style: { height: this.bodyTopFakeHeigth }}), React.createElement("div", null, React.createElement("table", {className: "tree-grid-body"}, React.createElement("colgroup", null, React.createElement("col", {width: "60px"}), React.createElement("col", {width: "240px"}), React.createElement("col", {width: "140px"})), React.createElement("tbody", null, this.renderRows()))), React.createElement("div", {style: { height: this.bodyBottomFakeHeight }})), React.createElement("div", {className: "tree-grid-footer-wrapper"}, React.createElement("table", {className: "tree-grid-footer"}, React.createElement("colgroup", null, React.createElement("col", {width: "60px"}), React.createElement("col", {width: "140px"}), React.createElement("col", {width: "40px"})), React.createElement("tr", null, React.createElement("td", null, "12"), React.createElement("td", null, "Нет"), React.createElement("td", null, "12 руб"), React.createElement("td", null, "fake"))))));
+            return (React.createElement("div", {className: "tree-grid"}, React.createElement("div", {className: "tree-grid-header-wrapper"}, React.createElement("button", {onClick: function () { _this.createData(); _this.forceUpdate(); console.log("forceUpdate"); }}, "refresh"), React.createElement("button", {onClick: function () { _this.filterData(); _this.forceUpdate(); console.log("forceUpdate"); }}, "filter"), "заголовок и т.д."), React.createElement("div", {className: "tree-grid-body-wrapper", onWheel: this.handleTableWheel.bind(this), onScroll: this.handleScroll.bind(this), ref: function (e) { return _this.bodyWrapperElement = e; }}, React.createElement("div", null, React.createElement("table", {className: "tree-grid-body"}, React.createElement("colgroup", null, React.createElement("col", {width: "60px"}), React.createElement("col", {width: "240px"}), React.createElement("col", {width: "140px"})), React.createElement("tbody", null, React.createElement("tr", null, React.createElement("td", {ref: function (e) { return _this.headerFakeRow = e; }})), this.renderRows(), React.createElement("tr", null, React.createElement("td", {ref: function (e) { return _this.footerFakeRow = e; }})))), React.createElement("div", {ref: function (e) { return _this.headerElement = e; }, style: { position: "absolute", border: "1px solid red" }}, React.createElement("table", {className: "tree-grid-header", style: { tableLayout: "fixed" }}, React.createElement("colgroup", null, React.createElement("col", {width: "60px"}), React.createElement("col", {width: "240px"}), React.createElement("col", {width: "140px"})), React.createElement("tbody", null, React.createElement("tr", null, React.createElement("td", null, "Номер"), React.createElement("td", null, "Название ", React.createElement("br", null), " и еще что-то"), React.createElement("td", null, "Город"))))), React.createElement("div", {ref: function (e) { return _this.footerElement = e; }, style: { position: "absolute", border: "1px solid blue" }}, React.createElement("table", {className: "tree-grid-footer", style: { tableLayout: "fixed" }}, React.createElement("colgroup", null, React.createElement("col", {width: "60px"}), React.createElement("col", {width: "240px"}), React.createElement("col", {width: "140px"})), React.createElement("tbody", null, React.createElement("tr", null, React.createElement("td", null, "10 шт"), React.createElement("td", null, "--"), React.createElement("td", null, "сумма: 100 руб"))))))), React.createElement("div", {className: "tree-grid-footer-wrapper"}, "футер и тд")));
         };
         return XTreeGrid;
     }(Buhta.XComponent));

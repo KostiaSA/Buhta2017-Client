@@ -227,9 +227,11 @@ declare namespace Buhta {
         private decPageStartIndex(rowCount);
         private handleTableWheel(e);
         private handleScroll(e);
-        bodyTopFakeHeigth: number;
         bodyWrapperElement: any;
-        bodyBottomFakeHeight: number;
+        headerFakeRow: any;
+        footerFakeRow: any;
+        headerElement: any;
+        footerElement: any;
         render(): JSX.Element;
     }
 }

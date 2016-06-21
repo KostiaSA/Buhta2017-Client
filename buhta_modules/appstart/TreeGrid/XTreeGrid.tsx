@@ -132,7 +132,7 @@ namespace Buhta {
 
         private renderCell(rowIndex: number, col: Column, colIndex: number): JSX.Element {
 
-            let str = this.state.data[rowIndex][col.props.fieldName].toString();//.slice(0, 10);
+            let str = this.state.data[rowIndex][col.props.fieldName].toString();
             // return <td key={colIndex}>
             //     <div style={{height:16, overflow:"hidden"}}>{str}</div>
             // </td>;
@@ -162,6 +162,15 @@ namespace Buhta {
         }
 
         private handleScroll(e: UIEvent) {
+            $(this.headerElement).css({top: this.bodyWrapperElement.scrollTop});
+
+            let pos = this.bodyWrapperElement.scrollTop + this.bodyWrapperElement.clientHeight - $(this.footerElement).outerHeight() - 0;
+            $(this.footerElement).css({top: pos});
+
+            $(this.headerFakeRow).css({height: $(this.headerElement).outerHeight()});
+            $(this.footerFakeRow).css({height: $(this.footerElement).outerHeight()});
+
+            //this.forceUpdate();
 //             //console.log(e);
 //             //window["eee"] = e;
 //             console.log(this.bodyWrapperElement.scrollTop);
@@ -180,9 +189,12 @@ namespace Buhta {
         }
 
 
-        bodyTopFakeHeigth: number = 1;
+        //bodyTopFakeHeigth: number = 1;
         bodyWrapperElement: any;
-        bodyBottomFakeHeight: number = 1;
+        headerFakeRow: any;
+        footerFakeRow: any;
+        headerElement: any;
+        footerElement: any;
 
         render() {
             //this.addClassName("button");
@@ -190,26 +202,14 @@ namespace Buhta {
 
             return (
                 <div className="tree-grid">
-                    <button onClick={ () => { this.createData(); this.forceUpdate(); console.log("forceUpdate"); }}>
-                        refresh
-                    </button>
-                    <button onClick={ () => { this.filterData(); this.forceUpdate(); console.log("forceUpdate"); }}>
-                        filter
-                    </button>
                     <div className="tree-grid-header-wrapper">
-                        <table className="tree-grid-header">
-                            <colgroup>
-                                <col width="60px"/>
-                                <col width="240px"/>
-                                <col width="40px"/>
-                            </colgroup>
-                            <tr>
-                                <td >Номер12</td>
-                                <td>Название</td>
-                                <td>Город СПБ</td>
-                                <td>fake</td>
-                            </tr>
-                        </table>
+                        <button onClick={ () => { this.createData(); this.forceUpdate(); console.log("forceUpdate"); }}>
+                            refresh
+                        </button>
+                        <button onClick={ () => { this.filterData(); this.forceUpdate(); console.log("forceUpdate"); }}>
+                            filter
+                        </button>
+                        заголовок и т.д.
                     </div>
                     <div className="tree-grid-body-wrapper"
                          onWheel={ this.handleTableWheel.bind(this)}
@@ -217,8 +217,6 @@ namespace Buhta {
                          ref={ (e) => this.bodyWrapperElement = e}
 
                     >
-                        <div style={{ height:this.bodyTopFakeHeigth}}>
-                        </div>
                         <div>
                             <table className="tree-grid-body">
                                 <colgroup>
@@ -227,27 +225,55 @@ namespace Buhta {
                                     <col width="140px"/>
                                 </colgroup>
                                 <tbody>
+                                <tr>
+                                    <td ref={ (e) => this.headerFakeRow = e}></td>
+                                </tr>
                                 {this.renderRows()}
+                                <tr>
+                                    <td ref={ (e) => this.footerFakeRow = e}></td>
+                                </tr>
                                 </tbody>
                             </table>
-                        </div>
-                        <div style={{ height:this.bodyBottomFakeHeight}}>
+                            <div ref={ (e) => this.headerElement = e}
+                                 style={{ position:"absolute", border:"1px solid red" }}>
+                                <table className="tree-grid-header" style={{tableLayout: "fixed"}}>
+                                    <colgroup>
+                                        <col width="60px"/>
+                                        <col width="240px"/>
+                                        <col width="140px"/>
+                                    </colgroup>
+                                    <tbody>
+                                    <tr>
+                                        <td>Номер</td>
+                                        <td>Название <br/> и еще что-то</td>
+                                        <td>Город</td>
+                                    </tr>
+                                    </tbody>
+                                </table>
+
+                            </div>
+                            <div ref={ (e) => this.footerElement = e}
+                                 style={{ position:"absolute", border:"1px solid blue"}}>
+                                <table className="tree-grid-footer" style={{tableLayout: "fixed"}}>
+                                    <colgroup>
+                                        <col width="60px"/>
+                                        <col width="240px"/>
+                                        <col width="140px"/>
+                                    </colgroup>
+                                    <tbody>
+                                    <tr>
+                                        <td>10 шт</td>
+                                        <td>--</td>
+                                        <td>сумма: 100 руб</td>
+                                    </tr>
+                                    </tbody>
+                                </table>
+
+                            </div>
                         </div>
                     </div>
                     <div className="tree-grid-footer-wrapper">
-                        <table className="tree-grid-footer">
-                            <colgroup>
-                                <col width="60px"/>
-                                <col width="140px"/>
-                                <col width="40px"/>
-                            </colgroup>
-                            <tr>
-                                <td>12</td>
-                                <td>Нет</td>
-                                <td>12 руб</td>
-                                <td>fake</td>
-                            </tr>
-                        </table>
+                        футер и тд
                     </div >
                 </div >
             )

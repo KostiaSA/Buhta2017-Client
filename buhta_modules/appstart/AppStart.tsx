@@ -185,7 +185,7 @@ namespace Buhta {
                 document.body
             );
 
-            executeSQL("select top 5000 Номер,Название,_Модель Дата from ТМЦ order by Ключ")
+            executeSQL("select top 500 Номер,Название,_Модель Дата from ТМЦ order by Ключ")
                 .done((table) => {
                     window["xxx"] = table.rows.map((r)=> {
                         return {Номер: r["Номер"], Название: r["Название"], Дата: r["Дата"]};
