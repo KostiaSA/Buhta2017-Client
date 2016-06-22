@@ -15,7 +15,7 @@ body {
     /*border: 1px solid red;*/
     display: flex;
     flex-direction: column;
-    position: relative;
+    /* position: relative; */
 }
 
 .tree-grid-header-wrapper {
@@ -40,6 +40,7 @@ body {
     table-layout: fixed;
     background: white;
     border-collapse: collapse;
+    position: relative;
 }
 
 .tree-grid-body > tbody > tr > td {

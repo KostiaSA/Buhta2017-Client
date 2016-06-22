@@ -821,20 +821,54 @@ var Buhta;
                 }
             }
         };
+        XTreeGrid.prototype.getFocusedCellElement = function () {
+            return this.rows[this.focusedRowIndex].cellElements[this.focusedCellIndex];
+        };
+        XTreeGrid.prototype.getFocusedRowElement = function () {
+            return this.rows[this.focusedRowIndex].element;
+        };
         XTreeGrid.prototype.moveFocusedCellDown = function () {
             if (!this.rows)
                 return;
             if (this.focusedRowIndex < this.rows.length - 1) {
                 this.focusedRowIndex++;
                 this.handleChangeFocused();
+                var rowEl = $(this.getFocusedRowElement());
+                // ушло за пределы видимости
+                if (rowEl.position().top + rowEl.height() >
+                    this.bodyWrapperElement.scrollTop + this.bodyWrapperElement.clientHeight - $(this.footerElement).outerHeight()) {
+                    this.bodyWrapperElement.scrollTop = rowEl.position().top + rowEl.height() -
+                        this.bodyWrapperElement.clientHeight + $(this.footerElement).outerHeight();
+                }
+            }
+        };
+        XTreeGrid.prototype.moveFocusedCellLeft = function () {
+            if (!this.rows)
+                return;
+            if (this.focusedCellIndex > 0) {
+                this.focusedCellIndex--;
+                this.handleChangeFocused();
+            }
+        };
+        XTreeGrid.prototype.moveFocusedCellRight = function () {
+            if (!this.rows)
+                return;
+            if (this.focusedCellIndex < this.columns.length - 1) {
+                this.focusedCellIndex++;
+                this.handleChangeFocused();
             }
         };
         XTreeGrid.prototype.moveFocusedCellUp = function () {
             if (!this.rows)
                 return;
-            if (this.focusedRowIndex >= 0) {
+            if (this.focusedRowIndex > 0) {
                 this.focusedRowIndex--;
                 this.handleChangeFocused();
+                var rowEl = $(this.getFocusedRowElement());
+                // ушло за пределы видимости
+                if (rowEl.position().top < this.bodyWrapperElement.scrollTop + $(this.headerElement).outerHeight()) {
+                    this.bodyWrapperElement.scrollTop = rowEl.position().top - $(this.headerElement).outerHeight();
+                }
             }
         };
         XTreeGrid.prototype.handleBodyKeyDown = function (e) {
@@ -842,8 +876,16 @@ var Buhta;
                 this.moveFocusedCellDown();
                 e.preventDefault();
             }
-            else if (e.key === Buhta.Keycode.Down) {
+            else if (e.key === Buhta.Keycode.Up) {
                 this.moveFocusedCellUp();
+                e.preventDefault();
+            }
+            else if (e.key === Buhta.Keycode.Left) {
+                this.moveFocusedCellLeft();
+                e.preventDefault();
+            }
+            else if (e.key === Buhta.Keycode.Right) {
+                this.moveFocusedCellRight();
                 e.preventDefault();
             }
         };

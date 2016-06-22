@@ -1,71 +1,44 @@
 /// <reference path="../../../typings/index.d.ts" />
 declare namespace Buhta {
-    class Keycode {
-        static Esc: string;
-        static Down: string;
-    }
+    var Keycode: {
+        Esc: string;
+        Space: string;
+        Left: string;
+        Up: string;
+        Down: string;
+        Right: string;
+        Del: string;
+        Ins: string;
+        Win: string;
+        Menu: string;
+        Scroll: string;
+        Num: string;
+        Backspace: string;
+        Tab: string;
+        Enter: string;
+        Shift: string;
+        Control: string;
+        Alt: string;
+        Break: string;
+        CapsLock: string;
+        PageUp: string;
+        PageDown: string;
+        End: string;
+        Home: string;
+        F1: string;
+        F2: string;
+        F3: string;
+        F4: string;
+        F5: string;
+        F6: string;
+        F7: string;
+        F8: string;
+        F9: string;
+        F10: string;
+        F11: string;
+        F12: string;
+    };
 }
-/**
- * Normaliz22223--44422ation of deprecated HTML5 `key` values
- * @see https://developer.mozilla.org/en-US/docs/Web/API/KeyboardEvent#Key_names
- */
-declare var normalizeKey: {
-    'Esc': string;
-    'Spacebar': string;
-    'Left': string;
-    'Up': string;
-    'Right': string;
-    'Down': string;
-    'Del': string;
-    'Win': string;
-    'Menu': string;
-    'Apps': string;
-    'Scroll': string;
-    'MozPrintableKey': string;
-};
-/**
- * Translation from legacy `keyCode` to HTML5 `key`
- * Only special keys supported, all others depend on keyboard layout or browser
- * @see https://developer.mozilla.org/en-US/docs/Web/API/KeyboardEvent#Key_names
- */
-declare var translateToKey: {
-    8: string;
-    9: string;
-    12: string;
-    13: string;
-    16: string;
-    17: string;
-    18: string;
-    19: string;
-    20: string;
-    27: string;
-    32: string;
-    33: string;
-    34: string;
-    35: string;
-    36: string;
-    37: string;
-    38: string;
-    39: string;
-    40: string;
-    45: string;
-    46: string;
-    112: string;
-    113: string;
-    114: string;
-    115: string;
-    116: string;
-    117: string;
-    118: string;
-    119: string;
-    120: string;
-    121: string;
-    122: string;
-    123: string;
-    144: string;
-    145: string;
-    224: string;
-};
 declare namespace Buhta {
     function executeSQL(sql: string): JQueryPromise<DataTable>;
     class DataTable {

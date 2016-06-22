@@ -250,6 +250,13 @@ namespace Buhta {
 
         }
 
+        private getFocusedCellElement(): Element {
+            return this.rows[this.focusedRowIndex].cellElements[this.focusedCellIndex];
+        }
+
+        private getFocusedRowElement(): Element {
+            return this.rows[this.focusedRowIndex].element;
+        }
 
         private moveFocusedCellDown() {
             if (!this.rows)
@@ -258,16 +265,56 @@ namespace Buhta {
             if (this.focusedRowIndex < this.rows.length - 1) {
                 this.focusedRowIndex++;
                 this.handleChangeFocused();
+
+                let rowEl = $(this.getFocusedRowElement());
+
+                // ушло за пределы видимости
+                if (rowEl.position().top + rowEl.height() >
+                    this.bodyWrapperElement.scrollTop + this.bodyWrapperElement.clientHeight - $(this.footerElement).outerHeight()) {
+                    this.bodyWrapperElement.scrollTop = rowEl.position().top + rowEl.height() -
+                        this.bodyWrapperElement.clientHeight + $(this.footerElement).outerHeight();
+                }
+
             }
         }
+
+        private moveFocusedCellLeft() {
+            if (!this.rows)
+                return;
+
+            if (this.focusedCellIndex > 0) {
+                this.focusedCellIndex--;
+                this.handleChangeFocused();
+
+            }
+        }
+
+        private moveFocusedCellRight() {
+            if (!this.rows)
+                return;
+
+            if (this.focusedCellIndex < this.columns.length - 1) {
+                this.focusedCellIndex++;
+                this.handleChangeFocused();
+
+            }
+        }
+
 
         private moveFocusedCellUp() {
             if (!this.rows)
                 return;
 
-            if (this.focusedRowIndex >= 0) {
+            if (this.focusedRowIndex > 0) {
                 this.focusedRowIndex--;
                 this.handleChangeFocused();
+
+                let rowEl = $(this.getFocusedRowElement());
+
+                // ушло за пределы видимости
+                if (rowEl.position().top < this.bodyWrapperElement.scrollTop + $(this.headerElement).outerHeight()) {
+                    this.bodyWrapperElement.scrollTop = rowEl.position().top - $(this.headerElement).outerHeight();
+                }
             }
         }
 
@@ -277,9 +324,16 @@ namespace Buhta {
                 this.moveFocusedCellDown();
                 e.preventDefault();
             }
-            else
-            if (e.key === Keycode.Down) {
+            else if (e.key === Keycode.Up) {
                 this.moveFocusedCellUp();
+                e.preventDefault();
+            }
+            else if (e.key === Keycode.Left) {
+                this.moveFocusedCellLeft();
+                e.preventDefault();
+            }
+            else if (e.key === Keycode.Right) {
+                this.moveFocusedCellRight();
                 e.preventDefault();
             }
         }

@@ -226,7 +226,11 @@ declare namespace Buhta {
         private handleTableWheel(e);
         private handleScroll(e);
         private handleChangeFocused();
+        private getFocusedCellElement();
+        private getFocusedRowElement();
         private moveFocusedCellDown();
+        private moveFocusedCellLeft();
+        private moveFocusedCellRight();
         private moveFocusedCellUp();
         handleBodyKeyDown(e: React.KeyboardEvent): void;
         bodyWrapperElement: any;

@@ -1,67 +1,53 @@
 namespace  Buhta {
-    export class Keycode {
 
-        static get Esc(): string {
-            return "Escape";
-        };
+    export var Keycode = {
+        Esc: "Escape",
+        Space: " ",
 
-        static get Down(): string {
-            return "ArrowDown";
-        };
+        Left: "ArrowLeft",
+        Up: "ArrowUp",
+        Down: "ArrowDown",
+        Right: "ArrowRight",
 
-    }
+        Del: "Delete",
+        Ins: "Insert",
+
+        Win: "Meta",
+        Menu: "ContextMenu",
+
+        Scroll: "ScrollLock",
+        Num: "NumLock",
+
+        Backspace: "Backspace",
+        Tab: "Tab",
+        Enter: "Enter",
+        Shift: "Shift",
+        Control: "Control",
+        Alt: "Alt",
+        Break: "Pause",
+        CapsLock: "CapsLock",
+
+        PageUp: "PageUp",
+        PageDown: "PageDown",
+        End: "End",
+        Home: "Home",
+
+        F1: "F1",
+        F2: "F2",
+        F3: "F3",
+        F4: "F4",
+        F5: "F5",
+        F6: "F6",
+        F7: "F7",
+        F8: "F8",
+        F9: "F9",
+        F10: "F10",
+        F11: "F11",
+        F12: "F12"
+
+    };
+
 }
 
 
-/**
- * Normaliz22223--44422ation of deprecated HTML5 `key` values
- * @see https://developer.mozilla.org/en-US/docs/Web/API/KeyboardEvent#Key_names
- */
-var normalizeKey = {
-    'Esc': 'Escape',
-    'Spacebar': ' ',
-    'Left': 'ArrowLeft',
-    'Up': 'ArrowUp',
-    'Right': 'ArrowRight',
-    'Down': 'ArrowDown',
-    'Del': 'Delete',
-    'Win': 'OS',
-    'Menu': 'ContextMenu',
-    'Apps': 'ContextMenu',
-    'Scroll': 'ScrollLock',
-    'MozPrintableKey': 'Unidentified'
-};
 
-/**
- * Translation from legacy `keyCode` to HTML5 `key`
- * Only special keys supported, all others depend on keyboard layout or browser
- * @see https://developer.mozilla.org/en-US/docs/Web/API/KeyboardEvent#Key_names
- */
-var translateToKey = {
-    8: 'Backspace',
-    9: 'Tab',
-    12: 'Clear',
-    13: 'Enter',
-    16: 'Shift',
-    17: 'Control',
-    18: 'Alt',
-    19: 'Pause',
-    20: 'CapsLock',
-    27: 'Escape',
-    32: ' ',
-    33: 'PageUp',
-    34: 'PageDown',
-    35: 'End',
-    36: 'Home',
-    37: 'ArrowLeft',
-    38: 'ArrowUp',
-    39: 'ArrowRight',
-    40: 'ArrowDown',
-    45: 'Insert',
-    46: 'Delete',
-    112: 'F1', 113: 'F2', 114: 'F3', 115: 'F4', 116: 'F5', 117: 'F6',
-    118: 'F7', 119: 'F8', 120: 'F9', 121: 'F10', 122: 'F11', 123: 'F12',
-    144: 'NumLock',
-    145: 'ScrollLock',
-    224: 'Meta'
-};
