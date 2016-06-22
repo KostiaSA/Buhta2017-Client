@@ -204,12 +204,12 @@ declare namespace Buhta {
         hierarchyFieldName?: string;
         hierarchyDelimiters?: string;
         treeMode?: boolean;
+        autoExpandNodesToLevel?: number;
     }
     interface XTreeGridState {
     }
     class XTreeGrid extends XComponent<XTreeGridProps, XTreeGridState> {
         constructor(props: XTreeGridProps, context: any);
-        private isTreeMode;
         private columns;
         private pageLength;
         private rows;

@@ -297,7 +297,7 @@ var Buhta;
             //     }
             // });
             //Text12 = <button>привет</button>;
-            ReactDOM.render(React.createElement("div", null, React.createElement(Buhta.XTreeGrid, {visible: true, dataSource: window["xxxx"], treeMode: true, hierarchyFieldName: "Номер", hierarchyDelimiters: "."}, React.createElement(Buhta.XTreeGridColumns, null, React.createElement(Buhta.XTreeGridColumn, {caption: "Колонка1", fieldName: "Ключ", showHierarchyTree: true}), React.createElement(Buhta.XTreeGridColumn, {caption: "Колонка2", fieldName: "Номер"}), React.createElement(Buhta.XTreeGridColumn, {caption: "Колонка3", fieldName: "Название"})))), document.body);
+            ReactDOM.render(React.createElement("div", null, React.createElement(Buhta.XTreeGrid, {visible: true, dataSource: window["xxxx"], treeMode: true, hierarchyFieldName: "Номер", hierarchyDelimiters: ".", autoExpandNodesToLevel: 5}, React.createElement(Buhta.XTreeGridColumns, null, React.createElement(Buhta.XTreeGridColumn, {caption: "Колонка2", fieldName: "Номер", showHierarchyTree: false}), React.createElement(Buhta.XTreeGridColumn, {caption: "Колонка3", fieldName: "Название", showHierarchyTree: true}), React.createElement(Buhta.XTreeGridColumn, {caption: "Колонка1", fieldName: "Ключ"})))), document.body);
             // executeSQL("select top 500 Номер,Название,_Модель Дата from ТМЦ order by Ключ")
             //     .done((table) => {
             //         window["xxx"] = table.rows.map((r)=> {
@@ -692,6 +692,7 @@ var Buhta;
         InternalTreeNode.prototype.pushRowRecursive = function (rows) {
             var row = new InternalRow();
             row.sourceIndex = this.sourceIndex;
+            row.node = this;
             rows.push(row);
             if (this.expanded) {
                 this.children.forEach(function (child) {
@@ -769,7 +770,7 @@ var Buhta;
                         var node = new InternalTreeNode();
                         node.sourceIndex = s.objIndex;
                         node.level = 0;
-                        node.expanded = true;
+                        node.expanded = node.level < _this.props.autoExpandNodesToLevel;
                         cache[nodeId] = node;
                         _this.nodes.push(node);
                     }
@@ -779,7 +780,7 @@ var Buhta;
                     var node = new InternalTreeNode();
                     node.sourceIndex = s.objIndex;
                     node.level = parentNode.level + 1;
-                    //  node.expanded = true;
+                    node.expanded = node.level < _this.props.autoExpandNodesToLevel;
                     cache[s.hierarchyStr] = node;
                     parentNode.children.push(node);
                 }
@@ -802,7 +803,7 @@ var Buhta;
                 this.dataSource.forEach(function (obj, index) {
                     var row = new InternalRow();
                     row.sourceIndex = index;
-                    row.sourceObject = obj;
+                    //row.sourceObject = obj;
                     _this.rows.push(row);
                 });
                 this.initFocused();
@@ -822,7 +823,7 @@ var Buhta;
             this.createColumns();
             this.createNodes();
             this.createRows();
-            this.pageLength = 500;
+            this.pageLength = 5000;
         };
         XTreeGrid.prototype.refreshDataSource = function () {
             this.dataSource = this.props.dataSource;
@@ -886,7 +887,21 @@ var Buhta;
             // return <td key={colIndex}>
             //     <div style={{height:16, overflow:"hidden"}}>{str}</div>
             // </td>;
-            return (React.createElement("td", {key: colIndex, ref: function (e) { return _this.rows[rowIndex].cellElements[colIndex] = e; }, onClick: function (e) { _this.setFocusedCell(rowIndex, colIndex); }}, React.createElement("div", null, str)));
+            var node = this.rows[rowIndex].node;
+            var hierarchyPaddingDiv;
+            if (this.props.treeMode && (col.props.showHierarchyPadding || col.props.showHierarchyTree)) {
+                hierarchyPaddingDiv = React.createElement("span", {style: { width: node.level * 20, display: "inline-block" }});
+            }
+            var tdStyle = { overflow: "hidden" };
+            if (this.props.treeMode && col.props.showHierarchyTree) {
+                tdStyle.borderBottomColor = "rgba(255, 0, 0, 0)";
+            }
+            var strSpanStyle;
+            if (this.props.treeMode && col.props.showHierarchyTree &&
+                node.expanded && node.children.length > 0) {
+                strSpanStyle = { fontWeight: "bold" };
+            }
+            return (React.createElement("td", {key: colIndex, style: tdStyle, ref: function (e) { return _this.rows[rowIndex].cellElements[colIndex] = e; }, onClick: function (e) { _this.setFocusedCell(rowIndex, colIndex); }}, hierarchyPaddingDiv, React.createElement("span", {style: strSpanStyle}, str)));
         };
         XTreeGrid.prototype.setFocusedCell = function (rowIndex, cellIndex) {
             this.focusedRowIndex = rowIndex;

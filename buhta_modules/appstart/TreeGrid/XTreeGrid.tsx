@@ -19,6 +19,7 @@ namespace Buhta {
         hierarchyFieldName?: string;
         hierarchyDelimiters?: string;
         treeMode?: boolean;
+        autoExpandNodesToLevel?: number;
     }
 
 
@@ -33,9 +34,10 @@ namespace Buhta {
 
     class InternalRow {
         element: Element;
-        sourceObject: any;
+        //   sourceObject: any;
         sourceIndex: number;
         cellElements: Element[] = [];
+        node: InternalTreeNode;
 
     }
 
@@ -46,8 +48,8 @@ namespace Buhta {
         cellElements: Element[] = [];
 
         // для treeMode;
-        parent: InternalRow;
-        children: InternalRow[] = [];
+        parent: InternalTreeNode;
+        children: InternalTreeNode[] = [];
         expanded: boolean;
         level: number;
 
@@ -55,6 +57,7 @@ namespace Buhta {
 
             let row = new InternalRow();
             row.sourceIndex = this.sourceIndex;
+            row.node = this;
             rows.push(row);
 
             if (this.expanded) {
@@ -67,6 +70,7 @@ namespace Buhta {
         }
     }
 
+
     //export class XTreeGrid<P extends XTreeGridProps, S extends XTreeGridState> extends XComponent<P, S> {
     export class XTreeGrid extends XComponent<XTreeGridProps, XTreeGridState> {
 
@@ -75,7 +79,6 @@ namespace Buhta {
             //this.state.columns=[];
         }
 
-        private isTreeMode: boolean;
         private columns: InternalColumn[];
         private pageLength: number;
         private rows: InternalRow[];
@@ -173,7 +176,7 @@ namespace Buhta {
                         let node = new InternalTreeNode();
                         node.sourceIndex = s.objIndex;
                         node.level = 0;
-                        node.expanded = true;
+                        node.expanded = node.level < this.props.autoExpandNodesToLevel;
                         cache[nodeId] = node;
                         this.nodes.push(node);
                     }
@@ -184,7 +187,7 @@ namespace Buhta {
                     let node = new InternalTreeNode();
                     node.sourceIndex = s.objIndex;
                     node.level = parentNode.level + 1;
-                  //  node.expanded = true;
+                    node.expanded = node.level < this.props.autoExpandNodesToLevel;
                     cache[s.hierarchyStr] = node;
                     parentNode.children.push(node);
                 }
@@ -216,7 +219,7 @@ namespace Buhta {
                 this.dataSource.forEach((obj, index) => {
                     let row = new InternalRow();
                     row.sourceIndex = index;
-                    row.sourceObject = obj;
+                    //row.sourceObject = obj;
                     this.rows.push(row);
                 });
 
@@ -243,7 +246,7 @@ namespace Buhta {
             this.createColumns();
             this.createNodes();
             this.createRows();
-            this.pageLength = 500;
+            this.pageLength = 5000;
         }
 
         protected refreshDataSource() {
@@ -330,13 +333,35 @@ namespace Buhta {
             // return <td key={colIndex}>
             //     <div style={{height:16, overflow:"hidden"}}>{str}</div>
             // </td>;
+
+            let node = this.rows[rowIndex].node;
+
+            let hierarchyPaddingDiv: JSX.Element;
+            if (this.props.treeMode && (col.props.showHierarchyPadding || col.props.showHierarchyTree)) {
+                hierarchyPaddingDiv = <span style={{width:node.level * 20, display: "inline-block"}}></span>;
+            }
+
+            let tdStyle: any = {overflow: "hidden"};
+            if (this.props.treeMode && col.props.showHierarchyTree) {
+                tdStyle.borderBottomColor = "rgba(255, 0, 0, 0)";
+            }
+
+            let strSpanStyle;
+            if (this.props.treeMode && col.props.showHierarchyTree &&
+                node.expanded && node.children.length > 0) {
+                strSpanStyle = {fontWeight: "bold"};
+            }
+
+
             return (
                 <td
                     key={colIndex}
+                    style={tdStyle}
                     ref={ (e) => this.rows[rowIndex].cellElements[colIndex] = e}
                     onClick={ (e) => { this.setFocusedCell(rowIndex,colIndex);} }
                 >
-                    <div>{str}</div>
+                    {hierarchyPaddingDiv}
+                    <span style={ strSpanStyle}>{str}</span>
                 </td>
             );
         }

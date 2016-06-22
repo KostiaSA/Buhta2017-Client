@@ -171,13 +171,20 @@ namespace Buhta {
 
             ReactDOM.render(
                 <div>
-                    <XTreeGrid visible={true} dataSource={ window["xxxx"]} treeMode={true} hierarchyFieldName="Номер" hierarchyDelimiters=".">
+                    <XTreeGrid
+                        visible={true}
+                        dataSource={ window["xxxx"]}
+                        treeMode={true}
+                        hierarchyFieldName="Номер"
+                        hierarchyDelimiters="."
+                        autoExpandNodesToLevel={5}
+                    >
                         <XTreeGridColumns>
-                            <XTreeGridColumn caption="Колонка1" fieldName="Ключ" showHierarchyTree={true}>
+                            <XTreeGridColumn caption="Колонка2" fieldName="Номер" showHierarchyTree={false}>
                             </XTreeGridColumn>
-                            <XTreeGridColumn caption="Колонка2" fieldName="Номер">
+                            <XTreeGridColumn caption="Колонка3" fieldName="Название" showHierarchyTree={true}>
                             </XTreeGridColumn>
-                            <XTreeGridColumn caption="Колонка3" fieldName="Название">
+                            <XTreeGridColumn caption="Колонка1" fieldName="Ключ">
                             </XTreeGridColumn>
                         </XTreeGridColumns>
                     </XTreeGrid>
