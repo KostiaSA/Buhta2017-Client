@@ -12,27 +12,26 @@ namespace Buhta {
     export interface XTreeGridProps extends XComponentProps, XVisibleProps, XOnClickProps {
         // style?: React.CSSProperties;
         // className?: string;
-        dataSource?: any[];
+        dataSource?: any;
         rowHeight?: number;
     }
 
 
     export interface XTreeGridState {
-        columns?: Column[];
-        // //clickCount: number;
-        // style: React.CSSProperties;
-
-        pageStartIndex?: number;
-        pageLength?: number;
-        data?: any[];
     }
 
 
-    export class Column {
+    class InternalColumn {
         props: XTreeGridColumnProps;
 
     }
 
+    class InternalRow {
+        element: Element;
+        sourceObject: any;
+        sourceIndex: number;
+        cellElements: Element[] = [];
+    }
 
     //export class XTreeGrid<P extends XTreeGridProps, S extends XTreeGridState> extends XComponent<P, S> {
     export class XTreeGrid extends XComponent<XTreeGridProps, XTreeGridState> {
@@ -42,8 +41,15 @@ namespace Buhta {
             //this.state.columns=[];
         }
 
+        private columns: InternalColumn[];
+        private pageLength: number;
+        private rows: InternalRow[];
+        private focusedRowIndex: number;
+        private focusedCellIndex: number;
+
+
         private createColumns() {
-            this.state.columns = [];
+            this.columns = [];
 
             console.log("1");
             let columnsTag = this.getChildren("XTreeGridColumns");
@@ -53,22 +59,38 @@ namespace Buhta {
 
                 columnTagList.forEach((propCol: JSX.Element) => {
 
-                    let col = new Column();
+                    let col = new InternalColumn();
                     col.props = propCol.props;
-                    this.state.columns.push(col);
+                    this.columns.push(col);
                 });
             });
 
 
         }
 
+        private initFocused() {
+            this.focusedRowIndex = 0;
+            this.focusedCellIndex = 0;
+        }
+
         private createData() {
 
-//            if (this.props.dataSource) {
-//                this.state.data = this.props.dataSource.map((row) => row);
-//            }
-            this.state.data = window["xxx"];
 
+            let dataSource = window["xxx"];
+            //let dataSource = this.props.dataSource;
+
+            if (!dataSource)
+                return;
+
+            this.rows = [];
+            dataSource.forEach((obj, index) => {
+                let row = new InternalRow();
+                row.sourceIndex = index;
+                row.sourceObject = obj;
+                this.rows.push(row);
+            });
+
+            this.initFocused();
         }
 
         private filterData() {
@@ -76,11 +98,12 @@ namespace Buhta {
 //            if (this.props.dataSource) {
 //                this.state.data = this.props.dataSource.map((row) => row);
 //            }
-            this.state.data = window["xxx"].filter((row) => row["Название"].indexOf("Phil") > -1);
+            this.rows = window["xxx"].filter((row) => row["Название"].indexOf("Phil") > -1);
 
         }
 
         protected didMount() {
+            this.handleChangeFocused();
         }
 
 
@@ -88,8 +111,7 @@ namespace Buhta {
             super.willMount();
             this.createColumns();
             this.createData();
-            this.state.pageStartIndex = 0;
-            this.state.pageLength = 500;
+            this.pageLength = 500;
         }
 
 
@@ -102,55 +124,66 @@ namespace Buhta {
 
 
         protected didUpdate(prevProps: XTreeGridProps, prevState: XTreeGridState, prevContext: any) {
+            this.handleChangeFocused();
         }
 
 
         private renderRows(): JSX.Element[] {
             console.log("renderRows()");
-            let {pageStartIndex, pageLength, data} = this.state;
+            //let {pageStartIndex, pageLength, data} = this.state;
             let ret: JSX.Element[] = [];
-            if (!data)
+            if (!this.rows)
                 return ret;
 
-            for (let i = pageStartIndex; i < pageStartIndex + pageLength && i < data.length; i++) {
+            for (let i = 0; i < this.pageLength && i < this.rows.length; i++) {
                 ret.push(this.renderRow(i));
             }
             return ret;
         }
 
         private renderRow(rowIndex: number): JSX.Element {
-            return <tr key={rowIndex}>{ this.renderCells(rowIndex)} </tr>;
+            return (
+                <tr
+                    key={rowIndex}
+                    ref={ (e) => this.rows[rowIndex].element = e}
+                >
+                    { this.renderCells(rowIndex)}
+                </tr>
+            );
         }
 
         private renderCells(rowIndex: number): JSX.Element[] {
             let ret: JSX.Element[] = [];
-            this.state.columns.forEach((col, colIndex) => {
+            this.columns.forEach((col, colIndex) => {
                 ret.push(this.renderCell(rowIndex, col, colIndex));
             });
             return ret;
         }
 
-        private renderCell(rowIndex: number, col: Column, colIndex: number): JSX.Element {
+        private renderCell(rowIndex: number, col: InternalColumn, colIndex: number): JSX.Element {
 
-            let str = this.state.data[rowIndex][col.props.fieldName].toString();
+            let str = this.rows[rowIndex].sourceObject[col.props.fieldName].toString();
             // return <td key={colIndex}>
             //     <div style={{height:16, overflow:"hidden"}}>{str}</div>
             // </td>;
-            return <td key={colIndex}>
-                <div>{str}</div>
-            </td>;
+            return (
+                <td
+                    key={colIndex}
+                    ref={ (e) => this.rows[rowIndex].cellElements[colIndex] = e}
+                    onClick={ (e) => { this.setFocusedCell(rowIndex,colIndex);} }
+                >
+                    <div>{str}</div>
+                </td>
+            );
         }
 
+        private setFocusedCell(rowIndex: number, cellIndex: number) {
 
-        private incPageStartIndex(rowCount: number) {
-            this.state.pageStartIndex += rowCount;
+            this.focusedRowIndex = rowIndex;
+            this.focusedCellIndex = cellIndex;
+            this.handleChangeFocused();
         }
 
-        private decPageStartIndex(rowCount: number) {
-            this.state.pageStartIndex -= rowCount;
-            if (this.state.pageStartIndex < 0)
-                this.state.pageStartIndex = 0;
-        }
 
         private handleTableWheel(e: WheelEvent) {
             // if (e.deltaY > 0)
@@ -189,6 +222,69 @@ namespace Buhta {
         }
 
 
+        private handleChangeFocused() {
+            if (!this.rows)
+                return;
+
+            this.rows.forEach((row) => {
+                if (row.element)
+                    $(row.element).removeClass("tree-grid-focused-row");
+
+                row.cellElements.forEach((cell) => {
+                    if (cell)
+                        $(cell).removeClass("tree-grid-focused-cell");
+
+                });
+            });
+
+            let focusedRow = this.rows[this.focusedRowIndex];
+            if (focusedRow && focusedRow.element) {
+                $(focusedRow.element).addClass("tree-grid-focused-row");
+
+                let focusedCellElement = focusedRow.cellElements[this.focusedCellIndex];
+                if (focusedCellElement) {
+                    $(focusedCellElement).addClass("tree-grid-focused-cell");
+                }
+            }
+
+
+        }
+
+
+        private moveFocusedCellDown() {
+            if (!this.rows)
+                return;
+
+            if (this.focusedRowIndex < this.rows.length - 1) {
+                this.focusedRowIndex++;
+                this.handleChangeFocused();
+            }
+        }
+
+        private moveFocusedCellUp() {
+            if (!this.rows)
+                return;
+
+            if (this.focusedRowIndex >= 0) {
+                this.focusedRowIndex--;
+                this.handleChangeFocused();
+            }
+        }
+
+
+        handleBodyKeyDown(e: React.KeyboardEvent) {
+            if (e.key === Keycode.Down) {
+                this.moveFocusedCellDown();
+                e.preventDefault();
+            }
+            else
+            if (e.key === Keycode.Down) {
+                this.moveFocusedCellUp();
+                e.preventDefault();
+            }
+        }
+
+
         //bodyTopFakeHeigth: number = 1;
         bodyWrapperElement: any;
         headerFakeRow: any;
@@ -216,9 +312,14 @@ namespace Buhta {
                          onScroll={ this.handleScroll.bind(this)}
                          ref={ (e) => this.bodyWrapperElement = e}
 
+
                     >
                         <div>
-                            <table className="tree-grid-body">
+                            <table
+                                className="tree-grid-body"
+                                tabIndex={0}
+                                onKeyDown={ (e) => {  this.handleBodyKeyDown(e); } }
+                            >
                                 <colgroup>
                                     <col width="60px"/>
                                     <col width="240px"/>
@@ -235,7 +336,7 @@ namespace Buhta {
                                 </tbody>
                             </table>
                             <div ref={ (e) => this.headerElement = e}
-                                 style={{ position:"absolute", border:"1px solid red" }}>
+                                 style={{ position:"absolute", border:"0px solid red" }}>
                                 <table className="tree-grid-header" style={{tableLayout: "fixed"}}>
                                     <colgroup>
                                         <col width="60px"/>
@@ -253,7 +354,7 @@ namespace Buhta {
 
                             </div>
                             <div ref={ (e) => this.footerElement = e}
-                                 style={{ position:"absolute", border:"1px solid blue"}}>
+                                 style={{ position:"absolute", border:"0px solid blue"}}>
                                 <table className="tree-grid-footer" style={{tableLayout: "fixed"}}>
                                     <colgroup>
                                         <col width="60px"/>

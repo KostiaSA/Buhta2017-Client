@@ -191,7 +191,7 @@ namespace Buhta {
                         return {Номер: r["Номер"], Название: r["Название"], Дата: r["Дата"]};
                     });
 
-                    console.log("select top X Номер,Название,getdate() Дата from ТМЦ order by Ключ --> " + table.rows[0].getValue(1));
+                    console.log("select top X1 Номер,Название,getdate() Дата from ТМЦ order by Ключ --> " + table.rows[0].getValue(1));
                 })
                 .fail((err) => {
                     alert(err.message);

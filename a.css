@@ -1,4 +1,4 @@
-﻿html {
+html {
     height: 100%;
 }
 
@@ -11,7 +11,7 @@ body {
 
 .tree-grid {
     height: 600px;
-    width: 400px;
+    width: 500px;
     /*border: 1px solid red;*/
     display: flex;
     flex-direction: column;
@@ -41,20 +41,22 @@ body {
     background: white;
     border-collapse: collapse;
 }
-.tree-grid-body>tbody>tr>td {
+
+.tree-grid-body > tbody > tr > td {
     border: 1px solid #dedede;
     padding: 2px 2px 2px 4px;
 }
-
 
 .tree-grid-header {
     table-layout: fixed;
     background: white;
     border-collapse: collapse;
 }
-.tree-grid-header>tbody>tr>td {
-    border: 1px solid #dedede;
+
+.tree-grid-header > tbody > tr > td {
+    border: 1px solid #b5b5b5;
     padding: 2px 2px 2px 4px;
+    background-color: #eaeaea;
 }
 
 .tree-grid-footer {
@@ -62,9 +64,18 @@ body {
     background: white;
     border-collapse: collapse;
 }
-.tree-grid-footer>tbody>tr>td {
-    border: 1px solid #dedede;
+
+.tree-grid-footer > tbody > tr > td {
+    border: 1px solid #b5b5b5;
     padding: 2px 2px 2px 4px;
+    background-color: #eaeaea;
 }
 
+.tree-grid-focused-row {
+    background-color: #f3f3f3;
+}
+
+.tree-grid-focused-cell {
+    background-color: #e2e2e2;
+}
 

@@ -197,21 +197,20 @@ declare namespace Buhta {
 }
 declare namespace Buhta {
     interface XTreeGridProps extends XComponentProps, XVisibleProps, XOnClickProps {
-        dataSource?: any[];
+        dataSource?: any;
         rowHeight?: number;
     }
     interface XTreeGridState {
-        columns?: Column[];
-        pageStartIndex?: number;
-        pageLength?: number;
-        data?: any[];
-    }
-    class Column {
-        props: XTreeGridColumnProps;
     }
     class XTreeGrid extends XComponent<XTreeGridProps, XTreeGridState> {
         constructor(props: XTreeGridProps, context: any);
+        private columns;
+        private pageLength;
+        private rows;
+        private focusedRowIndex;
+        private focusedCellIndex;
         private createColumns();
+        private initFocused();
         private createData();
         private filterData();
         protected didMount(): void;
@@ -223,10 +222,13 @@ declare namespace Buhta {
         private renderRow(rowIndex);
         private renderCells(rowIndex);
         private renderCell(rowIndex, col, colIndex);
-        private incPageStartIndex(rowCount);
-        private decPageStartIndex(rowCount);
+        private setFocusedCell(rowIndex, cellIndex);
         private handleTableWheel(e);
         private handleScroll(e);
+        private handleChangeFocused();
+        private moveFocusedCellDown();
+        private moveFocusedCellUp();
+        handleBodyKeyDown(e: React.KeyboardEvent): void;
         bodyWrapperElement: any;
         headerFakeRow: any;
         footerFakeRow: any;
