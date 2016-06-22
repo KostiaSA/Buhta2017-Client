@@ -199,22 +199,34 @@ declare namespace Buhta {
     interface XTreeGridProps extends XComponentProps, XVisibleProps, XOnClickProps {
         dataSource?: any;
         rowHeight?: number;
+        keyFieldName?: string;
+        parentKeyFieldName?: string;
+        hierarchyFieldName?: string;
+        hierarchyDelimiters?: string;
+        treeMode?: boolean;
     }
     interface XTreeGridState {
     }
     class XTreeGrid extends XComponent<XTreeGridProps, XTreeGridState> {
         constructor(props: XTreeGridProps, context: any);
+        private isTreeMode;
         private columns;
         private pageLength;
         private rows;
+        private nodes;
         private focusedRowIndex;
         private focusedCellIndex;
+        private dataSource;
         private createColumns();
         private initFocused();
-        private createData();
+        private createNodes();
+        private createNodesFromHierarchyField();
+        private createRows();
         private filterData();
         protected didMount(): void;
         protected willMount(): void;
+        protected refreshDataSource(): void;
+        private testLoad500();
         protected willUnmount(): void;
         protected willReceiveProps(nextProps: XTreeGridProps): void;
         protected didUpdate(prevProps: XTreeGridProps, prevState: XTreeGridState, prevContext: any): void;
@@ -245,6 +257,8 @@ declare namespace Buhta {
     interface XTreeGridColumnProps extends XComponentProps {
         caption?: string;
         fieldName?: string;
+        showHierarchyTree?: boolean;
+        showHierarchyPadding?: boolean;
     }
     interface XTreeGridColumnState extends XComponentState {
     }

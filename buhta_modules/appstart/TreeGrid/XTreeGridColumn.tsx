@@ -4,6 +4,8 @@
     export interface XTreeGridColumnProps extends XComponentProps {
         caption?: string;
         fieldName?: string;
+        showHierarchyTree?: boolean;
+        showHierarchyPadding?: boolean;
     }
 
     export interface XTreeGridColumnState extends XComponentState {

@@ -14,6 +14,11 @@ namespace Buhta {
         // className?: string;
         dataSource?: any;
         rowHeight?: number;
+        keyFieldName?: string;
+        parentKeyFieldName?: string;
+        hierarchyFieldName?: string;
+        hierarchyDelimiters?: string;
+        treeMode?: boolean;
     }
 
 
@@ -31,6 +36,35 @@ namespace Buhta {
         sourceObject: any;
         sourceIndex: number;
         cellElements: Element[] = [];
+
+    }
+
+    class InternalTreeNode {
+        element: Element;
+        sourceObject: any;
+        sourceIndex: number;
+        cellElements: Element[] = [];
+
+        // для treeMode;
+        parent: InternalRow;
+        children: InternalRow[] = [];
+        expanded: boolean;
+        level: number;
+
+        pushRowRecursive(rows: InternalRow[]) {
+
+            let row = new InternalRow();
+            row.sourceIndex = this.sourceIndex;
+            rows.push(row);
+
+            if (this.expanded) {
+                this.children.forEach((child: InternalTreeNode) => {
+                    child.pushRowRecursive(rows);
+                });
+            }
+
+
+        }
     }
 
     //export class XTreeGrid<P extends XTreeGridProps, S extends XTreeGridState> extends XComponent<P, S> {
@@ -41,11 +75,14 @@ namespace Buhta {
             //this.state.columns=[];
         }
 
+        private isTreeMode: boolean;
         private columns: InternalColumn[];
         private pageLength: number;
         private rows: InternalRow[];
+        private nodes: InternalTreeNode[];
         private focusedRowIndex: number;
         private focusedCellIndex: number;
+        private dataSource: any[];
 
 
         private createColumns() {
@@ -73,24 +110,118 @@ namespace Buhta {
             this.focusedCellIndex = 0;
         }
 
-        private createData() {
 
-
-            let dataSource = window["xxx"];
-            //let dataSource = this.props.dataSource;
-
-            if (!dataSource)
+        private createNodes() {
+            if (!this.props.treeMode)
                 return;
 
-            this.rows = [];
-            dataSource.forEach((obj, index) => {
-                let row = new InternalRow();
-                row.sourceIndex = index;
-                row.sourceObject = obj;
-                this.rows.push(row);
+            if (this.props.hierarchyFieldName) {
+                this.createNodesFromHierarchyField();
+            }
+            else
+                console.error("unknown hierarchy mode");
+        }
+
+
+        private createNodesFromHierarchyField() {
+
+
+            if (!this.dataSource)
+                return;
+
+
+            if (!this.props.hierarchyDelimiters) {
+                console.error("XTreeGrid: hierarchyDelimiters is undefined");
+                return;
+            }
+
+
+            interface ISorted {
+                hierarchyStr: string;
+                objIndex: number;
+            }
+
+            let sorted: ISorted[] = this.dataSource.map((obj, index) => {
+                return {
+                    hierarchyStr: obj[this.props.hierarchyFieldName].toString(),
+                    objIndex: index
+                };
             });
 
-            this.initFocused();
+            sorted = _.sortBy(sorted, ["hierarchyStr"]);
+
+            let cache: { [hierarchyId: string]: InternalTreeNode; } = {};
+
+            this.nodes = [];
+
+            sorted.forEach((s, index) => {
+
+                let splitted = s.hierarchyStr.split(this.props.hierarchyDelimiters);
+                let parentId;
+                let nodeId;
+                if (splitted.length === 1)
+                    nodeId = s.hierarchyStr;
+                else {
+                    nodeId = _.last(splitted);
+                    parentId = splitted.slice(0, splitted.length - 1).join(this.props.hierarchyDelimiters.slice(0, 1));
+                }
+
+                if (!parentId) {
+                    if (cache[nodeId])
+                        console.error("XTreeGrid: nodeId '" + nodeId + "' is duplicated");
+                    else {
+                        let node = new InternalTreeNode();
+                        node.sourceIndex = s.objIndex;
+                        node.level = 0;
+                        node.expanded = true;
+                        cache[nodeId] = node;
+                        this.nodes.push(node);
+                    }
+                }
+                else {
+                    let parentNode = cache[parentId];
+
+                    let node = new InternalTreeNode();
+                    node.sourceIndex = s.objIndex;
+                    node.level = parentNode.level + 1;
+                  //  node.expanded = true;
+                    cache[s.hierarchyStr] = node;
+                    parentNode.children.push(node);
+                }
+
+
+                // console.log({str: s.hierarchyStr, parentId, nodeId});
+
+
+            });
+
+        }
+
+        private createRows() {
+
+            this.rows = [];
+
+            if (this.props.treeMode) {
+                if (this.nodes) {
+                    this.nodes.forEach((node: InternalTreeNode) => {
+                        node.pushRowRecursive(this.rows);
+                    });
+                }
+            }
+            else {
+
+                if (!this.dataSource)
+                    return;
+
+                this.dataSource.forEach((obj, index) => {
+                    let row = new InternalRow();
+                    row.sourceIndex = index;
+                    row.sourceObject = obj;
+                    this.rows.push(row);
+                });
+
+                this.initFocused();
+            }
         }
 
         private filterData() {
@@ -110,10 +241,41 @@ namespace Buhta {
         protected willMount() {
             super.willMount();
             this.createColumns();
-            this.createData();
+            this.createNodes();
+            this.createRows();
             this.pageLength = 500;
         }
 
+        protected refreshDataSource() {
+            this.dataSource = this.props.dataSource;
+            this.createColumns();
+            this.createNodes();
+            this.createRows();
+            this.forceUpdate();
+        }
+
+
+        private testLoad500() {
+
+            executeSQL("select TOP 5000 Ключ,Номер,Название from [Вид ТМЦ] order by Номер")
+                .done((table) => {
+
+                    this.dataSource = table.rows.map((r) => {
+                        return {Ключ: r["Ключ"], Номер: r["Номер"], Название: r["Название"]};
+                    });
+                    this.createColumns();
+                    this.createNodes();
+                    this.createRows();
+                    this.forceUpdate();
+
+
+                    console.log("select top 5006 Ключ,Номер,Название from [Вид ТМЦ] order by Ключ --> " + table.rows[0].getValue(2));
+                })
+                .fail((err) => {
+                    alert(err.message);
+                });
+
+        }
 
         protected willUnmount() {
         }
@@ -162,7 +324,9 @@ namespace Buhta {
 
         private renderCell(rowIndex: number, col: InternalColumn, colIndex: number): JSX.Element {
 
-            let str = this.rows[rowIndex].sourceObject[col.props.fieldName].toString();
+            let objIndex = this.rows[rowIndex].sourceIndex;
+            let str = this.dataSource[objIndex][col.props.fieldName].toString();
+            //let str = this.rows[rowIndex].sourceObject[col.props.fieldName].toString();
             // return <td key={colIndex}>
             //     <div style={{height:16, overflow:"hidden"}}>{str}</div>
             // </td>;
@@ -352,9 +516,9 @@ namespace Buhta {
 
             return (
                 <div className="tree-grid">
-                    <div className="tree-grid-header-wrapper">
-                        <button onClick={ () => { this.createData(); this.forceUpdate(); console.log("forceUpdate"); }}>
-                            refresh
+                    <div className="tree-grid-header-wrapper" style={{ flex: "0 0 auto" }}>
+                        <button onClick={ () => { this.testLoad500(); }}>
+                            refresh 500
                         </button>
                         <button onClick={ () => { this.filterData(); this.forceUpdate(); console.log("forceUpdate"); }}>
                             filter
@@ -362,10 +526,10 @@ namespace Buhta {
                         заголовок и т.д.
                     </div>
                     <div className="tree-grid-body-wrapper"
+                         style={{ position:"relative", overflow:"auto"}}
                          onWheel={ this.handleTableWheel.bind(this)}
                          onScroll={ this.handleScroll.bind(this)}
                          ref={ (e) => this.bodyWrapperElement = e}
-
 
                     >
                         <div>
@@ -427,7 +591,7 @@ namespace Buhta {
                             </div>
                         </div>
                     </div>
-                    <div className="tree-grid-footer-wrapper">
+                    <div className="tree-grid-footer-wrapper" style={{ flex: "0 1 auto" }}>
                         футер и тд
                     </div >
                 </div >

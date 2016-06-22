@@ -171,13 +171,13 @@ namespace Buhta {
 
             ReactDOM.render(
                 <div>
-                    <XTreeGrid visible={true} dataSource={ window["xxx"]}>
+                    <XTreeGrid visible={true} dataSource={ window["xxxx"]} treeMode={true} hierarchyFieldName="Номер" hierarchyDelimiters=".">
                         <XTreeGridColumns>
-                            <XTreeGridColumn caption="Колонка1" fieldName="Номер">
+                            <XTreeGridColumn caption="Колонка1" fieldName="Ключ" showHierarchyTree={true}>
                             </XTreeGridColumn>
-                            <XTreeGridColumn caption="Колонка2"  fieldName="Название">
+                            <XTreeGridColumn caption="Колонка2" fieldName="Номер">
                             </XTreeGridColumn>
-                            <XTreeGridColumn caption="Колонка3" fieldName="Дата">
+                            <XTreeGridColumn caption="Колонка3" fieldName="Название">
                             </XTreeGridColumn>
                         </XTreeGridColumns>
                     </XTreeGrid>
@@ -185,18 +185,29 @@ namespace Buhta {
                 document.body
             );
 
-            executeSQL("select top 500 Номер,Название,_Модель Дата from ТМЦ order by Ключ")
-                .done((table) => {
-                    window["xxx"] = table.rows.map((r)=> {
-                        return {Номер: r["Номер"], Название: r["Название"], Дата: r["Дата"]};
-                    });
+            // executeSQL("select top 500 Номер,Название,_Модель Дата from ТМЦ order by Ключ")
+            //     .done((table) => {
+            //         window["xxx"] = table.rows.map((r)=> {
+            //             return {Номер: r["Номер"], Название: r["Название"], Дата: r["Дата"]};
+            //         });
+            //
+            //         console.log("select top X1 Номер,Название,getdate() Дата from ТМЦ order by Ключ --> " + table.rows[0].getValue(1));
+            //     })
+            //     .fail((err) => {
+            //         alert(err.message);
+            //     });
 
-                    console.log("select top X1 Номер,Название,getdate() Дата from ТМЦ order by Ключ --> " + table.rows[0].getValue(1));
-                })
-                .fail((err) => {
-                    alert(err.message);
-                });
-
+            // executeSQL("select TOP 500 Ключ,Номер,Название from [Вид ТМЦ] order by Номер")
+            //     .done((table) => {
+            //         window["xxxx"] = table.rows.map((r) => {
+            //             return {Ключ: r["Ключ"], Номер: r["Номер"], Название: r["Название"]};
+            //         });
+            //
+            //         console.log("select Ключ,Номер,Название from [Вид ТМЦ] order by Ключ --> " + table.rows[0].getValue(2));
+            //     })
+            //     .fail((err) => {
+            //         alert(err.message);
+            //     });
         });
     });
 }

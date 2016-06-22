@@ -19,7 +19,7 @@ body {
 }
 
 .tree-grid-header-wrapper {
-    flex: 0 0 auto;
+    /*flex: 0 0 auto;*/
 }
 
 .tree-grid-body-wrapper {
@@ -27,13 +27,13 @@ body {
     /* flex: 0 1 auto; */
     /* overflow-y: hidden; */
     /* overflow-x: visible; */
-    position: relative;
-    overflow-x: auto;
-    overflow-y: auto;
+    /*position: relative;*/
+    /*overflow-x: auto;*/
+    /*overflow-y: auto;*/
 }
 
 .tree-grid-footer-wrapper {
-    flex: 0 0 auto;
+    /*flex: 0 0 auto;*/
 }
 
 .tree-grid-body {
