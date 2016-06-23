@@ -29,7 +29,10 @@ namespace Buhta {
 
     class InternalColumn {
         props: XTreeGridColumnProps;
-
+        width: number;
+        caption: string;
+        fieldName: string;
+        footer: string;
     }
 
     class InternalRow {
@@ -104,6 +107,10 @@ namespace Buhta {
 
                     let col = new InternalColumn();
                     col.props = propCol.props;
+                    col.width = propCol.props.width || 150;
+                    col.caption = propCol.props.caption;
+                    col.fieldName = propCol.props.fieldName;
+                    col.caption = propCol.props.caption || col.fieldName;
                     this.columns.push(col);
                 });
             });
@@ -228,6 +235,9 @@ namespace Buhta {
 
                 this.initFocused();
             }
+
+            if (this.columns && this.columns.length > 0 && this.dataSource)
+                this.columns[0].footer = this.dataSource.length + " поз.";
         }
 
         private filterData() {
@@ -304,7 +314,7 @@ namespace Buhta {
 
             this.rows.forEach((row, index) => {
                 ret.push(this.renderRow(row, index));
-            })
+            });
 
             //console.log("renderRows-end()");
             return ret;
@@ -313,7 +323,6 @@ namespace Buhta {
         private renderRow(row: InternalRow, rowIndex: number): JSX.Element {
             return (
                 <tr
-                    className={row.sourceIndex}
                     key={rowIndex}
                     ref={ (e) => { row.element = e;}}
                 >
@@ -351,14 +360,12 @@ namespace Buhta {
                 tdStyle.borderBottomColor = "rgba(255, 0, 0, 0)";
             }
 
-            let strSpanStyle;
-            if (this.props.treeMode && col.props.showHierarchyTree &&
-                node.expanded && node.children.length > 0) {
-                strSpanStyle = {
-                    fontWeight: "bold",
-                    lineHeight: "100%",
-                    display: "inline-block"
-                };
+            let strSpanStyle: any = {
+                lineHeight: "100%",
+                display: "inline-block"
+            };
+            if (this.props.treeMode && col.props.showHierarchyTree && node.expanded && node.children.length > 0) {
+                strSpanStyle.fontWeight = "bold";
             }
             let strSpan = <span style={ strSpanStyle}>{str}</span>;
 
@@ -600,6 +607,111 @@ namespace Buhta {
         }
 
 
+        renderColumnHeaders(): JSX.Element {
+
+            let colWidths: JSX.Element[] = [];
+            let colHeaders: JSX.Element[] = [];
+
+            this.columns.forEach((col) => {
+                colWidths.push(<col width={ col.width.toString() + "px" }/>);
+
+                let tdStyle: any = {overflow: "hidden"};
+
+                colHeaders.push(<td style={tdStyle}>{col.caption}</td>);
+            });
+
+            return (
+                <div
+                    ref={ (e) => this.headerElement = e}
+                    style={{ position:"absolute", border:"0px solid red" }}>
+                    <table
+                        className="tree-grid-header"
+                        style={{tableLayout: "fixed",borderCollapse: "collapse"}}
+                    >
+                        <colgroup>
+                            {colWidths}
+                        </colgroup>
+                        <tbody>
+                        <tr>
+                            {colHeaders}
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            );
+        }
+
+        renderColumnFooters(): JSX.Element {
+
+            let colWidths: JSX.Element[] = [];
+            let colFooters: JSX.Element[] = [];
+
+            let isFooterEmpty = true;
+            this.columns.forEach((col) => {
+                colWidths.push(<col width={ col.width.toString() + "px" }/>);
+                if (col.footer)
+                    isFooterEmpty = false;
+                let tdStyle: any = {overflow: "hidden"};
+                colFooters.push(<td style={tdStyle}>{col.footer}</td>);
+            });
+
+            if (!isFooterEmpty)
+
+                return (
+                    <div
+                        ref={ (e) => this.footerElement = e}
+                        style={{ position:"absolute", border:"0px solid blue"}}
+                    >
+                        <table
+                            className="tree-grid-footer"
+                            style={{tableLayout: "fixed",borderCollapse: "collapse"}}
+                        >
+                            <colgroup>
+                                {colWidths}
+                            </colgroup>
+                            <tbody>
+                            <tr>
+                                {colFooters}
+                            </tr>
+                            </tbody>
+                        </table>
+
+                    </div>
+                );
+            else
+                return undefined;
+        }
+
+        renderGridBody(): JSX.Element {
+
+            let colWidths: JSX.Element[] = [];
+            this.columns.forEach((col) => {
+                colWidths.push(<col width={ col.width.toString() + "px" }/>);
+            });
+
+            return (
+                <table
+                    className="tree-grid-body"
+                    tabIndex={0}
+                    onKeyDown={ (e) => {  this.handleBodyKeyDown(e); } }
+                    style={{ tableLayout: "fixed", borderCollapse: "collapse", position: "relative"}}
+                >
+                    <colgroup>
+                        {colWidths}
+                    </colgroup>
+                    <tbody>
+                    <tr>
+                        <td ref={ (e) => this.headerFakeRow = e}></td>
+                    </tr>
+                    {this.renderRows()}
+                    <tr>
+                        <td ref={ (e) => this.footerFakeRow = e}></td>
+                    </tr>
+                    </tbody>
+                </table>
+            );
+        }
+
 //bodyTopFakeHeigth: number = 1;
         bodyWrapperElement: any;
         headerFakeRow: any;
@@ -630,72 +742,9 @@ namespace Buhta {
 
                     >
                         <div>
-                            <table
-                                className="tree-grid-body"
-                                tabIndex={0}
-                                onKeyDown={ (e) => {  this.handleBodyKeyDown(e); } }
-                                style={{ tableLayout: "fixed", borderCollapse: "collapse", position: "relative"}}
-                            >
-                                <colgroup>
-                                    <col width="60px"/>
-                                    <col width="240px"/>
-                                    <col width="140px"/>
-                                </colgroup>
-                                <tbody>
-                                <tr>
-                                    <td ref={ (e) => this.headerFakeRow = e}></td>
-                                </tr>
-                                {this.renderRows()}
-                                <tr>
-                                    <td ref={ (e) => this.footerFakeRow = e}></td>
-                                </tr>
-                                </tbody>
-                            </table>
-                            <div
-                                ref={ (e) => this.headerElement = e}
-                                style={{ position:"absolute", border:"0px solid red" }}>
-                                <table
-                                    className="tree-grid-header"
-                                    style={{tableLayout: "fixed",borderCollapse: "collapse"}}
-                                >
-                                    <colgroup>
-                                        <col width="60px"/>
-                                        <col width="240px"/>
-                                        <col width="140px"/>
-                                    </colgroup>
-                                    <tbody>
-                                    <tr>
-                                        <td>Номер</td>
-                                        <td>Название <br/> и еще что-то</td>
-                                        <td>Город</td>
-                                    </tr>
-                                    </tbody>
-                                </table>
-
-                            </div>
-                            <div
-                                ref={ (e) => this.footerElement = e}
-                                style={{ position:"absolute", border:"0px solid blue"}}
-                            >
-                                <table
-                                    className="tree-grid-footer"
-                                    style={{tableLayout: "fixed",borderCollapse: "collapse"}}
-                                >
-                                    <colgroup>
-                                        <col width="60px"/>
-                                        <col width="240px"/>
-                                        <col width="140px"/>
-                                    </colgroup>
-                                    <tbody>
-                                    <tr>
-                                        <td>10 шт</td>
-                                        <td>--</td>
-                                        <td>сумма: 100 руб</td>
-                                    </tr>
-                                    </tbody>
-                                </table>
-
-                            </div>
+                            {this.renderGridBody()}
+                            {this.renderColumnHeaders()}
+                            {this.renderColumnFooters()}
                         </div>
                     </div>
                     <div className="tree-grid-footer-wrapper" style={{ flex: "0 1 auto" }}>

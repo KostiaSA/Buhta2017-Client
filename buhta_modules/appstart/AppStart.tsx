@@ -180,11 +180,11 @@ namespace Buhta {
                         autoExpandNodesToLevel={0}
                     >
                         <XTreeGridColumns>
-                            <XTreeGridColumn caption="Колонка2" fieldName="Номер" showHierarchyTree={false}>
+                            <XTreeGridColumn caption="Колонка2" fieldName="Номер" showHierarchyTree={false} width={150}>
                             </XTreeGridColumn>
-                            <XTreeGridColumn caption="Колонка3" fieldName="Название" showHierarchyTree={true}>
+                            <XTreeGridColumn caption="Колонка3" fieldName="Название" showHierarchyTree={true} width={300}>
                             </XTreeGridColumn>
-                            <XTreeGridColumn caption="Колонка1" fieldName="Ключ">
+                            <XTreeGridColumn caption="Колонка1" fieldName="Ключ" width={80}>
                             </XTreeGridColumn>
                         </XTreeGridColumns>
                     </XTreeGrid>

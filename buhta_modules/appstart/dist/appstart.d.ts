@@ -245,6 +245,9 @@ declare namespace Buhta {
         private moveFocusedCellRight();
         private moveFocusedCellUp();
         handleBodyKeyDown(e: React.KeyboardEvent): void;
+        renderColumnHeaders(): JSX.Element;
+        renderColumnFooters(): JSX.Element;
+        renderGridBody(): JSX.Element;
         bodyWrapperElement: any;
         headerFakeRow: any;
         footerFakeRow: any;
@@ -256,6 +259,7 @@ declare namespace Buhta {
 declare namespace Buhta {
     interface XTreeGridColumnProps extends XComponentProps {
         caption?: string;
+        width?: number;
         fieldName?: string;
         showHierarchyTree?: boolean;
         showHierarchyPadding?: boolean;
