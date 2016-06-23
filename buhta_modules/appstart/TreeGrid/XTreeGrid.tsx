@@ -1,4 +1,4 @@
-﻿/// <reference path="../references.ts" />
+/// <reference path="../references.ts" />
 /// <reference path="../../../typings/index.d.ts" />
 /// <reference path="../xcomponent.tsx" />
 
@@ -53,7 +53,10 @@ namespace Buhta {
         expanded: boolean;
         level: number;
 
-        pushRowRecursive(rows: InternalRow[]) {
+        pushRowRecursive(rows: InternalRow[], maxPageLength: number) {
+
+            if (rows.length >= maxPageLength)
+                return;
 
             let row = new InternalRow();
             row.sourceIndex = this.sourceIndex;
@@ -62,7 +65,7 @@ namespace Buhta {
 
             if (this.expanded) {
                 this.children.forEach((child: InternalTreeNode) => {
-                    child.pushRowRecursive(rows);
+                    child.pushRowRecursive(rows, maxPageLength);
                 });
             }
 
@@ -207,7 +210,7 @@ namespace Buhta {
             if (this.props.treeMode) {
                 if (this.nodes) {
                     this.nodes.forEach((node: InternalTreeNode) => {
-                        node.pushRowRecursive(this.rows);
+                        node.pushRowRecursive(this.rows, this.pageLength);
                     });
                 }
             }
@@ -246,7 +249,7 @@ namespace Buhta {
             this.createColumns();
             this.createNodes();
             this.createRows();
-            this.pageLength = 5000;
+            this.pageLength = 500;
         }
 
         protected refreshDataSource() {
@@ -272,7 +275,7 @@ namespace Buhta {
                     this.forceUpdate();
 
 
-                    console.log("select top 5006 Ключ,Номер,Название from [Вид ТМЦ] order by Ключ --> " + table.rows[0].getValue(2));
+                    console.log("select top 5006* Ключ,Номер,Название from [Вид ТМЦ] order by Ключ --> " + table.rows[0].getValue(2));
                 })
                 .fail((err) => {
                     alert(err.message);
@@ -294,47 +297,49 @@ namespace Buhta {
 
 
         private renderRows(): JSX.Element[] {
-            console.log("renderRows()");
-            //let {pageStartIndex, pageLength, data} = this.state;
+            //console.log("renderRows-start()");
             let ret: JSX.Element[] = [];
             if (!this.rows)
                 return ret;
 
-            for (let i = 0; i < this.pageLength && i < this.rows.length; i++) {
-                ret.push(this.renderRow(i));
-            }
+            this.rows.forEach((row, index) => {
+                ret.push(this.renderRow(row, index));
+            })
+
+            //console.log("renderRows-end()");
             return ret;
         }
 
-        private renderRow(rowIndex: number): JSX.Element {
+        private renderRow(row: InternalRow, rowIndex: number): JSX.Element {
             return (
                 <tr
+                    className={row.sourceIndex}
                     key={rowIndex}
-                    ref={ (e) => this.rows[rowIndex].element = e}
+                    ref={ (e) => { row.element = e;}}
                 >
-                    { this.renderCells(rowIndex)}
+                    { this.renderCells(row, rowIndex)}
                 </tr>
             );
         }
 
-        private renderCells(rowIndex: number): JSX.Element[] {
+        private renderCells(row: InternalRow, rowIndex: number): JSX.Element[] {
             let ret: JSX.Element[] = [];
             this.columns.forEach((col, colIndex) => {
-                ret.push(this.renderCell(rowIndex, col, colIndex));
+                ret.push(this.renderCell(row, rowIndex, col, colIndex));
             });
             return ret;
         }
 
-        private renderCell(rowIndex: number, col: InternalColumn, colIndex: number): JSX.Element {
+        private renderCell(row: InternalRow, rowIndex: number, col: InternalColumn, colIndex: number): JSX.Element {
 
-            let objIndex = this.rows[rowIndex].sourceIndex;
+            let objIndex = row.sourceIndex;
             let str = this.dataSource[objIndex][col.props.fieldName].toString();
             //let str = this.rows[rowIndex].sourceObject[col.props.fieldName].toString();
             // return <td key={colIndex}>
             //     <div style={{height:16, overflow:"hidden"}}>{str}</div>
             // </td>;
 
-            let node = this.rows[rowIndex].node;
+            let node = row.node;
 
             let hierarchyPaddingDiv: JSX.Element;
             if (this.props.treeMode && (col.props.showHierarchyPadding || col.props.showHierarchyTree)) {
@@ -349,19 +354,86 @@ namespace Buhta {
             let strSpanStyle;
             if (this.props.treeMode && col.props.showHierarchyTree &&
                 node.expanded && node.children.length > 0) {
-                strSpanStyle = {fontWeight: "bold"};
+                strSpanStyle = {
+                    fontWeight: "bold",
+                    lineHeight: "100%",
+                    display: "inline-block"
+                };
             }
+            let strSpan = <span style={ strSpanStyle}>{str}</span>;
 
+
+            let collapseIconDiv;
+
+            if (this.props.treeMode && col.props.showHierarchyTree) {
+                if (node.children.length > 0) {
+                    if (node.expanded) {
+                        collapseIconDiv = (
+                            <div
+                                className="row-collapse-icon"
+                                style={{ width:20, flex: "0 0 auto"}}
+                            >
+                                <span
+                                    className="icon is-small"
+                                    style={{cursor: "pointer"}}
+                                    onClick={ (e) => {node.expanded = false; this.createRows(); this.forceUpdate();} }
+                                >
+                                  <i className="fa fa-caret-down"></i>
+                            </span>
+                            </div>);
+                    }
+                    else {
+
+                        collapseIconDiv = (
+                            <div className="row-collapse-icon" style={{ width:20, flex: "0 0 auto"}}>
+                                <span
+                                    className="icon is-small"
+                                    style={{cursor: "pointer"}}
+                                    onClick={ (e) => {node.expanded = true; this.createRows(); this.forceUpdate();} }
+                                >
+                                  <i className="fa fa-caret-right"></i>
+                                </span>
+                            </div>);
+
+                    }
+
+                }
+                else {
+                    collapseIconDiv = (
+                        <div className="row-collapse-icon" style={{ width:20, flex: "0 0 auto"}}>
+                        </div>);
+
+                }
+                ;
+
+            }
+            ;
 
             return (
                 <td
                     key={colIndex}
                     style={tdStyle}
-                    ref={ (e) => this.rows[rowIndex].cellElements[colIndex] = e}
+                    ref={ (e) => row.cellElements[colIndex] = e}
                     onClick={ (e) => { this.setFocusedCell(rowIndex,colIndex);} }
                 >
-                    {hierarchyPaddingDiv}
-                    <span style={ strSpanStyle}>{str}</span>
+                    <div style={{ display:"flex", flexDirection: "row", alignItems:"center" }}>
+                        <div className="row-checkbox" style={{ flex: "0 0 auto"}}>
+
+                        </div>
+
+                        <div className="row-padding" style={{ flex: "0 0 auto"}}>
+                            {hierarchyPaddingDiv}
+                        </div>
+
+                        {collapseIconDiv}
+
+                        <div className="row-icon" style={{ flex: "0 0 auto"}}>
+
+                        </div>
+                        <div className="row-str" style={{ flex: "0 1 auto"}}>
+                            {strSpan}
+                        </div>
+                    </div>
                 </td>
             );
         }
@@ -528,7 +600,7 @@ namespace Buhta {
         }
 
 
-        //bodyTopFakeHeigth: number = 1;
+//bodyTopFakeHeigth: number = 1;
         bodyWrapperElement: any;
         headerFakeRow: any;
         footerFakeRow: any;
@@ -540,7 +612,7 @@ namespace Buhta {
             console.log("2");
 
             return (
-                <div className="tree-grid">
+                <div className="tree-grid" style={{ display: "flex", flexDirection: "column"}}>
                     <div className="tree-grid-header-wrapper" style={{ flex: "0 0 auto" }}>
                         <button onClick={ () => { this.testLoad500(); }}>
                             refresh 500
@@ -551,7 +623,7 @@ namespace Buhta {
                         заголовок и т.д.
                     </div>
                     <div className="tree-grid-body-wrapper"
-                         style={{ position:"relative", overflow:"auto"}}
+                         style={{ position:"relative", overflow:"auto", flex: "0 1 auto"}}
                          onWheel={ this.handleTableWheel.bind(this)}
                          onScroll={ this.handleScroll.bind(this)}
                          ref={ (e) => this.bodyWrapperElement = e}
@@ -562,6 +634,7 @@ namespace Buhta {
                                 className="tree-grid-body"
                                 tabIndex={0}
                                 onKeyDown={ (e) => {  this.handleBodyKeyDown(e); } }
+                                style={{ tableLayout: "fixed", borderCollapse: "collapse", position: "relative"}}
                             >
                                 <colgroup>
                                     <col width="60px"/>
@@ -578,9 +651,13 @@ namespace Buhta {
                                 </tr>
                                 </tbody>
                             </table>
-                            <div ref={ (e) => this.headerElement = e}
-                                 style={{ position:"absolute", border:"0px solid red" }}>
-                                <table className="tree-grid-header" style={{tableLayout: "fixed"}}>
+                            <div
+                                ref={ (e) => this.headerElement = e}
+                                style={{ position:"absolute", border:"0px solid red" }}>
+                                <table
+                                    className="tree-grid-header"
+                                    style={{tableLayout: "fixed",borderCollapse: "collapse"}}
+                                >
                                     <colgroup>
                                         <col width="60px"/>
                                         <col width="240px"/>
@@ -596,9 +673,14 @@ namespace Buhta {
                                 </table>
 
                             </div>
-                            <div ref={ (e) => this.footerElement = e}
-                                 style={{ position:"absolute", border:"0px solid blue"}}>
-                                <table className="tree-grid-footer" style={{tableLayout: "fixed"}}>
+                            <div
+                                ref={ (e) => this.footerElement = e}
+                                style={{ position:"absolute", border:"0px solid blue"}}
+                            >
+                                <table
+                                    className="tree-grid-footer"
+                                    style={{tableLayout: "fixed",borderCollapse: "collapse"}}
+                                >
                                     <colgroup>
                                         <col width="60px"/>
                                         <col width="240px"/>

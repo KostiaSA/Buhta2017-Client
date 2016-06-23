@@ -4,6 +4,7 @@ html {
 
 body {
     font-family: 'Segoe UI', sans-serif;
+    color: #272727;
     border: 1px solid blue;
     height: 100%;
     position: relative;
@@ -13,8 +14,8 @@ body {
     height: 600px;
     width: 500px;
     /*border: 1px solid red;*/
-    display: flex;
-    flex-direction: column;
+    /*display: flex;*/
+    /*flex-direction: column;*/
     /* position: relative; */
 }
 
@@ -37,10 +38,10 @@ body {
 }
 
 .tree-grid-body {
-    table-layout: fixed;
     background: white;
-    border-collapse: collapse;
-    position: relative;
+    /*table-layout: fixed;*/
+    /*border-collapse: collapse;*/
+    /*position: relative;*/
 }
 
 .tree-grid-body > tbody > tr > td {
@@ -49,9 +50,9 @@ body {
 }
 
 .tree-grid-header {
-    table-layout: fixed;
-    background: white;
-    border-collapse: collapse;
+    /*table-layout: fixed;*/
+    /*background: white;*/
+    /*border-collapse: collapse;*/
 }
 
 .tree-grid-header > tbody > tr > td {
@@ -61,9 +62,9 @@ body {
 }
 
 .tree-grid-footer {
-    table-layout: fixed;
-    background: white;
-    border-collapse: collapse;
+    /*table-layout: fixed;*/
+    /*background: white;*/
+    /*border-collapse: collapse;*/
 }
 
 .tree-grid-footer > tbody > tr > td {

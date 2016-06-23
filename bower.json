@@ -23,6 +23,7 @@
     "eventemitter3": "^1.2.0",
     "devextreme": "^15.2.10",
     "bulma": "^0.0.28",
-    "alasql": "^0.2.7"
+    "alasql": "^0.2.7",
+    "font-awesome": "^4.6.3"
   }
 }

@@ -177,7 +177,7 @@ namespace Buhta {
                         treeMode={true}
                         hierarchyFieldName="Номер"
                         hierarchyDelimiters="."
-                        autoExpandNodesToLevel={5}
+                        autoExpandNodesToLevel={0}
                     >
                         <XTreeGridColumns>
                             <XTreeGridColumn caption="Колонка2" fieldName="Номер" showHierarchyTree={false}>

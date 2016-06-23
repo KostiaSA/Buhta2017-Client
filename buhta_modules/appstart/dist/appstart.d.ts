@@ -231,9 +231,9 @@ declare namespace Buhta {
         protected willReceiveProps(nextProps: XTreeGridProps): void;
         protected didUpdate(prevProps: XTreeGridProps, prevState: XTreeGridState, prevContext: any): void;
         private renderRows();
-        private renderRow(rowIndex);
-        private renderCells(rowIndex);
-        private renderCell(rowIndex, col, colIndex);
+        private renderRow(row, rowIndex);
+        private renderCells(row, rowIndex);
+        private renderCell(row, rowIndex, col, colIndex);
         private setFocusedCell(rowIndex, cellIndex);
         private handleTableWheel(e);
         private handleScroll(e);

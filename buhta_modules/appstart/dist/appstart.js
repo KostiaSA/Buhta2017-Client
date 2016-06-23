@@ -297,7 +297,7 @@ var Buhta;
             //     }
             // });
             //Text12 = <button>привет</button>;
-            ReactDOM.render(React.createElement("div", null, React.createElement(Buhta.XTreeGrid, {visible: true, dataSource: window["xxxx"], treeMode: true, hierarchyFieldName: "Номер", hierarchyDelimiters: ".", autoExpandNodesToLevel: 5}, React.createElement(Buhta.XTreeGridColumns, null, React.createElement(Buhta.XTreeGridColumn, {caption: "Колонка2", fieldName: "Номер", showHierarchyTree: false}), React.createElement(Buhta.XTreeGridColumn, {caption: "Колонка3", fieldName: "Название", showHierarchyTree: true}), React.createElement(Buhta.XTreeGridColumn, {caption: "Колонка1", fieldName: "Ключ"})))), document.body);
+            ReactDOM.render(React.createElement("div", null, React.createElement(Buhta.XTreeGrid, {visible: true, dataSource: window["xxxx"], treeMode: true, hierarchyFieldName: "Номер", hierarchyDelimiters: ".", autoExpandNodesToLevel: 0}, React.createElement(Buhta.XTreeGridColumns, null, React.createElement(Buhta.XTreeGridColumn, {caption: "Колонка2", fieldName: "Номер", showHierarchyTree: false}), React.createElement(Buhta.XTreeGridColumn, {caption: "Колонка3", fieldName: "Название", showHierarchyTree: true}), React.createElement(Buhta.XTreeGridColumn, {caption: "Колонка1", fieldName: "Ключ"})))), document.body);
             // executeSQL("select top 500 Номер,Название,_Модель Дата from ТМЦ order by Ключ")
             //     .done((table) => {
             //         window["xxx"] = table.rows.map((r)=> {
@@ -689,14 +689,16 @@ var Buhta;
             this.cellElements = [];
             this.children = [];
         }
-        InternalTreeNode.prototype.pushRowRecursive = function (rows) {
+        InternalTreeNode.prototype.pushRowRecursive = function (rows, maxPageLength) {
+            if (rows.length >= maxPageLength)
+                return;
             var row = new InternalRow();
             row.sourceIndex = this.sourceIndex;
             row.node = this;
             rows.push(row);
             if (this.expanded) {
                 this.children.forEach(function (child) {
-                    child.pushRowRecursive(rows);
+                    child.pushRowRecursive(rows, maxPageLength);
                 });
             }
         };
@@ -793,7 +795,7 @@ var Buhta;
             if (this.props.treeMode) {
                 if (this.nodes) {
                     this.nodes.forEach(function (node) {
-                        node.pushRowRecursive(_this.rows);
+                        node.pushRowRecursive(_this.rows, _this.pageLength);
                     });
                 }
             }
@@ -823,7 +825,7 @@ var Buhta;
             this.createColumns();
             this.createNodes();
             this.createRows();
-            this.pageLength = 5000;
+            this.pageLength = 500;
         };
         XTreeGrid.prototype.refreshDataSource = function () {
             this.dataSource = this.props.dataSource;
@@ -843,7 +845,7 @@ var Buhta;
                 _this.createNodes();
                 _this.createRows();
                 _this.forceUpdate();
-                console.log("select top 5006 Ключ,Номер,Название from [Вид ТМЦ] order by Ключ --> " + table.rows[0].getValue(2));
+                console.log("select top 5006* Ключ,Номер,Название from [Вид ТМЦ] order by Ключ --> " + table.rows[0].getValue(2));
             })
                 .fail(function (err) {
                 alert(err.message);
@@ -857,37 +859,37 @@ var Buhta;
             this.handleChangeFocused();
         };
         XTreeGrid.prototype.renderRows = function () {
-            console.log("renderRows()");
-            //let {pageStartIndex, pageLength, data} = this.state;
+            var _this = this;
+            //console.log("renderRows-start()");
             var ret = [];
             if (!this.rows)
                 return ret;
-            for (var i = 0; i < this.pageLength && i < this.rows.length; i++) {
-                ret.push(this.renderRow(i));
-            }
+            this.rows.forEach(function (row, index) {
+                ret.push(_this.renderRow(row, index));
+            });
+            //console.log("renderRows-end()");
             return ret;
         };
-        XTreeGrid.prototype.renderRow = function (rowIndex) {
-            var _this = this;
-            return (React.createElement("tr", {key: rowIndex, ref: function (e) { return _this.rows[rowIndex].element = e; }}, this.renderCells(rowIndex)));
+        XTreeGrid.prototype.renderRow = function (row, rowIndex) {
+            return (React.createElement("tr", {className: row.sourceIndex, key: rowIndex, ref: function (e) { row.element = e; }}, this.renderCells(row, rowIndex)));
         };
-        XTreeGrid.prototype.renderCells = function (rowIndex) {
+        XTreeGrid.prototype.renderCells = function (row, rowIndex) {
             var _this = this;
             var ret = [];
             this.columns.forEach(function (col, colIndex) {
-                ret.push(_this.renderCell(rowIndex, col, colIndex));
+                ret.push(_this.renderCell(row, rowIndex, col, colIndex));
             });
             return ret;
         };
-        XTreeGrid.prototype.renderCell = function (rowIndex, col, colIndex) {
+        XTreeGrid.prototype.renderCell = function (row, rowIndex, col, colIndex) {
             var _this = this;
-            var objIndex = this.rows[rowIndex].sourceIndex;
+            var objIndex = row.sourceIndex;
             var str = this.dataSource[objIndex][col.props.fieldName].toString();
             //let str = this.rows[rowIndex].sourceObject[col.props.fieldName].toString();
             // return <td key={colIndex}>
             //     <div style={{height:16, overflow:"hidden"}}>{str}</div>
             // </td>;
-            var node = this.rows[rowIndex].node;
+            var node = row.node;
             var hierarchyPaddingDiv;
             if (this.props.treeMode && (col.props.showHierarchyPadding || col.props.showHierarchyTree)) {
                 hierarchyPaddingDiv = React.createElement("span", {style: { width: node.level * 20, display: "inline-block" }});
@@ -899,9 +901,30 @@ var Buhta;
             var strSpanStyle;
             if (this.props.treeMode && col.props.showHierarchyTree &&
                 node.expanded && node.children.length > 0) {
-                strSpanStyle = { fontWeight: "bold" };
+                strSpanStyle = {
+                    fontWeight: "bold",
+                    lineHeight: "100%",
+                    display: "inline-block"
+                };
             }
-            return (React.createElement("td", {key: colIndex, style: tdStyle, ref: function (e) { return _this.rows[rowIndex].cellElements[colIndex] = e; }, onClick: function (e) { _this.setFocusedCell(rowIndex, colIndex); }}, hierarchyPaddingDiv, React.createElement("span", {style: strSpanStyle}, str)));
+            var strSpan = React.createElement("span", {style: strSpanStyle}, str);
+            var collapseIconDiv;
+            if (this.props.treeMode && col.props.showHierarchyTree) {
+                if (node.children.length > 0) {
+                    if (node.expanded) {
+                        collapseIconDiv = (React.createElement("div", {className: "row-collapse-icon", style: { width: 20, flex: "0 0 auto" }}, React.createElement("span", {className: "icon is-small", style: { cursor: "pointer" }, onClick: function (e) { node.expanded = false; _this.createRows(); _this.forceUpdate(); }}, React.createElement("i", {className: "fa fa-caret-down"}))));
+                    }
+                    else {
+                        collapseIconDiv = (React.createElement("div", {className: "row-collapse-icon", style: { width: 20, flex: "0 0 auto" }}, React.createElement("span", {className: "icon is-small", style: { cursor: "pointer" }, onClick: function (e) { node.expanded = true; _this.createRows(); _this.forceUpdate(); }}, React.createElement("i", {className: "fa fa-caret-right"}))));
+                    }
+                }
+                else {
+                    collapseIconDiv = (React.createElement("div", {className: "row-collapse-icon", style: { width: 20, flex: "0 0 auto" }}));
+                }
+                ;
+            }
+            ;
+            return (React.createElement("td", {key: colIndex, style: tdStyle, ref: function (e) { return row.cellElements[colIndex] = e; }, onClick: function (e) { _this.setFocusedCell(rowIndex, colIndex); }}, React.createElement("div", {style: { display: "flex", flexDirection: "row", alignItems: "center" }}, React.createElement("div", {className: "row-checkbox", style: { flex: "0 0 auto" }}), React.createElement("div", {className: "row-padding", style: { flex: "0 0 auto" }}, hierarchyPaddingDiv), collapseIconDiv, React.createElement("div", {className: "row-icon", style: { flex: "0 0 auto" }}), React.createElement("div", {className: "row-str", style: { flex: "0 1 auto" }}, strSpan))));
         };
         XTreeGrid.prototype.setFocusedCell = function (rowIndex, cellIndex) {
             this.focusedRowIndex = rowIndex;
@@ -1031,7 +1054,7 @@ var Buhta;
             var _this = this;
             //this.addClassName("button");
             console.log("2");
-            return (React.createElement("div", {className: "tree-grid"}, React.createElement("div", {className: "tree-grid-header-wrapper", style: { flex: "0 0 auto" }}, React.createElement("button", {onClick: function () { _this.testLoad500(); }}, "refresh 500"), React.createElement("button", {onClick: function () { _this.filterData(); _this.forceUpdate(); console.log("forceUpdate"); }}, "filter"), "заголовок и т.д."), React.createElement("div", {className: "tree-grid-body-wrapper", style: { position: "relative", overflow: "auto" }, onWheel: this.handleTableWheel.bind(this), onScroll: this.handleScroll.bind(this), ref: function (e) { return _this.bodyWrapperElement = e; }}, React.createElement("div", null, React.createElement("table", {className: "tree-grid-body", tabIndex: 0, onKeyDown: function (e) { _this.handleBodyKeyDown(e); }}, React.createElement("colgroup", null, React.createElement("col", {width: "60px"}), React.createElement("col", {width: "240px"}), React.createElement("col", {width: "140px"})), React.createElement("tbody", null, React.createElement("tr", null, React.createElement("td", {ref: function (e) { return _this.headerFakeRow = e; }})), this.renderRows(), React.createElement("tr", null, React.createElement("td", {ref: function (e) { return _this.footerFakeRow = e; }})))), React.createElement("div", {ref: function (e) { return _this.headerElement = e; }, style: { position: "absolute", border: "0px solid red" }}, React.createElement("table", {className: "tree-grid-header", style: { tableLayout: "fixed" }}, React.createElement("colgroup", null, React.createElement("col", {width: "60px"}), React.createElement("col", {width: "240px"}), React.createElement("col", {width: "140px"})), React.createElement("tbody", null, React.createElement("tr", null, React.createElement("td", null, "Номер"), React.createElement("td", null, "Название ", React.createElement("br", null), " и еще что-то"), React.createElement("td", null, "Город"))))), React.createElement("div", {ref: function (e) { return _this.footerElement = e; }, style: { position: "absolute", border: "0px solid blue" }}, React.createElement("table", {className: "tree-grid-footer", style: { tableLayout: "fixed" }}, React.createElement("colgroup", null, React.createElement("col", {width: "60px"}), React.createElement("col", {width: "240px"}), React.createElement("col", {width: "140px"})), React.createElement("tbody", null, React.createElement("tr", null, React.createElement("td", null, "10 шт"), React.createElement("td", null, "--"), React.createElement("td", null, "сумма: 100 руб"))))))), React.createElement("div", {className: "tree-grid-footer-wrapper", style: { flex: "0 1 auto" }}, "футер и тд")));
+            return (React.createElement("div", {className: "tree-grid", style: { display: "flex", flexDirection: "column" }}, React.createElement("div", {className: "tree-grid-header-wrapper", style: { flex: "0 0 auto" }}, React.createElement("button", {onClick: function () { _this.testLoad500(); }}, "refresh 500"), React.createElement("button", {onClick: function () { _this.filterData(); _this.forceUpdate(); console.log("forceUpdate"); }}, "filter"), "заголовок и т.д."), React.createElement("div", {className: "tree-grid-body-wrapper", style: { position: "relative", overflow: "auto", flex: "0 1 auto" }, onWheel: this.handleTableWheel.bind(this), onScroll: this.handleScroll.bind(this), ref: function (e) { return _this.bodyWrapperElement = e; }}, React.createElement("div", null, React.createElement("table", {className: "tree-grid-body", tabIndex: 0, onKeyDown: function (e) { _this.handleBodyKeyDown(e); }, style: { tableLayout: "fixed", borderCollapse: "collapse", position: "relative" }}, React.createElement("colgroup", null, React.createElement("col", {width: "60px"}), React.createElement("col", {width: "240px"}), React.createElement("col", {width: "140px"})), React.createElement("tbody", null, React.createElement("tr", null, React.createElement("td", {ref: function (e) { return _this.headerFakeRow = e; }})), this.renderRows(), React.createElement("tr", null, React.createElement("td", {ref: function (e) { return _this.footerFakeRow = e; }})))), React.createElement("div", {ref: function (e) { return _this.headerElement = e; }, style: { position: "absolute", border: "0px solid red" }}, React.createElement("table", {className: "tree-grid-header", style: { tableLayout: "fixed", borderCollapse: "collapse" }}, React.createElement("colgroup", null, React.createElement("col", {width: "60px"}), React.createElement("col", {width: "240px"}), React.createElement("col", {width: "140px"})), React.createElement("tbody", null, React.createElement("tr", null, React.createElement("td", null, "Номер"), React.createElement("td", null, "Название ", React.createElement("br", null), " и еще что-то"), React.createElement("td", null, "Город"))))), React.createElement("div", {ref: function (e) { return _this.footerElement = e; }, style: { position: "absolute", border: "0px solid blue" }}, React.createElement("table", {className: "tree-grid-footer", style: { tableLayout: "fixed", borderCollapse: "collapse" }}, React.createElement("colgroup", null, React.createElement("col", {width: "60px"}), React.createElement("col", {width: "240px"}), React.createElement("col", {width: "140px"})), React.createElement("tbody", null, React.createElement("tr", null, React.createElement("td", null, "10 шт"), React.createElement("td", null, "--"), React.createElement("td", null, "сумма: 100 руб"))))))), React.createElement("div", {className: "tree-grid-footer-wrapper", style: { flex: "0 1 auto" }}, "футер и тд")));
         };
         return XTreeGrid;
     }(Buhta.XComponent));
